@@ -1,6 +1,5 @@
 import { Global, Injectable, Module, OnModuleDestroy } from '@nestjs/common';
 import { Pool, PoolClient, QueryResultRow } from 'pg';
-@Global()
 @Injectable()
 export class Database implements OnModuleDestroy {
  private pool:Pool;
@@ -14,4 +13,5 @@ export class Database implements OnModuleDestroy {
  }
  async onModuleDestroy(){await this.pool.end();}
 }
+@Global()
 @Module({providers:[Database],exports:[Database]})export class DatabaseModule{}
