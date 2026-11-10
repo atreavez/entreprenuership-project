@@ -21,7 +21,7 @@ export default function LocalMap({claims,selectedId,stylePath,onSelect,onUnavail
    const libre=await import('maplibre-gl');
    if(!live||!holder.current)return;
    const center:[number,number]=[(viewport[0]+viewport[2])/2,(viewport[1]+viewport[3])/2];
-   map=new libre.Map({container:holder.current,style,center,zoom:10,attributionControl:true,collectResourceTiming:false,fadeDuration:0});
+   map=new libre.Map({container:holder.current,style,center,zoom:10,attributionControl:{},collectResourceTiming:false,fadeDuration:0});
    mapRef.current=map;
    map.addControl(new libre.NavigationControl({showCompass:true}),'top-left');
    map.on('load',()=>{

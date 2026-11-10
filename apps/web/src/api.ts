@@ -23,7 +23,7 @@ export async function api<T>(path:string,token:string,options:RequestInit={}):Pr
  if(res.status===401&&!publicAuth&&!DEMO){try{const renewed=await refreshSession();res=await make(renewed.accessToken)}catch{setAccessToken('');window.dispatchEvent(new Event('assettrust:session-expired'));throw new ApiError(401,'Session expired or revoked. Sign in again.')}}
  return responseOrError<T>(res);
 }
-export const post=(path:string,token:string,data?:any):Promise<any>=>api<any>(path,token,{method:'POST',body:JSON.stringify(data||{})});
+export const post=<T = any>(path:string,token:string,data?:any):Promise<T>=>api<T>(path,token,{method:'POST',body:JSON.stringify(data||{})});
 export const fmt=(v:number|undefined|null)=>new Intl.NumberFormat('en-UG').format(v||0);
 export const date=(iso:string)=>new Date(iso).toLocaleDateString('en-UG',{month:'short',day:'numeric',year:'numeric'});
 export const statusTone=(s:string)=> s==='ENCRYPTED'||s==='CLOSED'||s==='REVIEW_COMPLETED'||s==='ACCEPTED'?'success':s==='FLAGGED'||s==='BLOCKED'||s==='REJECTED'?'danger':s==='MIGRATION_REQUIRED'||s==='SUBMITTED'||s==='OPEN'||s==='IN_REVIEW'||s==='REGISTRY_SEARCH'||s==='DOCUMENT_REVIEW'?'warning':'neutral';
