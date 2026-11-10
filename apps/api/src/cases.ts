@@ -14,7 +14,7 @@ export function nextStage(stage:string):string{const i=STAGES.indexOf(stage as a
 export function authorizeStage(u:UserAuth,stage:string){
  if(stage==='FIELD_INSPECTION')return assertRole(u,['SURVEYOR'],true);
  if(stage==='LEGAL_REVIEW')return assertRole(u,['LEGAL_REVIEWER'],true);
- if(stage==='FINAL_REVIEW')return assertRole(u,['ORG_ADMIN']);
+ if(stage==='FINAL_REVIEW')return assertRole(u,['ORG_ADMIN'],true);
  return assertRole(u,['ORG_ADMIN','REVIEWER']);
 }
 @Injectable()
