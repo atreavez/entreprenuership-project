@@ -25,7 +25,11 @@ process.once('SIGTERM',()=>{stop();process.exitCode=143});
 try{
  await waitForOwnedApiReady(origin,runEnvironment,{isChildAlive:()=>!startFailure&&server.exitCode===null&&server.signalCode===null&&!server.killed});
  const suites=['test:e2e:local','test:e2e:identity','test:e2e:geo','test:e2e:overlaps'];
- for(const suite of suites){
+ for(const [index,suite] of suites.entries()){
+  if(index>0){
+   console.log('Waiting 65 seconds for the previous rate-limit window to expire...');
+   await new Promise(resolve=>setTimeout(resolve,65000));
+  }
   console.log(`Running ${suite} against validated disposable test API`);
   const child=spawnSync('npm',['run',suite],{stdio:'inherit',env:runEnvironment,timeout:240000});
   if(child.status!==0)throw Error(`${suite} failed (exit ${child.status??'signal'}).`);
