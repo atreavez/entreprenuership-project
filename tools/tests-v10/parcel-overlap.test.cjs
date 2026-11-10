@@ -1,6 +1,6 @@
 const test=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),Module=require('node:module');
-const ts=require(require('node:child_process').execFileSync('npm',['root','-g'],{encoding:'utf8'}).trim()+'/typescript');
+const ts=require('typescript');
 const base=path.resolve(__dirname,'../../apps/api/src/contexts/geospatial');
 function transpile(file,inject={}){const filename=path.join(base,file);const js=ts.transpileModule(fs.readFileSync(filename,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;const mod=new Module(filename,module);mod.filename=filename;mod.paths=Module._nodeModulePaths(path.dirname(filename));if(Object.keys(inject).length){const own=mod.require.bind(mod);mod.require=(n)=>inject[n]||own(n)}mod._compile(js,filename);return mod.exports}
 const domain=()=>transpile('domain/parcel-overlap.ts');
