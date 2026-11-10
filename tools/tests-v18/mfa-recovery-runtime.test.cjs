@@ -21,7 +21,7 @@ const fakeModules={
  '@nestjs/throttler':{Throttle:decorator},
  'argon2':{verify:async()=>true,hash:async()=> 'hash'},
  './database':{Database:class{}},
- './audit':{AuditService:class{}},
+ './audit-service':{AuditService:class{}},
  './common':{uid:crypto.randomUUID,hash:v=>crypto.createHash('sha256').update(v).digest('hex'), text:(v,key)=>{if(typeof v!=='string'||!v.trim())throw new BadRequestException(key);return v},UserAuth:class{}},
  './contexts/identity/application/session-usecases':{SessionUseCases:class{}},
  './contexts/identity/infrastructure/pg-session.repository':{PgSessionRepository:class{}},

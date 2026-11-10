@@ -6,7 +6,7 @@ import { randomBytes } from 'node:crypto';
 import { Throttle } from '@nestjs/throttler';
 import { Database } from './database';
 import { uid, text, UserAuth, hash } from './common';
-import { AuditService } from './audit';
+import { AuditService } from './audit-service';
 import { SessionUseCases } from './contexts/identity/application/session-usecases';
 import { PgSessionRepository } from './contexts/identity/infrastructure/pg-session.repository';
 import { CHALLENGE_TTL_MS, createMfaSecret, decodeBase32, hashOpaque, openSecret, sealSecret, validateNewPassword, verifyTotp, isValidRecoveryCode } from './contexts/identity/domain/identity-policy';

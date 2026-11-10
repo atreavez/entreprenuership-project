@@ -17,7 +17,7 @@ function loadAuth({rows,validPassword=false}) {
  const deps={
   '@nestjs/common':stubNest,'@nestjs/jwt':{JwtModule:{register:()=>({})}},'@nestjs/throttler':{Throttle:decorator},
   'argon2':{verify:async (hash,pw)=>{verifications.push({hash,pw});return validPassword;},hash:async()=>{throw Error('Unexpected hashing')}},
-  './database':{}, './audit':{},
+  './database':{}, './audit-service':{},
   './common':{uid:()=>'',text:(value)=>{if(typeof value!=='string')throw Error('invalid field');return value;},hash:()=>'',UserAuth:class{}},
   './contexts/identity/application/session-usecases':{}, './contexts/identity/infrastructure/pg-session.repository':{},
   './contexts/identity/domain/identity-policy':{},
