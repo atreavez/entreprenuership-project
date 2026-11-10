@@ -1,0 +1,29 @@
+{
+  "version": "0.13.0",
+  "date": "2026-11-07",
+  "compiler": "Aturinzire Hargreave",
+  "offline_tests": {
+    "v13": {
+      "passed": 20,
+      "failed": 0
+    },
+    "previous_suites": "all passed",
+    "syntax": {
+      "files": 54,
+      "errors": 0
+    }
+  },
+  "build": {
+    "attempted": true,
+    "passed": false,
+    "blocker": "TS2688: missing @types/node; npm registry inaccessible"
+  },
+  "backend_test": {
+    "attempted": true,
+    "passed": false,
+    "blocker": "TS2307: missing @nestjs/common and pg"
+  },
+  "database_integration": "not run",
+  "github_ci": "not run",
+  "production_ready": false
+}

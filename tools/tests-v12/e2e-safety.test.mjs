@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {assertSafeE2eTarget} from '../e2e-safety.mjs';
+const target='disposable-test-target-3456';
+const pretend=async (url)=>({ok:true,status:200,json:async()=>({service:'assettrust-api',e2eTargetId:target})});
+test('refuses remote URLs before making any HTTP request',async()=>{let called=false;await assert.rejects(()=>assertSafeE2eTarget('https://external.example.org',{allowMutation:'YES',expectedTargetId:target,fetchImpl:async()=>{called=true;return pretend()}}));assert.equal(called,false)});
+test('refuses localhost with URL credentials',async()=>assert.rejects(()=>assertSafeE2eTarget('http://user:pass@localhost:4000',{allowMutation:'YES',expectedTargetId:target,fetchImpl:pretend})));
+test('refuses mutation without explicit opt-in',async()=>assert.rejects(()=>assertSafeE2eTarget('http://127.0.0.1:4000',{allowMutation:'',expectedTargetId:target,fetchImpl:pretend})));
+test('refuses missing server target marker',async()=>assert.rejects(()=>assertSafeE2eTarget('http://127.0.0.1:4000',{allowMutation:'YES',expectedTargetId:target,fetchImpl:async()=>({ok:true,json:async()=>({service:'assettrust-api'})})})));
+test('refuses unexpected server marker',async()=>assert.rejects(()=>assertSafeE2eTarget('http://127.0.0.1:4000',{allowMutation:'YES',expectedTargetId:target,fetchImpl:async()=>({ok:true,json:async()=>({service:'assettrust-api',e2eTargetId:'other'})})})));
+test('accepts explicitly marked disposable localhost server',async()=>assert.equal(await assertSafeE2eTarget('http://localhost:4000',{allowMutation:'YES',expectedTargetId:target,fetchImpl:pretend}),'http://localhost:4000/api/v1'));
+test('refuses non-json or unreachable server',async()=>assert.rejects(()=>assertSafeE2eTarget('http://localhost:4000',{allowMutation:'YES',expectedTargetId:target,fetchImpl:async()=>{throw Error('offline')}})));

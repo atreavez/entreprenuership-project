@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgis/postgis:17-3.5
+    restart: unless-stopped
+    ports: ["127.0.0.1:5432:5432"]
+    environment:
+      POSTGRES_USER: assettrust
+      POSTGRES_PASSWORD: assettrust_dev_password
+      POSTGRES_DB: assettrust
+    volumes: ["assettrust_pg:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U assettrust -d assettrust"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  maps:
+    profiles: ["maps"]
+    build:
+      context: .
+      dockerfile: services/tiles/Dockerfile
+    restart: unless-stopped
+    read_only: true
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    ports: ["127.0.0.1:8081:8081"]
+    volumes: ["./data/maps:/data/maps:ro"]
+    environment:
+      ASSETTRUST_MBTILES_PATH: /data/maps/uganda.mbtiles
+      ASSETTRUST_MAP_ATTRIBUTION: ${ASSETTRUST_MAP_ATTRIBUTION:?Provide licensed map attribution}
+      ASSETTRUST_MAP_REQUIRE_MANIFEST: 'true'
+      ASSETTRUST_MAP_PRODUCTION_DATA: 'true'
+      ASSETTRUST_TILE_HOST: 0.0.0.0
+      ASSETTRUST_TILE_PORT: 8081
+volumes:
+  assettrust_pg:

@@ -1,0 +1,20 @@
+{
+  "date_utc": "2026-11-09T22:32:07.432326+00:00",
+  "results": [
+    {
+      "check": "build",
+      "exit_code": 2,
+      "result_excerpt": "error TS2688: Cannot find type definition file for 'node'.\n  The file is in the program because:\n    Entry point of type library 'node' specified in compilerOptions\n\nnpm error Lifecycle script `build` failed with error:\nnpm error code 2\nnpm error path /mnt/data/v21-work/assettrust-v21/apps/api\nnpm error workspace @assettrust/api@0.21.0\nnpm error location /mnt/data/v21-work/assettrust-v21/apps/api\nnpm error command failed\nnpm error command sh -c tsc -p tsconfig.json"
+    },
+    {
+      "check": "release-gate",
+      "exit_code": 1,
+      "result_excerpt": "> assettrust-platform@0.21.0 release:gate:v17\n> node tools/release-gate-v17.cjs\n\n\nBLOCKER: Missing reviewed package-lock.json: use npm install once in a connected environment, review and commit it, then npm ci.\nBLOCKER: Cannot read package-lock.json: ENOENT\nFAIL: release remains blocked. Do not publish or deploy."
+    },
+    {
+      "check": "postgres-integration",
+      "exit_code": 1,
+      "result_excerpt": "  if (env.ASSETTRUST_E2E_ALLOW_MUTATION !== 'YES') throw Error('Explicit disposable-data authorization required');\n                                                         ^\n\nError: Explicit disposable-data authorization required\n    at validateDisposablePgTarget (/mnt/data/v21-work/assettrust-v21/tools/pg-e2e-policy-v21.cjs:5:58)\n    at file:///mnt/data/v21-work/assettrust-v21/tools/e2e-pg-review-v21.mjs:12:14\n    at ModuleJob.run (node:internal/modules/esm/module_job:274:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:644:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)\n\nNode.js v22.16.0"
+    }
+  ]
+}

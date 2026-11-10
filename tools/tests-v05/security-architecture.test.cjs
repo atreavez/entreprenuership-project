@@ -1,0 +1,13 @@
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const root=path.resolve(__dirname,'../..'),read=(s)=>fs.readFileSync(path.join(root,s),'utf8');
+const dom=read('apps/api/src/contexts/identity/domain/identity-policy.ts');
+const app=read('apps/api/src/contexts/identity/application/session-usecases.ts');
+const store=read('apps/api/src/contexts/identity/infrastructure/pg-session.repository.ts');
+const auth=read('apps/api/src/auth.ts'),front=read('apps/web/src/api.ts'),ui=read('apps/web/src/App.tsx');
+test('identity domain and session use case do not depend on NestJS, PostgreSQL, Express or React',()=>{for(const source of [dom,app])for(const term of ['@nestjs','from \'pg\'','from \'express\'','from \'react\''])assert.ok(!source.includes(term))});
+test('session repository uses atomic refresh rotation with a row lock and commits revocation on hash mismatch',()=>{assert.match(store,/FOR UPDATE/);assert.match(store,/timingSafeEqual/);assert.match(store,/revocation_reason.*REFRESH_REPLAY/);assert.match(store,/LEAST\(\$3,absolute_expires_at\)/)});
+test('API enforces authenticated and active server-side sessions, not only JWT signature',()=>{assert.match(auth,/verifyAsync/);assert.match(auth,/\.authorize\(p\.sid/);assert.match(auth,/this\.auth\.lookup\(p\.sub,p\.org\)/)});
+test('refresh token is cookie-only and security flags are configured',()=>{assert.match(auth,/httpOnly:true/);assert.match(auth,/sameSite:'strict'/);assert.match(auth,/secure:process\.env\.NODE_ENV==='production'/);assert.match(auth,/assertSameOrigin\(req\)/);assert.match(auth,/clearRefreshCookie/);assert.doesNotMatch(front,/localStorage|sessionStorage/);assert.doesNotMatch(ui,/localStorage|sessionStorage/)});
+test('MFA challenges cannot issue regular sessions without a valid second factor',()=>{assert.match(auth,/mfaRequired:true,challengeToken/);assert.match(auth,/async completeMfa/);assert.match(auth,/attempts>=5/);assert.match(auth,/verifyTotp/);assert.match(auth,/auth_recovery_codes/)});
+test('credential updates serialize with a user row lock and create audit entries',()=>{assert.match(auth,/password_hash FROM users WHERE id=\$1 AND organization_id=\$2 FOR UPDATE/);assert.match(auth,/PASSWORD_CHANGED/);assert.match(auth,/MFA_ENABLED/);assert.match(auth,/MFA_DISABLED/)});
+test('database schema contains encrypted MFA and hashed secrets but no raw recovery-code field',()=>{const sql=read('apps/api/sql/004_identity_security.sql');for(const key of ['refresh_hash','secret_ciphertext','challenge_hash','code_hash','revoked_at'])assert.ok(sql.includes(key));assert.doesNotMatch(sql,/\brefresh_token\s+text\b|\bmfa_seed\s+text\b|\brecovery_code\s+text\b/)});

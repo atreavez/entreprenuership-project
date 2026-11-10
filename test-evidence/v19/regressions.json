@@ -1,0 +1,116 @@
+[
+  {
+    "check": "smoke:offline",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 0.5
+  },
+  {
+    "check": "verify:v03",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 0.34
+  },
+  {
+    "check": "verify:v04",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 0.84
+  },
+  {
+    "check": "verify:v05",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 1.24
+  },
+  {
+    "check": "verify:v06",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 0.68
+  },
+  {
+    "check": "verify:v07",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 0.52
+  },
+  {
+    "check": "verify:v08",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 1.79
+  },
+  {
+    "check": "verify:v09",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 2.23
+  },
+  {
+    "check": "verify:v10",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 1.31
+  },
+  {
+    "check": "verify:v11",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 1.11
+  },
+  {
+    "check": "verify:v12",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 1.08
+  },
+  {
+    "check": "verify:v13",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 5.56
+  },
+  {
+    "check": "verify:v14",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 0.19
+  },
+  {
+    "check": "verify:v15",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 1.36
+  },
+  {
+    "check": "verify:v16",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 0.21
+  },
+  {
+    "check": "verify:v17",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 0.22
+  },
+  {
+    "check": "verify:v18",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 0.57
+  },
+  {
+    "check": "verify:architecture",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 0.13
+  },
+  {
+    "check": "verify:syntax",
+    "status": "PASS",
+    "code": 0,
+    "seconds": 0.98
+  }
+]

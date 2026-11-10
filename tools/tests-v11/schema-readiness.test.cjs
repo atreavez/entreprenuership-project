@@ -1,0 +1,23 @@
+'use strict';
+const test=require('node:test');const assert=require('node:assert/strict');
+const {spawnSync}=require('node:child_process');const path=require('node:path');const fs=require('node:fs');const os=require('node:os');
+const ROOT=path.resolve(__dirname,'../..');
+const out=fs.mkdtempSync(path.join(os.tmpdir(),'assettrust-schema-policy-'));
+const sources=['apps/api/src/contexts/platform/domain/schema-manifest.ts','apps/api/src/contexts/platform/domain/schema-readiness.ts'];
+const compiled=spawnSync('tsc',['--strict','--noEmitOnError','--target','es2022','--module','commonjs','--outDir',out,...sources],{cwd:ROOT,encoding:'utf8'});
+if(compiled.status!==0)throw new Error('Isolated pure-domain typecheck failed: '+compiled.stdout+'\n'+compiled.stderr);
+const {evaluateSchema}=require(path.join(out,'schema-readiness.js'));
+const {REQUIRED_SCHEMA_MIGRATIONS,REQUIRED_POSTGIS_TABLES}=require(path.join(out,'schema-manifest.js'));
+const valid=()=>({postgis:true,tables:[...REQUIRED_POSTGIS_TABLES],migrations:REQUIRED_SCHEMA_MIGRATIONS.map(m=>({...m}))});
+test('valid schema, PostGIS and checksums are ready',()=>assert.deepEqual(evaluateSchema(valid()),{ready:true}));
+test('missing PostGIS refuses readiness',()=>assert.equal(evaluateSchema({...valid(),postgis:false}).ready,false));
+test('missing table refuses readiness',()=>assert.equal(evaluateSchema({...valid(),tables:['users']}).ready,false));
+test('missing migration refuses readiness',()=>assert.equal(evaluateSchema({...valid(),migrations:valid().migrations.slice(1)}).ready,false));
+test('checksum drift refuses readiness',()=>{const x=valid();x.migrations[0].sha256='0'.repeat(64);assert.equal(evaluateSchema(x).ready,false)});
+test('unknown extra migration refuses readiness',()=>{const x=valid();x.migrations.push({filename:'099_unreviewed.sql',sha256:'0'.repeat(64)});assert.equal(evaluateSchema(x).ready,false)});
+test('duplicate ledger entry refuses readiness',()=>{const x=valid();x.migrations[x.migrations.length-1]=x.migrations[0];assert.equal(evaluateSchema(x).ready,false)});
+test('checked-in manifest matches actual migrations exactly',()=>{
+ const {buildPlan}=require('../migrations/plan.cjs');
+ const plan=buildPlan();assert.deepEqual(plan.map(({filename,sha256})=>({filename,sha256})),[...REQUIRED_SCHEMA_MIGRATIONS]);
+});
+test.after(()=>fs.rmSync(out,{recursive:true,force:true}));

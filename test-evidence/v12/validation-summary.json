@@ -1,0 +1,17 @@
+{
+  "checkpoint": "AssetTrust v0.12",
+  "date": "2026-11-07",
+  "compiled_by": "Aturinzire Hargreave",
+  "checks": {
+    "v12_offline_tests": {"status": "passed", "pass": 22, "fail": 0, "log": "v12-green-final.log"},
+    "historical_offline_regressions": {"status": "passed", "scope": "smoke:offline; verify:v03 through verify:v11 and verify:architecture"},
+    "typescript_syntax": {"status": "passed", "files": 54, "syntax_diagnostics": 0, "full_typecheck": false},
+    "e2e_without_marked_local_api": {"status": "safely_refused_before_mutation", "log": "e2e-preflight-denied.log"},
+    "npm_offline_install": {"status": "blocked", "reason": "ENOTCACHED"},
+    "npm_online_install": {"status": "blocked", "reason": "EAI_AGAIN registry DNS unavailable"},
+    "full_production_build": {"status": "blocked", "reason": "TS2688 cannot find type definition file node"},
+    "live_postgis_api_integration": {"status": "not_run"},
+    "browser_end_to_end": {"status": "not_run"}
+  },
+  "release_decision": "NOT_PRODUCTION_READY"
+}

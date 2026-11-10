@@ -1,0 +1,22 @@
+node_modules/
+dist/
+.env
+.env.local
+.DS_Store
+coverage/
+*.log
+apps/api/private-uploads/
+
+/tools/.compiled-v04/
+
+# V0.7 secrets, local encrypted document bytes and generated artifacts
+private-uploads/
+*.blob
+*.tmp
+tools/.compiled-v03/
+tools/.compiled-v04/
+tools/.compiled-v05/
+tools/.compiled-v06/
+
+.env.*
+!.env.example

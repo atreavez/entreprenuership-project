@@ -1,0 +1,18 @@
+
+> assettrust-platform@0.11.0 build
+> npm run build --workspace apps/api && npm run build --workspace apps/web
+
+
+> @assettrust/api@0.11.0 build
+> tsc -p tsconfig.json
+
+error TS2688: Cannot find type definition file for 'node'.
+  The file is in the program because:
+    Entry point of type library 'node' specified in compilerOptions
+npm error Lifecycle script `build` failed with error:
+npm error code 2
+npm error path /mnt/data/assettrust-v11-work/assettrust-v11/apps/api
+npm error workspace @assettrust/api@0.11.0
+npm error location /mnt/data/assettrust-v11-work/assettrust-v11/apps/api
+npm error command failed
+npm error command sh -c tsc -p tsconfig.json

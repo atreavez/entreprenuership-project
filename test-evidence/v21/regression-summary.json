@@ -1,0 +1,115 @@
+{
+  "date_utc": "2026-11-09T22:36:32.948642+00:00",
+  "results": [
+    {
+      "script": "smoke:offline",
+      "exit_code": 0,
+      "seconds": 0.57
+    },
+    {
+      "script": "verify:v03",
+      "exit_code": 0,
+      "seconds": 0.39
+    },
+    {
+      "script": "verify:v04",
+      "exit_code": 0,
+      "seconds": 0.79
+    },
+    {
+      "script": "verify:v05",
+      "exit_code": 0,
+      "seconds": 1.36
+    },
+    {
+      "script": "verify:v06",
+      "exit_code": 0,
+      "seconds": 0.73
+    },
+    {
+      "script": "verify:v07",
+      "exit_code": 0,
+      "seconds": 0.55
+    },
+    {
+      "script": "verify:v08",
+      "exit_code": 0,
+      "seconds": 1.67
+    },
+    {
+      "script": "verify:v09",
+      "exit_code": 0,
+      "seconds": 2.37
+    },
+    {
+      "script": "verify:v10",
+      "exit_code": 0,
+      "seconds": 1.33
+    },
+    {
+      "script": "verify:v11",
+      "exit_code": 0,
+      "seconds": 1.11
+    },
+    {
+      "script": "verify:v12",
+      "exit_code": 0,
+      "seconds": 1.08
+    },
+    {
+      "script": "verify:v13",
+      "exit_code": 0,
+      "seconds": 5.01
+    },
+    {
+      "script": "verify:v14",
+      "exit_code": 0,
+      "seconds": 0.19
+    },
+    {
+      "script": "verify:v15",
+      "exit_code": 0,
+      "seconds": 1.25
+    },
+    {
+      "script": "verify:v16",
+      "exit_code": 0,
+      "seconds": 0.19
+    },
+    {
+      "script": "verify:v17",
+      "exit_code": 0,
+      "seconds": 0.2
+    },
+    {
+      "script": "verify:v18",
+      "exit_code": 0,
+      "seconds": 0.5
+    },
+    {
+      "script": "verify:v19",
+      "exit_code": 0,
+      "seconds": 0.46
+    },
+    {
+      "script": "verify:v20",
+      "exit_code": 0,
+      "seconds": 0.57
+    },
+    {
+      "script": "verify:v21",
+      "exit_code": 0,
+      "seconds": 0.42
+    },
+    {
+      "script": "verify:architecture",
+      "exit_code": 0,
+      "seconds": 0.15
+    },
+    {
+      "script": "verify:syntax",
+      "exit_code": 0,
+      "seconds": 1.09
+    }
+  ]
+}

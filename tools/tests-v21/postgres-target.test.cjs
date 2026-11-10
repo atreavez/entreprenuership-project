@@ -1,0 +1,11 @@
+'use strict';
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const {validateDisposablePgTarget}=require('../pg-e2e-policy-v21.cjs');
+const safe={ASSETTRUST_E2E_ALLOW_MUTATION:'YES',NODE_ENV:'test',DATABASE_URL:'postgresql://runner:password@127.0.0.1:5432/assettrust_ci'};
+test('disposable Postgres test explicitly permits loopback CI database',()=>assert.equal(validateDisposablePgTarget(safe).databaseName,'assettrust_ci'));
+test('production database is refused',()=>assert.throws(()=>validateDisposablePgTarget({...safe,DATABASE_URL:'postgres://user:pass@127.0.0.1:5432/assettrust'}),/disposable/));
+test('remote PostgreSQL is refused',()=>assert.throws(()=>validateDisposablePgTarget({...safe,DATABASE_URL:'postgres://user:pass@db.example.org:5432/assettrust_ci'}),/loopback/));
+test('environment without explicit mutation permission is refused',()=>assert.throws(()=>validateDisposablePgTarget({...safe,ASSETTRUST_E2E_ALLOW_MUTATION:'NO'}),/authorization/));
+test('non-test runtime is refused',()=>assert.throws(()=>validateDisposablePgTarget({...safe,NODE_ENV:'production'}),/NODE_ENV/));
+test('Postgres socket/host override is refused',()=>assert.throws(()=>validateDisposablePgTarget({...safe,DATABASE_URL:safe.DATABASE_URL+'?host=/var/run/postgresql'}),/override/));

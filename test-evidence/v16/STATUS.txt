@@ -1,0 +1,4 @@
+New v0.16: 6/6 offline tests passed.
+Release gate: FAIL expected, missing generated package-lock.json.
+Full app build: not verified (npm dependencies unavailable).
+Live PostgreSQL tests: not run (Docker/PostgreSQL absent).

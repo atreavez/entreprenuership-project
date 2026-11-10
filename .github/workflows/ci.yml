@@ -1,0 +1,102 @@
+name: AssetTrust v0.22 professional session expiry and integration validation
+on:
+  push:
+  pull_request:
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:17-3.5
+        env:
+          POSTGRES_USER: assettrust
+          POSTGRES_PASSWORD: local_ci_only_password
+          POSTGRES_DB: assettrust_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd 'pg_isready -U assettrust -d assettrust_ci'
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://assettrust:local_ci_only_password@127.0.0.1:5432/assettrust_ci
+      DOCUMENT_ACTIVE_KEY_ID: ci_v13
+      WEB_ORIGIN: http://localhost:5173
+      UPLOAD_DIR: /tmp/assettrust-ci-files
+      NODE_ENV: test
+      PORT: 4000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Enforce reviewed, complete npm lockfile before dependency install
+        run: |
+          npm run verify:v17
+          npm run release:gate:v17
+      - name: Install project dependencies
+        run: npm ci
+      - name: Generate disposable security keys
+        shell: bash
+        run: |
+          set -euo pipefail
+          marker="assettrust-ci-$(openssl rand -hex 24)"
+          echo "ASSETTRUST_E2E_TARGET_ID=${marker}" >> "$GITHUB_ENV"
+          echo "ASSETTRUST_E2E_EXPECT_TARGET=${marker}" >> "$GITHUB_ENV"
+          echo "JWT_SECRET=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+          echo "MFA_ENCRYPTION_KEY=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+          document_key="$(openssl rand -hex 32)"
+          printf 'DOCUMENT_ENCRYPTION_KEYS={"ci_v13":"%s"}\n' "$document_key" >> "$GITHUB_ENV"
+      - name: Verify release integrity and lockfile
+        run: npm run release:gate
+      - name: Assert build prerequisites
+        run: npm run preflight:v14
+      - name: Check runtime configuration
+        run: node tools/ci-security-preflight.cjs
+      - name: Unit and offline policy checks
+        run: |
+          npm run smoke:offline
+          npm run verify:v03
+          npm run verify:v04
+          npm run verify:v05
+          npm run verify:v06
+          npm run verify:v07
+          npm run verify:v08
+          npm run verify:v09
+          npm run verify:v10
+          npm run verify:v11
+          npm run verify:v12
+          npm run verify:v13
+          npm run verify:v14
+          npm run verify:v15
+          npm run verify:v16
+          npm run verify:v17
+          npm run verify:v18
+          npm run verify:v19
+          npm run verify:v20
+          npm run verify:v21
+          npm run verify:v22
+          npm run verify:syntax
+          npm test
+      - name: Compile API and React
+        run: npm run build
+      - name: Apply schema migrations to fresh PostgreSQL
+        run: npm run db:migrate --workspace apps/api
+      - name: Verify migration idempotence and immutable checksums
+        run: |
+          npm run db:migrate --workspace apps/api
+          npm run db:check --workspace apps/api
+      - name: Verify surveyor accreditation against live disposable PostgreSQL
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:parcel-auth:v21
+      - name: Verify professional reviewer session expiry against disposable PostgreSQL
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:trust-session:v22
+      - name: Run supervised HTTP/PostgreSQL integration suites
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+          ASSETTRUST_E2E_URL: http://127.0.0.1:4000
+        run: node tools/ci-live-integration.mjs

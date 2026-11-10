@@ -1,0 +1,980 @@
+AssetTrust v0.11 offline regression record
+Date: 2026-11-07 UTC
+Infrastructure: no npm dependencies / no PostGIS service in this environment
+
+=============== smoke:offline ===============
+
+> assettrust-platform@0.11.0 smoke:offline
+> node tools/offline-domain-smoke.cjs
+
+Passed: sequential stage transitions + professional role gates (offline pure helper smoke).
+Passed: invitation expiry, due date validation and organization-bound local commitments.
+RESULT smoke:offline exit=0
+
+=============== verify:v03 ===============
+
+> assettrust-platform@0.11.0 verify:v03
+> node tools/verify-v03.cjs
+
+✓ evidence submission alone cannot unlock a stage
+✓ a rejected entry cannot unlock a stage
+✓ an accepted entry with a different reviewer unlocks matching stage
+✓ self-attestation never unlocks a stage
+✓ unrelated evidence types never unlock a stage
+✓ a different stage cannot reuse evidence
+✓ submitter cannot review their own evidence
+✓ another authorized reviewer may accept a pending entry
+✓ finalized decisions cannot be overwritten
+✓ reviewing future-stage evidence is forbidden
+✓ unapproved surveyors cannot verify field evidence
+✓ approved surveyors can verify field evidence
+✓ surveyors cannot approve legal review
+✓ approved legal reviewers can approve legal evidence
+✓ final evidence acceptance requires accredited legal reviewer, not organization admin
+✓ review API and stage guard call the approved-evidence policy
+✓ migration explicitly records reviewed_by and review status
+
+PASS: 17 offline policy and structural checks.
+RESULT verify:v03 exit=0
+
+=============== verify:v04 ===============
+
+> assettrust-platform@0.11.0 verify:v04
+> node tools/verify-v04.cjs
+
+TAP version 13
+# Subtest: RED-to-GREEN: submitted evidence cannot advance a case
+ok 1 - RED-to-GREEN: submitted evidence cannot advance a case
+  ---
+  duration_ms: 1.554943
+  type: 'test'
+  ...
+# Subtest: independent review accepts evidence, emits audit, then permits advancement
+ok 2 - independent review accepts evidence, emits audit, then permits advancement
+  ---
+  duration_ms: 1.270896
+  type: 'test'
+  ...
+# Subtest: no one can review their own evidence
+ok 3 - no one can review their own evidence
+  ---
+  duration_ms: 0.174893
+  type: 'test'
+  ...
+# Subtest: rejected evidence cannot advance stage
+ok 4 - rejected evidence cannot advance stage
+  ---
+  duration_ms: 0.17942
+  type: 'test'
+  ...
+# Subtest: wrong evidence type or wrong stage cannot advance
+ok 5 - wrong evidence type or wrong stage cannot advance
+  ---
+  duration_ms: 0.296254
+  type: 'test'
+  ...
+# Subtest: an active dispute blocks review and advancement
+ok 6 - an active dispute blocks review and advancement
+  ---
+  duration_ms: 0.20667
+  type: 'test'
+  ...
+# Subtest: closed case cannot be advanced
+ok 7 - closed case cannot be advanced
+  ---
+  duration_ms: 0.203916
+  type: 'test'
+  ...
+# Subtest: professional verification cannot be advanced by unaccredited user
+ok 8 - professional verification cannot be advanced by unaccredited user
+  ---
+  duration_ms: 0.225929
+  type: 'test'
+  ...
+# Subtest: assigned ordinary reviewer may not approve final decision
+ok 9 - assigned ordinary reviewer may not approve final decision
+  ---
+  duration_ms: 0.523035
+  type: 'test'
+  ...
+# Subtest: final stage completion never becomes an official ownership assertion
+ok 10 - final stage completion never becomes an official ownership assertion
+  ---
+  duration_ms: 0.411858
+  type: 'test'
+  ...
+# Subtest: requests belonging to another tenant are not disclosed
+ok 11 - requests belonging to another tenant are not disclosed
+  ---
+  duration_ms: 0.290426
+  type: 'test'
+  ...
+# Subtest: readiness lists blockers without making a case decision
+ok 12 - readiness lists blockers without making a case decision
+  ---
+  duration_ms: 0.357567
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 58.6
+TAP version 13
+# Subtest: domain/application cannot import NestJS, SQL libraries, or HTTP adapters
+ok 1 - domain/application cannot import NestJS, SQL libraries, or HTTP adapters
+  ---
+  duration_ms: 1.389635
+  type: 'test'
+  ...
+# Subtest: NestJS persistence adapter implements the port and case routes call the use-case
+ok 2 - NestJS persistence adapter implements the port and case routes call the use-case
+  ---
+  duration_ms: 0.35971
+  type: 'test'
+  ...
+# Subtest: confidential case files are not inherited by general asset-grant readers
+ok 3 - confidential case files are not inherited by general asset-grant readers
+  ---
+  duration_ms: 0.28675
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9.28029
+RESULT verify:v04 exit=0
+
+=============== verify:architecture ===============
+
+> assettrust-platform@0.11.0 verify:architecture
+> node tools/verify-v04-architecture.cjs
+
+TAP version 13
+# Subtest: domain/application cannot import NestJS, SQL libraries, or HTTP adapters
+ok 1 - domain/application cannot import NestJS, SQL libraries, or HTTP adapters
+  ---
+  duration_ms: 1.282724
+  type: 'test'
+  ...
+# Subtest: NestJS persistence adapter implements the port and case routes call the use-case
+ok 2 - NestJS persistence adapter implements the port and case routes call the use-case
+  ---
+  duration_ms: 0.255954
+  type: 'test'
+  ...
+# Subtest: confidential case files are not inherited by general asset-grant readers
+ok 3 - confidential case files are not inherited by general asset-grant readers
+  ---
+  duration_ms: 0.284547
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9.124948
+RESULT verify:architecture exit=0
+
+=============== verify:v05 ===============
+
+> assettrust-platform@0.11.0 verify:v05
+> node --test tools/tests-v05/*.test.cjs
+
+TAP version 13
+# Subtest: opaque refresh token includes UUID and cryptographically random bearer secret
+ok 1 - opaque refresh token includes UUID and cryptographically random bearer secret
+  ---
+  duration_ms: 2.053057
+  type: 'test'
+  ...
+# Subtest: malformed session tokens rejected
+ok 2 - malformed session tokens rejected
+  ---
+  duration_ms: 0.284978
+  type: 'test'
+  ...
+# Subtest: refresh token equality uses digest-safe comparison
+ok 3 - refresh token equality uses digest-safe comparison
+  ---
+  duration_ms: 0.242193
+  type: 'test'
+  ...
+# Subtest: refresh rotation disallows expired and revoked sessions
+ok 4 - refresh rotation disallows expired and revoked sessions
+  ---
+  duration_ms: 0.149114
+  type: 'test'
+  ...
+# Subtest: password policy rejects weak, long and whitespace-only values
+ok 5 - password policy rejects weak, long and whitespace-only values
+  ---
+  duration_ms: 0.340981
+  type: 'test'
+  ...
+# Subtest: TOTP matches RFC 6238 SHA1 test vector and denies wrong or replayed step
+ok 6 - TOTP matches RFC 6238 SHA1 test vector and denies wrong or replayed step
+  ---
+  duration_ms: 0.625768
+  type: 'test'
+  ...
+# Subtest: TOTP verifier enforces 6 ASCII digits and checks only the grace window
+ok 7 - TOTP verifier enforces 6 ASCII digits and checks only the grace window
+  ---
+  duration_ms: 0.432728
+  type: 'test'
+  ...
+# Subtest: MFA secret AES-256-GCM roundtrip and authentication failure
+ok 8 - MFA secret AES-256-GCM roundtrip and authentication failure
+  ---
+  duration_ms: 0.644686
+  type: 'test'
+  ...
+# Subtest: identity domain and session use case do not depend on NestJS, PostgreSQL, Express or React
+ok 9 - identity domain and session use case do not depend on NestJS, PostgreSQL, Express or React
+  ---
+  duration_ms: 0.981352
+  type: 'test'
+  ...
+# Subtest: session repository uses atomic refresh rotation with a row lock and commits revocation on hash mismatch
+ok 10 - session repository uses atomic refresh rotation with a row lock and commits revocation on hash mismatch
+  ---
+  duration_ms: 1.460851
+  type: 'test'
+  ...
+# Subtest: API enforces authenticated and active server-side sessions, not only JWT signature
+ok 11 - API enforces authenticated and active server-side sessions, not only JWT signature
+  ---
+  duration_ms: 0.217086
+  type: 'test'
+  ...
+# Subtest: refresh token is cookie-only and security flags are configured
+ok 12 - refresh token is cookie-only and security flags are configured
+  ---
+  duration_ms: 0.332118
+  type: 'test'
+  ...
+# Subtest: MFA challenges cannot issue regular sessions without a valid second factor
+ok 13 - MFA challenges cannot issue regular sessions without a valid second factor
+  ---
+  duration_ms: 0.242023
+  type: 'test'
+  ...
+# Subtest: credential updates serialize with a user row lock and create audit entries
+ok 14 - credential updates serialize with a user row lock and create audit entries
+  ---
+  duration_ms: 0.161462
+  type: 'test'
+  ...
+# Subtest: database schema contains encrypted MFA and hashed secrets but no raw recovery-code field
+ok 15 - database schema contains encrypted MFA and hashed secrets but no raw recovery-code field
+  ---
+  duration_ms: 0.349584
+  type: 'test'
+  ...
+# Subtest: new session stores refresh hash only and emits 15-minute JWT
+ok 16 - new session stores refresh hash only and emits 15-minute JWT
+  ---
+  duration_ms: 2.090423
+  type: 'test'
+  ...
+# Subtest: refresh rotates credential: old is rejected and replay revokes the session
+ok 17 - refresh rotates credential: old is rejected and replay revokes the session
+  ---
+  duration_ms: 4.875893
+  type: 'test'
+  ...
+# Subtest: valid refreshed token still works and remains scoped to original subject
+ok 18 - valid refreshed token still works and remains scoped to original subject
+  ---
+  duration_ms: 0.343475
+  type: 'test'
+  ...
+# Subtest: expired session denies refresh and bearer access
+ok 19 - expired session denies refresh and bearer access
+  ---
+  duration_ms: 0.327871
+  type: 'test'
+  ...
+# Subtest: revoke and revoke-all invalidate sessions immediately
+ok 20 - revoke and revoke-all invalidate sessions immediately
+  ---
+  duration_ms: 0.390435
+  type: 'test'
+  ...
+# Subtest: other users cannot revoke or list another user session through repository guard
+ok 21 - other users cannot revoke or list another user session through repository guard
+  ---
+  duration_ms: 0.221652
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1103.072989
+RESULT verify:v05 exit=0
+
+=============== verify:v06 ===============
+
+> assettrust-platform@0.11.0 verify:v06
+> node tools/verify-v06.cjs
+
+
+Compile DDD domain and application
+
+Run v0.6 domain, use-case and architecture regression tests
+TAP version 13
+# Subtest: domain and application remain independent of framework, SQL and HTTP dependencies
+ok 1 - domain and application remain independent of framework, SQL and HTTP dependencies
+  ---
+  duration_ms: 1.022022
+  type: 'test'
+  ...
+# Subtest: grants require two attestations and no public endpoint may appoint staff
+ok 2 - grants require two attestations and no public endpoint may appoint staff
+  ---
+  duration_ms: 0.734731
+  type: 'test'
+  ...
+# Subtest: runtime accreditation comes from unrevoked specific role rather than legacy boolean
+ok 3 - runtime accreditation comes from unrevoked specific role rather than legacy boolean
+  ---
+  duration_ms: 0.184726
+  type: 'test'
+  ...
+# Subtest: neither administrator role nor nonaccredited professional may submit restricted expertise
+ok 4 - neither administrator role nor nonaccredited professional may submit restricted expertise
+  ---
+  duration_ms: 0.259148
+  type: 'test'
+  ...
+# Subtest: sensitive trust actions require recent MFA verification in the active session
+ok 5 - sensitive trust actions require recent MFA verification in the active session
+  ---
+  duration_ms: 1.441331
+  type: 'test'
+  ...
+# Subtest: a general administrator cannot claim to be accredited surveyor or lawyer
+ok 6 - a general administrator cannot claim to be accredited surveyor or lawyer
+  ---
+  duration_ms: 0.693259
+  type: 'test'
+  ...
+# Subtest: only active MFA enrolled appointed reviewers from another organization may attest
+ok 7 - only active MFA enrolled appointed reviewers from another organization may attest
+  ---
+  duration_ms: 0.145759
+  type: 'test'
+  ...
+# Subtest: reviewer cannot vote twice
+ok 8 - reviewer cannot vote twice
+  ---
+  duration_ms: 0.146279
+  type: 'test'
+  ...
+# Subtest: expired / closed applications cannot be attested
+ok 9 - expired / closed applications cannot be attested
+  ---
+  duration_ms: 0.089594
+  type: 'test'
+  ...
+# Subtest: two distinct verified reviewers are necessary to approve
+ok 10 - two distinct verified reviewers are necessary to approve
+  ---
+  duration_ms: 0.179118
+  type: 'test'
+  ...
+# Subtest: one rejected attestation blocks all approval
+ok 11 - one rejected attestation blocks all approval
+  ---
+  duration_ms: 0.095103
+  type: 'test'
+  ...
+# Subtest: accreditation must match the specific role, be unrevoked, and unexpired
+ok 12 - accreditation must match the specific role, be unrevoked, and unexpired
+  ---
+  duration_ms: 1.009643
+  type: 'test'
+  ...
+# Subtest: claims enforce expiry window and meaningful verification descriptions
+ok 13 - claims enforce expiry window and meaningful verification descriptions
+  ---
+  duration_ms: 0.494171
+  type: 'test'
+  ...
+# Subtest: RED→GREEN: first external attestation cannot grant an accreditation
+ok 14 - RED→GREEN: first external attestation cannot grant an accreditation
+  ---
+  duration_ms: 1.28752
+  type: 'test'
+  ...
+# Subtest: RED→GREEN: second independent authorized attestation approves once
+ok 15 - RED→GREEN: second independent authorized attestation approves once
+  ---
+  duration_ms: 0.351327
+  type: 'test'
+  ...
+# Subtest: RED→GREEN: a rejection makes approval impossible
+ok 16 - RED→GREEN: a rejection makes approval impossible
+  ---
+  duration_ms: 1.24764
+  type: 'test'
+  ...
+# Subtest: RED→GREEN: no same-organization or self-review even if caller claims trust
+ok 17 - RED→GREEN: no same-organization or self-review even if caller claims trust
+  ---
+  duration_ms: 0.169965
+  type: 'test'
+  ...
+# Subtest: RED→GREEN: authoritative role is loaded inside transaction, not from caller
+ok 18 - RED→GREEN: authoritative role is loaded inside transaction, not from caller
+  ---
+  duration_ms: 0.160981
+  type: 'test'
+  ...
+# Subtest: RED→GREEN: duplicate review is disallowed in the application layer
+ok 19 - RED→GREEN: duplicate review is disallowed in the application layer
+  ---
+  duration_ms: 0.260069
+  type: 'test'
+  ...
+# Subtest: RED→GREEN: missing application and bad decision are explicitly rejected
+ok 20 - RED→GREEN: missing application and bad decision are explicitly rejected
+  ---
+  duration_ms: 0.268863
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 58.867446
+v0.6 offline checks passed; live database/HTTP tests require the configured environment.
+RESULT verify:v06 exit=0
+
+=============== verify:v07 ===============
+
+> assettrust-platform@0.11.0 verify:v07
+> node tools/verify-v07.cjs
+
+TAP version 13
+# Subtest: document domain/application port have no NestJS, PostgreSQL or HTTP dependencies
+ok 1 - document domain/application port have no NestJS, PostgreSQL or HTTP dependencies
+  ---
+  duration_ms: 0.871947
+  type: 'test'
+  ...
+# Subtest: documents controller delegates encryption to injected storage port
+ok 2 - documents controller delegates encryption to injected storage port
+  ---
+  duration_ms: 0.419068
+  type: 'test'
+  ...
+# Subtest: schema upgrade is explicit and CI includes offline encryption tests
+ok 3 - schema upgrade is explicit and CI includes offline encryption tests
+  ---
+  duration_ms: 5.536739
+  type: 'test'
+  ...
+# Subtest: file type must match file signature and enforce 5 MiB maximum
+ok 4 - file type must match file signature and enforce 5 MiB maximum
+  ---
+  duration_ms: 1.753228
+  type: 'test'
+  ...
+# Subtest: record identity must be UUID and SHA-256; legacy plaintext fails closed
+ok 5 - record identity must be UUID and SHA-256; legacy plaintext fails closed
+  ---
+  duration_ms: 0.331487
+  type: 'test'
+  ...
+# Subtest: AES-256-GCM protects contents and authenticates metadata
+ok 6 - AES-256-GCM protects contents and authenticates metadata
+  ---
+  duration_ms: 1.016123
+  type: 'test'
+  ...
+# Subtest: fresh nonce produces different ciphertext with the same document
+ok 7 - fresh nonce produces different ciphertext with the same document
+  ---
+  duration_ms: 0.643855
+  type: 'test'
+  ...
+# Subtest: tampered ciphertext, tag and IV are rejected
+ok 8 - tampered ciphertext, tag and IV are rejected
+  ---
+  duration_ms: 0.414791
+  type: 'test'
+  ...
+# Subtest: cross-tenant, cross-document, mismatched digest substitution fails
+ok 9 - cross-tenant, cross-document, mismatched digest substitution fails
+  ---
+  duration_ms: 0.469454
+  type: 'test'
+  ...
+# Subtest: key rotation keeps old files readable while retaining historical keys
+ok 10 - key rotation keeps old files readable while retaining historical keys
+  ---
+  duration_ms: 0.417976
+  type: 'test'
+  ...
+# Subtest: refuse missing, malformed, and undersized encryption keys
+ok 11 - refuse missing, malformed, and undersized encryption keys
+  ---
+  duration_ms: 0.589304
+  type: 'test'
+  ...
+# Subtest: non-envelope plaintext and malformed headers are never decrypted
+ok 12 - non-envelope plaintext and malformed headers are never decrypted
+  ---
+  duration_ms: 0.37352
+  type: 'test'
+  ...
+# Subtest: local encrypted file write/read/cleanup round trip and permissions
+ok 13 - local encrypted file write/read/cleanup round trip and permissions
+  ---
+  duration_ms: 11.160287
+  type: 'test'
+  ...
+# Subtest: path traversal, mismatched ID and symlink reads are rejected
+ok 14 - path traversal, mismatched ID and symlink reads are rejected
+  ---
+  duration_ms: 3.557221
+  type: 'test'
+  ...
+# Subtest: explicit migration encrypts legacy records, supports interrupted reconciliation
+ok 15 - explicit migration encrypts legacy records, supports interrupted reconciliation
+  ---
+  duration_ms: 4.888778
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 334.9858
+v0.7 document encryption offline checks passed. HTTP/PostgreSQL integration remains a separate release gate.
+RESULT verify:v07 exit=0
+
+=============== verify:v08 ===============
+
+> assettrust-platform@0.11.0 verify:v08
+> node --test tools/tests-v08/*.test.cjs && tsc --noEmit --strict --target es2022 --module commonjs apps/api/src/contexts/geospatial/domain/parcel-boundary.ts apps/api/src/contexts/geospatial/application/parcel-usecases.ts
+
+TAP version 13
+# Subtest: accepts a closed WGS84 ring and returns normalized geometry
+ok 1 - accepts a closed WGS84 ring and returns normalized geometry
+  ---
+  duration_ms: 68.055668
+  type: 'test'
+  ...
+# Subtest: rejects unclosed rings
+ok 2 - rejects unclosed rings
+  ---
+  duration_ms: 20.414898
+  type: 'test'
+  ...
+# Subtest: rejects holes and extra rings
+ok 3 - rejects holes and extra rings
+  ---
+  duration_ms: 28.185957
+  type: 'test'
+  ...
+# Subtest: rejects non-finite/out-of-range coordinates
+ok 4 - rejects non-finite/out-of-range coordinates
+  ---
+  duration_ms: 58.82637
+  type: 'test'
+  ...
+# Subtest: rejects a self intersecting bow tie
+ok 5 - rejects a self intersecting bow tie
+  ---
+  duration_ms: 11.444514
+  type: 'test'
+  ...
+# Subtest: rejects duplicate vertices and zero area
+ok 6 - rejects duplicate vertices and zero area
+  ---
+  duration_ms: 14.573803
+  type: 'test'
+  ...
+# Subtest: rejects overly large geometries
+ok 7 - rejects overly large geometries
+  ---
+  duration_ms: 14.074635
+  type: 'test'
+  ...
+# Subtest: bbox parser rejects swapped values and extreme viewport size
+ok 8 - bbox parser rejects swapped values and extreme viewport size
+  ---
+  duration_ms: 8.069485
+  type: 'test'
+  ...
+# Subtest: review rules prevent self approval and require professional
+ok 9 - review rules prevent self approval and require professional
+  ---
+  duration_ms: 7.859023
+  type: 'test'
+  ...
+# Subtest: create calls store only after validated geometry
+ok 10 - create calls store only after validated geometry
+  ---
+  duration_ms: 1.974819
+  type: 'test'
+  ...
+# Subtest: create rejects malformed without ever persisting
+ok 11 - create rejects malformed without ever persisting
+  ---
+  duration_ms: 0.402894
+  type: 'test'
+  ...
+# Subtest: review rejects nonprofessional users before store call
+ok 12 - review rejects nonprofessional users before store call
+  ---
+  duration_ms: 0.494061
+  type: 'test'
+  ...
+# Subtest: review requires notes and correct decisions
+ok 13 - review requires notes and correct decisions
+  ---
+  duration_ms: 0.325979
+  type: 'test'
+  ...
+# Subtest: search rejects excessive bboxes before querying
+ok 14 - search rejects excessive bboxes before querying
+  ---
+  duration_ms: 0.374231
+  type: 'test'
+  ...
+# Subtest: search delegates parsed bounding box
+ok 15 - search delegates parsed bounding box
+  ---
+  duration_ms: 0.448963
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 533.476747
+RESULT verify:v08 exit=0
+
+=============== verify:v09 ===============
+
+> assettrust-platform@0.11.0 verify:v09
+> node --test tools/tests-v09/*.test.cjs && python3 -m unittest discover -s tests/v09 -p "test_*.py" -v
+
+TAP version 13
+# Subtest: only same-origin /maps style path allowed
+ok 1 - only same-origin /maps style path allowed
+  ---
+  duration_ms: 1.313959
+  type: 'test'
+  ...
+# Subtest: private GeoJSON contains no uploaded text or identity information
+ok 2 - private GeoJSON contains no uploaded text or identity information
+  ---
+  duration_ms: 0.308983
+  type: 'test'
+  ...
+# Subtest: invalid or malformed geometries are omitted
+ok 3 - invalid or malformed geometries are omitted
+  ---
+  duration_ms: 0.149203
+  type: 'test'
+  ...
+# Subtest: map requests remain bounded
+ok 4 - map requests remain bounded
+  ---
+  duration_ms: 0.910825
+  type: 'test'
+  ...
+# Subtest: public map style rejects URL and unknown layers
+ok 5 - public map style rejects URL and unknown layers
+  ---
+  duration_ms: 0.3536
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 330.377943
+test_other_paths_cannot_disclose_server_files (test_tile_http.TileHttpTests.test_other_paths_cannot_disclose_server_files) ... 127.0.0.1 - - [07/Nov/2026 18:03:35] "GET / HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 18:03:35] "GET /maps/private-docs HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 18:03:35] "GET /maps/tiles/2/500/0.png HTTP/1.1" 400 -
+127.0.0.1 - - [07/Nov/2026 18:03:35] "GET /maps/tiles/999999999999999999999/0/0.png HTTP/1.1" 400 -
+127.0.0.1 - - [07/Nov/2026 18:03:35] "GET /maps/tiles/../../test HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 18:03:35] "GET /api/v1/geo/parcels HTTP/1.1" 404 -
+ok
+test_tile_and_style_roundtrip (test_tile_http.TileHttpTests.test_tile_and_style_roundtrip) ... 127.0.0.1 - - [07/Nov/2026 18:03:36] "GET /maps/style.json HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 18:03:36] "GET /maps/tiles/0/0/0.png HTTP/1.1" 200 -
+ok
+test_attribution_is_html_escaped (test_tile_service.TileServiceContract.test_attribution_is_html_escaped) ... ok
+test_missing_attribution_must_not_be_silently_omitted (test_tile_service.TileServiceContract.test_missing_attribution_must_not_be_silently_omitted) ... ok
+test_missing_file_does_not_create_empty_db (test_tile_service.TileServiceContract.test_missing_file_does_not_create_empty_db) ... ok
+test_refuses_invalid_coordinates_and_path_traversal (test_tile_service.TileServiceContract.test_refuses_invalid_coordinates_and_path_traversal) ... ok
+test_styles_do_not_call_external_hosts_or_expose_private_parcels (test_tile_service.TileServiceContract.test_styles_do_not_call_external_hosts_or_expose_private_parcels) ... ok
+test_untrusted_file_bytes_rejected (test_tile_service.TileServiceContract.test_untrusted_file_bytes_rejected) ... ok
+test_vector_mbtiles_require_separate_vector_style (test_tile_service.TileServiceContract.test_vector_mbtiles_require_separate_vector_style) ... ok
+test_xyz_to_tms (test_tile_service.TileServiceContract.test_xyz_to_tms) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 1.071s
+
+OK
+RESULT verify:v09 exit=0
+
+=============== verify:v10 ===============
+
+> assettrust-platform@0.11.0 verify:v10
+> node --test tools/tests-v10/*.test.cjs && python3 -m unittest discover -s tests/v10 -p 'test_*.py' -v
+
+TAP version 13
+# Subtest: overlap score: zero and tiny slivers do not become ownership findings
+ok 1 - overlap score: zero and tiny slivers do not become ownership findings
+  ---
+  duration_ms: 41.736286
+  type: 'test'
+  ...
+# Subtest: overlap above 1% requires evidence review; above 20% is high attention
+ok 2 - overlap above 1% requires evidence review; above 20% is high attention
+  ---
+  duration_ms: 5.799802
+  type: 'test'
+  ...
+# Subtest: scoring uses smaller parcel as denominator, capped to 100%
+ok 3 - scoring uses smaller parcel as denominator, capped to 100%
+  ---
+  duration_ms: 4.809589
+  type: 'test'
+  ...
+# Subtest: invalid finite geometry measurements cannot produce scores
+ok 4 - invalid finite geometry measurements cannot produce scores
+  ---
+  duration_ms: 5.918842
+  type: 'test'
+  ...
+# Subtest: client-facing explanation always says preliminary and not legal conclusion
+ok 5 - client-facing explanation always says preliminary and not legal conclusion
+  ---
+  duration_ms: 4.473214
+  type: 'test'
+  ...
+# Subtest: use case delegates scoped overlap check and validates actor, identifiers
+ok 6 - use case delegates scoped overlap check and validates actor, identifiers
+  ---
+  duration_ms: 57.929306
+  type: 'test'
+  ...
+# Subtest: overlap SQL must exclude other tenants and unshared properties
+ok 7 - overlap SQL must exclude other tenants and unshared properties
+  ---
+  duration_ms: 0.494511
+  type: 'test'
+  ...
+# Subtest: unexpected SQL errors are not echoed to the user by geospatial controller
+ok 8 - unexpected SQL errors are not echoed to the user by geospatial controller
+  ---
+  duration_ms: 0.234832
+  type: 'test'
+  ...
+# Subtest: spatial SQL extracts only polygon overlap, excluding shared edges
+ok 9 - spatial SQL extracts only polygon overlap, excluding shared edges
+  ---
+  duration_ms: 0.655983
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 416.916354
+test_server_accepts_imported_data_when_manifest_required (test_manifest_binding.ManifestBindingTests.test_server_accepts_imported_data_when_manifest_required) ... ok
+test_server_refuses_hash_mismatch (test_manifest_binding.ManifestBindingTests.test_server_refuses_hash_mismatch) ... ok
+test_server_refuses_synthetic_as_production_data (test_manifest_binding.ManifestBindingTests.test_server_refuses_synthetic_as_production_data) ... ok
+test_server_requires_manifest_and_matching_attribution (test_manifest_binding.ManifestBindingTests.test_server_requires_manifest_and_matching_attribution) ... ok
+test_accepts_known_demo_and_creates_hash_manifest (test_provision.ProvisionTests.test_accepts_known_demo_and_creates_hash_manifest) ... ok
+test_rejects_bad_tiles_and_symlink_sources (test_provision.ProvisionTests.test_rejects_bad_tiles_and_symlink_sources) ... ok
+test_rejects_misleading_osm_attribution (test_provision.ProvisionTests.test_rejects_misleading_osm_attribution) ... ok
+test_rejects_overwriting_by_default (test_provision.ProvisionTests.test_rejects_overwriting_by_default) ... ok
+test_rejects_unknown_license_without_creating_output (test_provision.ProvisionTests.test_rejects_unknown_license_without_creating_output) ... ok
+test_requires_explicit_dataset_classification (test_provision.ProvisionTests.test_requires_explicit_dataset_classification) ... ok
+test_requires_https_provenance_no_credentials (test_provision.ProvisionTests.test_requires_https_provenance_no_credentials) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.064s
+
+OK
+RESULT verify:v10 exit=0
+
+=============== verify:v11 ===============
+
+> assettrust-platform@0.11.0 verify:v11
+> node --test tools/tests-v11/*.test.cjs
+
+TAP version 13
+# Subtest: repository migration plan is contiguous and has stable SHA-256 hashes
+ok 1 - repository migration plan is contiguous and has stable SHA-256 hashes
+  ---
+  duration_ms: 1.283734
+  type: 'test'
+  ...
+# Subtest: strip controlled transaction envelope only
+ok 2 - strip controlled transaction envelope only
+  ---
+  duration_ms: 0.541492
+  type: 'test'
+  ...
+# Subtest: migration plan rejects gaps and unknown SQL names
+ok 3 - migration plan rejects gaps and unknown SQL names
+  ---
+  duration_ms: 0.942433
+  type: 'test'
+  ...
+# Subtest: migration plan rejects changes in applied SQL
+ok 4 - migration plan rejects changes in applied SQL
+  ---
+  duration_ms: 0.868912
+  type: 'test'
+  ...
+# Subtest: fresh migrate is serial, atomic per file, idempotent and checkable
+ok 5 - fresh migrate is serial, atomic per file, idempotent and checkable
+  ---
+  duration_ms: 3.837552
+  type: 'test'
+  ...
+# Subtest: migration failure rolls back ledger and leaves pending migrations unapplied
+ok 6 - migration failure rolls back ledger and leaves pending migrations unapplied
+  ---
+  duration_ms: 1.669552
+  type: 'test'
+  ...
+# Subtest: pre-existing legacy schema is never silently baselined
+ok 7 - pre-existing legacy schema is never silently baselined
+  ---
+  duration_ms: 0.749784
+  type: 'test'
+  ...
+# Subtest: baseline refuses without backup acknowledgment
+ok 8 - baseline refuses without backup acknowledgment
+  ---
+  duration_ms: 0.626939
+  type: 'test'
+  ...
+# Subtest: legacy baseline refuses incomplete schemas even with backup consent
+ok 9 - legacy baseline refuses incomplete schemas even with backup consent
+  ---
+  duration_ms: 1.222983
+  type: 'test'
+  ...
+# Subtest: verified legacy schema baseline is explicit, transactionally recorded and does not rerun old SQL
+ok 10 - verified legacy schema baseline is explicit, transactionally recorded and does not rerun old SQL
+  ---
+  duration_ms: 1.191245
+  type: 'test'
+  ...
+# Subtest: valid schema, PostGIS and checksums are ready
+ok 11 - valid schema, PostGIS and checksums are ready
+  ---
+  duration_ms: 1.921489
+  type: 'test'
+  ...
+# Subtest: missing PostGIS refuses readiness
+ok 12 - missing PostGIS refuses readiness
+  ---
+  duration_ms: 0.874581
+  type: 'test'
+  ...
+# Subtest: missing table refuses readiness
+ok 13 - missing table refuses readiness
+  ---
+  duration_ms: 0.102614
+  type: 'test'
+  ...
+# Subtest: missing migration refuses readiness
+ok 14 - missing migration refuses readiness
+  ---
+  duration_ms: 0.100481
+  type: 'test'
+  ...
+# Subtest: checksum drift refuses readiness
+ok 15 - checksum drift refuses readiness
+  ---
+  duration_ms: 0.102614
+  type: 'test'
+  ...
+# Subtest: unknown extra migration refuses readiness
+ok 16 - unknown extra migration refuses readiness
+  ---
+  duration_ms: 0.089384
+  type: 'test'
+  ...
+# Subtest: duplicate ledger entry refuses readiness
+ok 17 - duplicate ledger entry refuses readiness
+  ---
+  duration_ms: 0.235964
+  type: 'test'
+  ...
+# Subtest: checked-in manifest matches actual migrations exactly
+ok 18 - checked-in manifest matches actual migrations exactly
+  ---
+  duration_ms: 3.920434
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1030.768043
+RESULT verify:v11 exit=0
+
+=============== verify:syntax ===============
+
+> assettrust-platform@0.11.0 verify:syntax
+> node tools/verify-v05-syntax.cjs
+
+53 TS/TSX source files transpile, 0 syntax diagnostics. This is NOT a full npm typecheck/build.
+RESULT verify:syntax exit=0
