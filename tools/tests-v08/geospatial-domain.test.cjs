@@ -1,5 +1,5 @@
 const test=require('node:test');const assert=require('node:assert/strict');const Module=require('node:module'),path=require('node:path'),fs=require('node:fs');
-const ts=require(require('node:child_process').execFileSync('npm',['root','-g'],{encoding:'utf8'}).trim()+'/typescript');
+const ts=require('typescript');
 const filename=path.resolve(__dirname,'../../apps/api/src/contexts/geospatial/domain/parcel-boundary.ts');
 function readDomain(){const src=fs.readFileSync(filename,'utf8');const js=ts.transpileModule(src,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;const m=new Module(filename,module);m.filename=filename;m.paths=Module._nodeModulePaths(path.dirname(filename));m._compile(js,filename);return m.exports}
 const square={type:'Polygon',coordinates:[[[32.57,0.31],[32.575,0.31],[32.575,0.315],[32.57,0.315],[32.57,0.31]]]};
