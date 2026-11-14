@@ -79,6 +79,12 @@ jobs:
         run: npm run preflight:v14
       - name: Check runtime configuration
         run: node tools/ci-security-preflight.cjs
+      - name: Install PDF test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends poppler-utils
+          command -v pdfinfo
+          command -v pdftotext
       - name: Unit and offline policy checks
         run: |
           npm run smoke:offline
