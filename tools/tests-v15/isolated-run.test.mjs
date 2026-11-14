@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {randomBytes} from 'node:crypto';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
@@ -52,10 +53,15 @@ test('Supervised runner passes the prepared environment to its spawned API and t
 });
 
 test('CI preflight requires a real pair of matching instance markers, not two absent values',()=>{
- const config={CI:'true', NODE_ENV:'test', JWT_SECRET:'0123456789abcdef0123456789abcdef',
- MFA_ENCRYPTION_KEY:'123456789abcdef0'.repeat(4), DOCUMENT_ENCRYPTION_KEYS:JSON.stringify({test:'0123456789abcdef'.repeat(4)}),DOCUMENT_ACTIVE_KEY_ID:'test',
+ const key=()=>randomBytes(32).toString('hex');
+ const config={CI:'true',NODE_ENV:'test',JWT_SECRET:key(),
+ MFA_ENCRYPTION_KEY:key(),LOGIN_ABUSE_PEPPER:key(),
+ DOCUMENT_ENCRYPTION_KEYS:JSON.stringify({test:key()}),DOCUMENT_ACTIVE_KEY_ID:'test',
  WEB_ORIGIN:'http://localhost:5173',DATABASE_URL:'postgres://assettrust:pw@localhost:5432/assettrust_ci'};
- assert.throws(()=>checkEnvironment(config),/identity|marker|test mode/i);
+ const marker='assettrust-v15-valid-marker';
+ assert.doesNotThrow(()=>checkEnvironment({...config,
+  ASSETTRUST_E2E_TARGET_ID:marker,ASSETTRUST_E2E_EXPECT_TARGET:marker}));
+ assert.throws(()=>checkEnvironment(config),/CI test mode or instance identity/);
 });
 
 test('Actual local HTTP readiness passes only for matching newly minted instance marker',async()=>{
@@ -76,6 +82,20 @@ test('Actual local HTTP readiness passes only for matching newly minted instance
 });
 
 test('Live HTTP test mode binds API to loopback only',()=>{
+ const ts=require('typescript');
+ const filename=resolve('apps/api/src/contexts/platform/domain/runtime-config.ts');
+ const js=ts.transpileModule(readFileSync(filename,'utf8'),{
+  compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}
+ }).outputText;
+ const compiled={exports:{}};
+ new Function('exports','require','module',js)(
+  compiled.exports,require,compiled
+ );
+ const {apiListenHost}=compiled.exports;
+ for(const host of [undefined,'127.0.0.1','localhost','0.0.0.0','::']){
+  assert.equal(apiListenHost({NODE_ENV:'test',API_BIND_HOST:host}),'127.0.0.1');
+ }
  const source=readFileSync('apps/api/src/main.ts','utf8');
- assert.match(source,/NODE_ENV==='test'\?'127\.0\.0\.1'/);
+ assert.match(source,/const\s+host\s*=\s*apiListenHost\(process\.env\)/);
+ assert.match(source,/await\s+app\.listen\(port,\s*host\)/);
 });
