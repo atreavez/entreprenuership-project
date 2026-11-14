@@ -33,11 +33,26 @@ test('published template with malformed value fails closed (no private fallback)
  const svc=new PublishedContentService({});
  await assert.rejects(()=>svc.organization({query:async()=>({rows:[{body:'<script>alert(1)</script>',revision:1}]})},'org-a','report.summary',{asset_reference:'A',case_reference:'C',organization_name:'Org'}));
 });
-const dashboard=load('dashboard.ts',{'./contexts/tenant-isolation/application/tenant-scope':{setTenantScope:async()=>{}},'@nestjs/common':nest,'./database':{},'./auth':{AuthGuard:class{},AuthModule:class{}},'./common':{isUuid:x=>x},'./access':{AccessModule:class{}},'./contexts/content-publishing/infrastructure/published-content.module':publishing,'./contexts/content-publishing/domain/publication-policy':publicationPolicy});
+const currentReadAuthority=load(
+ 'contexts/access/infrastructure/current-read-authority.ts',
+ {'@nestjs/common':nest}
+);
+const transactionalAccess=load(
+ 'contexts/access/infrastructure/transactional-access.ts',
+ {'@nestjs/common':nest}
+);
+const dashboard=load('dashboard.ts',{
+ './contexts/access/infrastructure/current-read-authority':currentReadAuthority,
+ './contexts/access/infrastructure/transactional-access':transactionalAccess,'./contexts/tenant-isolation/application/tenant-scope':{setTenantScope:async()=>{}},'@nestjs/common':nest,'./database':{},'./auth':{AuthGuard:class{},AuthModule:class{}},'./common':{isUuid:x=>x},'./access':{AccessModule:class{}},'./contexts/content-publishing/infrastructure/published-content.module':publishing,'./contexts/content-publishing/domain/publication-policy':publicationPolicy});
 test('actual evidence-report method supplies approved revision and fixed legal notice',async()=>{
- let calls=0;const db={transaction:async fn=>fn({query:(sql,params)=>db.tenantQuery(USER.organizationId,sql,params)}),async tenantQuery(_org,sql,params){calls++;if(sql.includes('FROM verification_cases'))return {rows:[{case_code:'AT-C1',asset_code:'AT-A1',organization_name:'North Desk'}]};return {rows:[{review_status:'ACCEPTED'}]}}};
+ let calls=0;const db={transaction:async fn=>fn({query:(sql,params)=>db.tenantQuery(USER.organizationId,sql,params)}),async tenantQuery(_org,sql,params){calls++;
+ if(sql.includes('SELECT c.id,c.created_by,c.assigned_to,actor.role')){
+  assert.deepEqual(Array.from(params),['case-uuid','org-a','actor']);
+  return {rows:[{id:'case-uuid',role:'ORG_ADMIN',created_by:'other',assigned_to:'other'}]};
+ }
+ if(sql.includes('FROM verification_cases'))return {rows:[{case_code:'AT-C1',asset_code:'AT-A1',organization_name:'North Desk'}]};return {rows:[{review_status:'ACCEPTED'}]}}};
  const service=new dashboard.DashboardService(db,{case:async()=>{}},{organization:async(tx,org,key,vars)=>{assert.equal(org,'org-a');assert.equal(key,'report.summary');return publicationPolicy.publishText('organization',key,{body:'Evidence for {{asset_reference}}',revision:6},vars)}});
- const report=await service.report(USER,'case-uuid');assert.equal(report.publication.templateRevision,6);assert.equal(report.publication.summary,'Evidence for AT-A1');assert.equal(report.evidence.length,1);assert.equal(report.publication.status,'DRAFT');assert.match(report.publication.legalNotice,/not a government-issued title/);assert.equal(calls,2);
+ const report=await service.report(USER,'case-uuid');assert.equal(report.publication.templateRevision,6);assert.equal(report.publication.summary,'Evidence for AT-A1');assert.equal(report.evidence.length,1);assert.equal(report.publication.status,'DRAFT');assert.match(report.publication.legalNotice,/not a government-issued title/);assert.equal(calls,3);
 });
 const cases=load('cases.ts',{'./contexts/tenant-isolation/application/tenant-scope':{setTenantScope:async()=>{}},'@nestjs/common':nest,'./database':{},'./audit':{AuditModule:class{}},'./auth':{AuthModule:class{},AuthGuard:class{}},'./common':{uid:()=> 'e5d3b8d6-56af-4450-a542-209104f84b80',isUuid:x=>x,assertRole:()=>{}},'./access':{AccessModule:class{}},'./contexts/content-publishing/infrastructure/published-content.module':publishing,'./contexts/verification/application/evidence-workflow':{EvidenceWorkflow:class{},WorkflowFailure:class{}},'./contexts/verification/infrastructure/postgres-workflow.repository':{PostgresWorkflowRepository:class{}},'./contexts/verification/domain/evidence-policy':{STAGES:['INTAKE','CLOSED']},'./contexts/access/infrastructure/transactional-access':{requireCurrentAssetContribution:()=>{}},'./contexts/verification/infrastructure/current-evidence-authorizer':{requireCurrentEvidenceSubmission:()=>{}},'./contexts/verification/infrastructure/current-case-assignment':{requireCurrentCaseAssignment:async()=>{}}});
 test('actual case assignment persists approved in-app text atomically, without external delivery',async()=>{
@@ -54,4 +69,23 @@ test('case reassignment refuses recipient whose current tenant record is unavail
  service.get=async()=>({});
  await assert.rejects(()=>service.assign(USER,'case-uuid','recipient'),ForbiddenException);
  assert(!statements.some(x=>x.includes('INSERT INTO notifications')));
+});
+
+test('report denies a current nonparticipant despite a stale admin claim',async()=>{
+ const statements=[];let publications=0;
+ const tx={async query(sql,params){
+  statements.push(sql);
+  assert.deepEqual(Array.from(params),['case-uuid','org-a','actor']);
+  if(sql.includes('SELECT c.id,c.created_by,c.assigned_to,actor.role')){
+   return {rows:[{id:'case-uuid',role:'REVIEWER',created_by:'other',assigned_to:'other'}]};
+  }
+  throw Error('Report data must not be queried after authorization fails');
+ }};
+ const db={transaction:async fn=>fn(tx)};
+ const service=new dashboard.DashboardService(db,{},{
+  organization:async()=>{publications++;throw Error('Must not publish');}
+ });
+ await assert.rejects(()=>service.report(USER,'case-uuid'),ForbiddenException);
+ assert.equal(statements.length,1);
+ assert.equal(publications,0);
 });
