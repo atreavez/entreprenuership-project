@@ -13,6 +13,10 @@ function load(file,imports={}){
 }
 const domain=load('contexts/verification/domain/evidence-policy.ts');
 const assignment=load('contexts/verification/infrastructure/current-case-assignment.ts',{'@nestjs/common':nest,'../domain/evidence-policy':domain});
+const transactionalAccess=load(
+ 'contexts/access/infrastructure/transactional-access.ts',
+ {'@nestjs/common':nest}
+);
 const {CasesService}=load('cases.ts',{
  '@nestjs/common':nest,'./database':{},'./audit':{AuditModule:class{}},'./auth':{AuthGuard:class{},AuthModule:class{}},
  './common':{uid:()=>'uuid',text:x=>x,optionalText:x=>x,isUuid:x=>x,enumValue:x=>x,assertRole:()=>{}},
@@ -21,7 +25,7 @@ const {CasesService}=load('cases.ts',{
  './contexts/verification/application/evidence-workflow':{EvidenceWorkflow:class{},WorkflowFailure:class extends Error{}},
  './contexts/verification/infrastructure/postgres-workflow.repository':{PostgresWorkflowRepository:class{}},
  './contexts/verification/domain/evidence-policy':domain,
- './contexts/access/infrastructure/transactional-access':{},
+ './contexts/access/infrastructure/transactional-access':transactionalAccess,
  './contexts/verification/infrastructure/current-evidence-authorizer':{},
  './contexts/tenant-isolation/application/tenant-scope':{setTenantScope:async()=>{}},
  './contexts/verification/infrastructure/current-case-assignment':assignment
@@ -31,6 +35,16 @@ function fixture({role='ORG_ADMIN',assignee='SURVEYOR',hasCase=true,accredited=t
  let updates=0,notifications=0,audits=0;const sql=[];
  const transactionQuery=async(q,params)=>{
   sql.push(q);
+  if(q.includes('SELECT c.id,c.created_by,c.assigned_to,actor.role')){
+   assert.deepEqual(Array.from(params),['case','org','operator']);
+   return {rows:hasCase?[{
+    id:'case',created_by:'creator',assigned_to:'surveyor',role
+   }]:[]};
+  }
+  if(q.includes('SELECT c.*,a.asset_code')){
+   assert.deepEqual(Array.from(params),['case','org']);
+   return {rows:hasCase?[{id:'case'}]:[]};
+  }
   if(/FROM verification_cases c\s+JOIN users actor/.test(q))return {rows:hasCase?[{id:'case',stage:'FIELD_INSPECTION',status:open?'OPEN':'CLOSED',actor_role:role,assignee_role:assignee}]:[]};
   if(/FROM professional_accreditations p/.test(q))return {rows:accredited?[{user_id:'surveyor'}]:[]};
   if(/recipient.full_name AS recipient_name/.test(q))return {rows:[{case_code:'AT-CASE',recipient_name:'Test User',organization_name:'Demo Org'}]};
@@ -57,4 +71,16 @@ test('CaseService cannot write to closed case',async()=>{
 test('currently authorized case assignment commits mutation, notice and audit',async()=>{
  const f=fixture();const result=await f.service.assign(user,'case','surveyor');assert.equal(result.id,'case');
  assert.equal(f.updates,1);assert.equal(f.notifications,1);assert.equal(f.audits,1);
+});
+
+test('case read rejects a downgraded nonparticipant despite a stale admin claim',async()=>{
+ const f=fixture({role:'REVIEWER'});
+ await assert.rejects(()=>f.service.get(user,'case'),ForbiddenException);
+ assert.equal(f.sql.some(q=>q.includes('SELECT c.*,a.asset_code')),false);
+ assert.equal(f.updates,0);assert.equal(f.notifications,0);assert.equal(f.audits,0);
+});
+test('case read rejects an absent case before fetching its details',async()=>{
+ const f=fixture({hasCase:false});
+ await assert.rejects(()=>f.service.get(user,'case'),ForbiddenException);
+ assert.equal(f.sql.some(q=>q.includes('SELECT c.*,a.asset_code')),false);
 });
