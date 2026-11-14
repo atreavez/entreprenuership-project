@@ -1,7 +1,7 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
-const {EvidenceWorkflow}=require('../.compiled-v04/application/evidence-workflow.js');
-const {evaluateReadiness, mayReviewEvidence}=require('../.compiled-v04/domain/evidence-policy.js');
+const {EvidenceWorkflow}=require('../.compiled-v04/contexts/verification/application/evidence-workflow.js');
+const {evaluateReadiness, mayReviewEvidence}=require('../.compiled-v04/contexts/verification/domain/evidence-policy.js');
 const admin={id:'administrator',organizationId:'tenant-a',role:'ORG_ADMIN',professionalApproved:true};
 const other={id:'independent',organizationId:'tenant-a',role:'REVIEWER',professionalApproved:false};
 const baseCase={id:'case-one',organizationId:'tenant-a',assetId:'asset-one',stage:'INTAKE',status:'OPEN',assignedTo:'administrator',createdBy:'administrator'};
