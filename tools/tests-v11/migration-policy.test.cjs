@@ -5,7 +5,7 @@ const {buildPlan,stripTransactionEnvelope,validateLedger}=require('../migrations
 const {run,verifyLegacySchema,EXPECTED_LEGACY_TABLES,EXPECTED_LEGACY_COLUMNS}=require('../migrations/run.cjs');
 const migrations=buildPlan();
 test('repository migration plan is contiguous and has stable SHA-256 hashes',()=>{
- assert.equal(migrations.length,7);
+ assert.ok(migrations.length>=11,'Versioned migrations must append, not remove the original eleven');
  migrations.forEach((m,i)=>{assert.ok(m.filename.startsWith(String(i+1).padStart(3,'0')));assert.match(m.sha256,/^[a-f0-9]{64}$/);assert.ok(m.sql.length>25)});
 });
 test('strip controlled transaction envelope only',()=>{
@@ -22,7 +22,7 @@ test('migration plan rejects gaps and unknown SQL names',()=>{
 test('migration plan rejects changes in applied SQL',()=>{
  const applied=migrations.map(m=>({filename:m.filename,sha256:m.sha256}));
  assert.deepEqual(validateLedger(migrations,applied),[]);
- assert.equal(validateLedger(migrations,applied.slice(0,5)).length,2);
+ assert.equal(validateLedger(migrations,applied.slice(0,5)).length,migrations.length-5);
  assert.throws(()=>validateLedger(migrations,[{...applied[0],sha256:'0'.repeat(64)}]),/checksum mismatch/);
  assert.throws(()=>validateLedger(migrations,[{filename:'000_rogue.sql',sha256:'0'.repeat(64)}]),/Unknown/);
  assert.throws(()=>validateLedger(migrations,[applied[0],applied[2]]),/noncontiguous/);
@@ -33,6 +33,8 @@ class FakePg{
  async connect(){this.connected=true;}
  async end(){this.connected=false;}
  async query(sql,args=[]){this.calls.push({sql,args});
+  if(sql.includes('pg_try_advisory_lock'))return {rows:[{acquired:true}],rowCount:1};
+  if(sql.includes('pg_advisory_unlock'))return {rows:[{released:true}],rowCount:1};
   if(sql==='BEGIN'){this.inTxn=true;this.pending=[];return {rows:[],rowCount:0};}
   if(sql==='ROLLBACK'){this.inTxn=false;this.pending=[];return {rows:[],rowCount:0};}
   if(sql==='COMMIT'){this.applied.push(...this.pending);this.pending=[];this.inTxn=false;return {rows:[],rowCount:0};}
@@ -49,13 +51,13 @@ class FakePg{
 test('fresh migrate is serial, atomic per file, idempotent and checkable',async()=>{
  const pg=new FakePg();
  const factory=()=>pg;
- const first=await run({clientFactory:factory,quiet:true});assert.equal(first.applied,7);assert.equal(pg.applied.length,7);
- assert.equal(pg.calls.filter(c=>c.sql==='BEGIN').length,7);
- assert.equal(pg.calls.filter(c=>c.sql==='COMMIT').length,7);
- assert.equal(pg.calls.filter(c=>c.sql.includes('pg_advisory_lock')).length,1);
+ const first=await run({clientFactory:factory,quiet:true});assert.equal(first.applied,migrations.length);assert.equal(pg.applied.length,migrations.length);
+ assert.equal(pg.calls.filter(c=>c.sql==='BEGIN').length,migrations.length);
+ assert.equal(pg.calls.filter(c=>c.sql==='COMMIT').length,migrations.length);
+ assert.equal(pg.calls.filter(c=>c.sql.includes('pg_try_advisory_lock')).length,1);
  assert.equal(pg.connected,false);
  const again=await run({clientFactory:factory,quiet:true});assert.equal(again.applied,0);
- const check=await run({clientFactory:factory,check:true,quiet:true});assert.equal(check.checked,7);
+ const check=await run({clientFactory:factory,check:true,quiet:true});assert.equal(check.checked,migrations.length);
 });
 test('migration failure rolls back ledger and leaves pending migrations unapplied',async()=>{
  const pg=new FakePg({failOn:'CREATE EXTENSION IF NOT EXISTS postgis'});
@@ -87,8 +89,10 @@ test('verified legacy schema baseline is explicit, transactionally recorded and 
  try{
   process.env.ASSETTRUST_BASELINE_LEGACY_SCHEMA='YES';process.env.ASSETTRUST_BACKUP_CONFIRMED='YES';
   const outcome=await run({clientFactory:()=>pg,baseline:true,quiet:true});
-  assert.equal(outcome.baselined,7);assert.equal(pg.applied.length,7);assert.equal(pg.calls.filter(x=>x.sql==='BEGIN').length,1);
+  assert.equal(outcome.baselined,8);assert.equal(pg.applied.length,8);assert.equal(pg.calls.filter(x=>x.sql==='BEGIN').length,1);
   assert.ok(!pg.calls.some(x=>x.sql.includes('CREATE EXTENSION IF NOT EXISTS postgis')));
-  assert.equal((await run({clientFactory:()=>pg,check:true,quiet:true})).checked,7);
+  await assert.rejects(()=>run({clientFactory:()=>pg,check:true,quiet:true}),/pending migrations/);
+  assert.equal((await run({clientFactory:()=>pg,quiet:true})).applied,migrations.length-8);
+  assert.equal((await run({clientFactory:()=>pg,check:true,quiet:true})).checked,migrations.length);
  }finally{if(old1===undefined)delete process.env.ASSETTRUST_BASELINE_LEGACY_SCHEMA;else process.env.ASSETTRUST_BASELINE_LEGACY_SCHEMA=old1;if(old2===undefined)delete process.env.ASSETTRUST_BACKUP_CONFIRMED;else process.env.ASSETTRUST_BACKUP_CONFIRMED=old2;}
 });

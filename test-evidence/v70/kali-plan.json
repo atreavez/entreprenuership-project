@@ -1,0 +1,22 @@
+
+> assettrust-platform@0.70.0 kali:integration:plan:v70
+> node tools/local-kali-integration-v70.cjs --plan
+
+{
+  "schema": "ASSETTRUST_V70_KALI_PLAN",
+  "productionApproved": false,
+  "databaseName": "assettrust_test",
+  "isolatedFromLegacyCompose": true,
+  "port": "127.0.0.1:55432",
+  "sequence": [
+    "--prepare (generate private settings, no database connection)",
+    "--start (isolated PostGIS service)",
+    "--start-scanner (local ClamAV; may require signature downloads)",
+    "--migrate (27 vetted source migrations)",
+    "--provision (separate non-bypass runtime login)",
+    "--verify (DB ledger, restricted role and live policy inspection)",
+    "--run-http (after authentic npm build: five authenticated/functional HTTP suites)"
+  ],
+  "safety": "Only local Unix Docker socket is permitted; never run against production, overwrite existing configuration or reuse test data for customer records.",
+  "status": "NOT_EXECUTED"
+}

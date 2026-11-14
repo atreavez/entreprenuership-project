@@ -1,0 +1,18 @@
+
+> assettrust-platform@0.83.0 build:source:v56
+> node tools/build-artifact-gate-v56.cjs --source
+
+{
+  "schema": "ASSETTRUST_V56_BUILD_ARTIFACT_GATE",
+  "mode": "--source",
+  "ok": true,
+  "productionApproved": false,
+  "source": {
+    "ok": true,
+    "issues": [],
+    "filesChecked": 106,
+    "relativeImportCount": 296
+  },
+  "build": null,
+  "notes": "Static preflight only. Real npm ci, compilation, live database and adversarial security tests remain mandatory."
+}

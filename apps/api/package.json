@@ -1,6 +1,6 @@
 {
   "name": "@assettrust/api",
-  "version": "0.22.0",
+  "version": "0.87.0",
   "private": true,
   "scripts": {
     "start:dev": "node --watch -r dotenv/config -r ts-node/register src/main.ts dotenv_config_path=../../.env",
@@ -14,23 +14,24 @@
   "dependencies": {
     "@nestjs/common": "^11.1.0",
     "@nestjs/core": "^11.1.0",
-    "@nestjs/platform-express": "^11.1.0",
     "@nestjs/jwt": "^11.0.0",
+    "@nestjs/platform-express": "^11.1.0",
     "@nestjs/throttler": "^6.4.0",
+    "argon2": "^0.44.0",
+    "dotenv": "^17.0.0",
+    "helmet": "^8.0.0",
+    "multer": "^2.0.2",
+    "pg": "^8.16.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "pg": "^8.16.0",
-    "argon2": "^0.44.0",
-    "multer": "^2.0.2",
-    "helmet": "^8.0.0",
-    "dotenv": "^17.0.0"
+    "express": "^5.1.0"
   },
   "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/multer": "^2.0.0",
     "@types/node": "^22.0.0",
     "@types/pg": "^8.15.0",
-    "@types/multer": "^2.0.0",
-    "typescript": "^5.9.0",
     "ts-node": "^10.9.2",
-    "@types/express": "^5.0.0"
+    "typescript": "^5.9.0"
   }
 }

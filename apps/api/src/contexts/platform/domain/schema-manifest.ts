@@ -1,4 +1,4 @@
-/** v0.11 migration contract. Update only with a reviewed migration release. */
+/** Append-only migration contract. Update only when a new migration is reviewed. */
 export const REQUIRED_SCHEMA_MIGRATIONS = [
   {filename: '001_init.sql', sha256: 'e05f299f8ab72984601233bc48b3077228e9a3de96aee93fe7ca5eb0eca6202a'},
   {filename: '002_operations.sql', sha256: 'c413a946c16f4d9977b284960e43ae964a22e95d37a3bc56acc213bf0b741b15'},
@@ -7,5 +7,25 @@ export const REQUIRED_SCHEMA_MIGRATIONS = [
   {filename: '005_professional_trust.sql', sha256: '21548bdf4b485a3524e6cf2ec1f54b6df16020d166d11a234aad96cb6f0df523'},
   {filename: '006_document_encryption.sql', sha256: 'a155e59f70c166cb9d7c06a93a3b91d03a8ac40b16c9245ccd384429fa7e501e'},
   {filename: '007_geospatial.sql', sha256: 'c8d4fe1d2a7fc38a8c5a195f6132b4e1dcdd579dc8d6a89307f881ede828ec94'},
+  {filename: '008_coadmin_invitation.sql', sha256: 'e5ad73fbf05c73322877a23a9c7bb69116d5578a725d2d9e982ce1bb4ed64661'},
+  {filename: '009_admin_control_plane.sql', sha256: '208117a56645da3ad6f6557bc88a8dfcf1003218f2b182315cc177c283c434ea'},
+  {filename: '010_member_management.sql', sha256: 'fd7bee141acee1f628b20e8f6566bd8f0a0ba8b119b2bb9a8be1661c32f78ab1'},
+  {filename: '011_workflow_admin.sql', sha256: '4182187041b3f37f0f453068037e2e0631cd0ea629aae8bddb0457a670b03476'},
+  {filename: '012_content_templates.sql', sha256: 'ecfc0bb213cae433ba62abb396527003982fb0e81617915b2ce904aae2e9065c'},
+  {filename: '013_notification_provider_staging.sql', sha256: 'fdbcfc4975c718eb601445ab40fad864c8bc74dc6a49bd83197cde3526bdfd2b'},
+  {filename: '014_report_issuance.sql', sha256: '35e9e5c87b2f099986c935f9bc88df3f31420bd76c079c7d65f90650d7dfaff6'},
+  {filename: '015_report_withdrawal.sql', sha256: '59c8fd02e52ca16a6de3214e1db34da05df0859bef92a6da5514ba2e74ba20aa'},
+  {filename: '016_report_pdf_layouts.sql', sha256: '6f4a309f21a43fc9241f6c0e6fa99c0e25f8a80307ba1f695f8e333a768cbf8e'},
+  {filename: '017_report_recipient_shares.sql', sha256: '773c15db79e8f49df3f05ce6cb2a279fb0c2f2c2df7ab33f4cfae6ac3dfcfdfe'},
+  {filename: '018_recipient_attempt_windows.sql', sha256: 'b2d0a3bd3f3c68b60d883107e9dc021c92b2e84056dd5b1f76696832cdef6844'},
+  {filename: '019_password_reset.sql', sha256: '04124b8969de13322eff3f7f9becc64cd9b9d0c982bfe2696380b47c9dd9ad9a'},
+  {filename: '020_distributed_login_abuse.sql', sha256: 'ca52962c93afa64fdddedbb481992187053af85553272306a1542229536a83b1'},
+  {filename: '021_pdf_layout_rls.sql', sha256: '3693eb277f7743a854d39dc7f09cbb840180b91198297ebe638e8371b2ab5d54'},
+  {filename: '022_core_tenant_relationship_integrity.sql', sha256: 'be18fad2a291bb8ddfb369206dd1d7effdb272965cbb0bf448ef84c94a9e2057'},
+  { filename: '023_case_evidence_rls.sql', sha256: 'de95655de637385fab97fc209d6b43f4c96af35f3fe3d6ba8626746957065a18' },
+  { filename: '024_assets_and_cases_rls.sql', sha256: '522aa08ef79c00d076aeddef51d2ad434f32c71da3d56a1e75a06d3d801b4b08' },
+  { filename: '025_documents_rls.sql', sha256: 'f397dae50994803aa9a4364eae9d4ad9ee77591e99a7b71d23de66bb0a0feaa7' },
+  { filename: '026_audit_events_rls.sql', sha256: '2defcbe50ba3363a257f90eb360e33ebaaef8d9ebd124d14282bd9c651974552' },
+  { filename: '027_operational_data_rls.sql', sha256: '0aefa65ed28a9fdd0750a57fa52cc0acd61f6bb7f992c3bf2712350dded9ab58' },
 ] as const;
-export const REQUIRED_POSTGIS_TABLES = ['organizations','users','assets','verification_cases','case_evidence','documents','audit_events','auth_sessions','professional_accreditations','parcel_boundary_claims'] as const;
+export const REQUIRED_POSTGIS_TABLES = ['organizations','users','team_invitations','assets','verification_cases','case_evidence','documents','audit_events','case_tasks','disputes','monitoring_reminders','verification_quotes','notifications','auth_sessions','professional_accreditations','parcel_boundary_claims','admin_configuration_values','admin_configuration_changes','platform_admin_appointments','member_role_proposals','workflow_stage_policies','workflow_stage_policy_changes','admin_content_templates','admin_content_proposals','admin_notification_routes','admin_notification_route_changes','report_issuance_proposals','issued_verification_reports','report_withdrawal_proposals','issued_report_withdrawals','report_pdf_layout_proposals','report_pdf_layout_revisions','report_pdf_layout_active','report_recipient_shares','report_share_redemptions','report_share_access_windows','auth_password_reset_requests','auth_password_reset_windows','auth_login_abuse_windows'] as const;

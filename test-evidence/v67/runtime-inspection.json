@@ -1,0 +1,38 @@
+
+> assettrust-platform@0.67.0 diagnose:inspect:v65
+> node tools/runtime-diagnostics-v65.cjs --inspect
+
+{
+  "schema": "ASSETTRUST_V65_READ_ONLY_RUNTIME_DIAGNOSIS",
+  "version": "0.67.0",
+  "productionApproved": false,
+  "liveDatabaseTested": false,
+  "fullBuildTested": false,
+  "nodeVersion": "22.16.0",
+  "migrationSourceCount": 27,
+  "manifestMigrationCount": 27,
+  "checks": {
+    "manifestVersionsConsistent": true,
+    "migrationSourceChecksumsMatch": true,
+    "nodeSupported": true,
+    "lockfilePresent": false,
+    "dependenciesDirectoryPresent": false,
+    "apiCompiledArtifactPresent": false,
+    "webCompiledArtifactPresent": false,
+    "originalGitHistoryPresent": false,
+    "psqlClientExecutablePresent": false,
+    "postgresExecutablePresent": false,
+    "clamavScannerExecutablePresent": false,
+    "operatorAndRuntimeDatabaseUrlsConfigured": false
+  },
+  "issues": [
+    "AUTHENTIC_LOCKFILE_REQUIRED",
+    "NPM_INSTALL_REQUIRED",
+    "COMPILATION_EVIDENCE_MISSING",
+    "ORIGINAL_GIT_HISTORY_REQUIRED",
+    "DISPOSABLE_DATABASE_ROLES_NOT_CONFIGURED",
+    "POSTGRES_CLIENT_NOT_FOUND_IN_PATH",
+    "CLAMAV_BINARY_NOT_FOUND_IN_PATH"
+  ],
+  "next": "Inspect these prerequisite codes, then run v64 supervised build and disposable database validation on connected Kali. No prerequisite alone is evidence of a successful live test."
+}

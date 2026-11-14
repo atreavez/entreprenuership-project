@@ -1,0 +1,1221 @@
+TAP version 13
+# Subtest: RED/GREEN: old password verified before change must not create a new session after digest rotates
+not ok 1 - RED/GREEN: old password verified before change must not create a new session after digest rotates
+  ---
+  duration_ms: 6.48923
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:38:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The error is expected to be an instance of "UnauthorizedException". Received "AssertionError"
+    
+    Error message:
+    
+    session creation must occur while credential lock is held
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:39:43)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: RED/GREEN: changed password cannot mint pending MFA challenge after commit
+not ok 2 - RED/GREEN: changed password cannot mint pending MFA challenge after commit
+  ---
+  duration_ms: 1.963245
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:42:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The error is expected to be an instance of "UnauthorizedException". Received "Error"
+    
+    Error message:
+    
+    UNEXPECTED_OUTSIDE_SQL: INSERT INTO auth_login_challenges(id,user_id,challenge_hash,expires_at) VALUES($1,$2,$3,$4)
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:43:52)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: login reads current user digest under a database transaction row lock
+not ok 3 - login reads current user digest under a database transaction row lock
+  ---
+  duration_ms: 4.671463
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:46:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    session creation must occur while credential lock is held
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    service.publicSession (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:32:44)
+    AuthenticationService.login (/mnt/data/assettrust-v82/apps/api/src/auth.ts:136:21)
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:47:18)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: login must reject a suspended user even if initial query saw active account
+not ok 4 - login must reject a suspended user even if initial query saw active account
+  ---
+  duration_ms: 1.56138
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:51:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The error is expected to be an instance of "UnauthorizedException". Received "AssertionError"
+    
+    Error message:
+    
+    session creation must occur while credential lock is held
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:52:40)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: login must reject a deleted user even if initial lookup succeeded
+not ok 5 - login must reject a deleted user even if initial lookup succeeded
+  ---
+  duration_ms: 1.503203
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:54:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The error is expected to be an instance of "UnauthorizedException". Received "AssertionError"
+    
+    Error message:
+    
+    session creation must occur while credential lock is held
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:55:36)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: successful MFA login challenges are inserted while account credential row is locked
+not ok 6 - successful MFA login challenges are inserted while account credential row is locked
+  ---
+  duration_ms: 1.909165
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:57:1'
+  failureType: 'testCodeFailure'
+  error: 'UNEXPECTED_OUTSIDE_SQL: INSERT INTO auth_login_challenges(id,user_id,challenge_hash,expires_at) VALUES($1,$2,$3,$4)'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    Object.query (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:28:357)
+    AuthenticationService.login (/mnt/data/assettrust-v82/apps/api/src/auth.ts:133:27)
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:58:41)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: failed MFA challenge insert cannot create or return a valid challenge
+not ok 7 - failed MFA challenge insert cannot create or return a valid challenge
+  ---
+  duration_ms: 1.788363
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:64:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /DB_FAILED/. Input:
+    
+    'Error: UNEXPECTED_OUTSIDE_SQL: INSERT INTO auth_login_challenges(id,user_id,challenge_hash,expires_at) VALUES($1,$2,$3,$4)'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'UNEXPECTED_OUTSIDE_SQL: INSERT INTO auth_login_challenges(id,user_id,challenge_hash,expires_at) VALUES($1,$2,$3,$4)'
+  stack: |-
+    Object.query (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:28:357)
+    AuthenticationService.login (/mnt/data/assettrust-v82/apps/api/src/auth.ts:133:27)
+    async waitForActual (node:assert:566:5)
+    async Function.rejects (node:assert:687:25)
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:65:74)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:65:74)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: invalid login password cannot enter session transaction or mint a challenge
+ok 8 - invalid login password cannot enter session transaction or mint a challenge
+  ---
+  duration_ms: 1.645547
+  type: 'test'
+  ...
+# Subtest: newly enabled MFA cannot be bypassed by a credential lookup that predates confirmation
+not ok 9 - newly enabled MFA cannot be bypassed by a credential lookup that predates confirmation
+  ---
+  duration_ms: 1.586619
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:72:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    session creation must occur while credential lock is held
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    service.publicSession (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:32:44)
+    AuthenticationService.login (/mnt/data/assettrust-v82/apps/api/src/auth.ts:136:21)
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:73:58)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: login reuses no stale ORG_ADMIN role if locked account role changed
+not ok 10 - login reuses no stale ORG_ADMIN role if locked account role changed
+  ---
+  duration_ms: 1.68043
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:76:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    session creation must occur while credential lock is held
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    service.publicSession (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:32:44)
+    AuthenticationService.login (/mnt/data/assettrust-v82/apps/api/src/auth.ts:136:21)
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:77:54)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: RED/GREEN: password change revokes all outstanding MFA login challenges atomically
+not ok 11 - RED/GREEN: password change revokes all outstanding MFA login challenges atomically
+  ---
+  duration_ms: 7.304158
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:80:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert(p)
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:82:2)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: RED/GREEN: password change invalidates all unused password-reset requests atomically
+not ok 12 - RED/GREEN: password change invalidates all unused password-reset requests atomically
+  ---
+  duration_ms: 2.012871
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:84:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert(p)
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:86:2)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: revocations execute after password replacement and before commit/audit
+not ok 13 - revocations execute after password replacement and before commit/audit
+  ---
+  duration_ms: 3.356303
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:88:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert(pwd>=0&&pwd<challenge&&challenge<reset&&reset<audit&&audit<commit)
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:92:2)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: password changes continue revoking all other sessions while preserving the initiating session
+ok 14 - password changes continue revoking all other sessions while preserving the initiating session
+  ---
+  duration_ms: 2.110117
+  type: 'test'
+  ...
+# Subtest: password change failure revoking challenges cannot commit without invalidation
+not ok 15 - password change failure revoking challenges cannot commit without invalidation
+  ---
+  duration_ms: 1.470173
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:98:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:99:76)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: password change failure revoking reset links cannot commit without invalidation
+not ok 16 - password change failure revoking reset links cannot commit without invalidation
+  ---
+  duration_ms: 1.483784
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:102:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:103:82)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: password change event records only boolean invalidation proof, no secrets
+not ok 17 - password change event records only boolean invalidation proof, no secrets
+  ---
+  duration_ms: 1.791277
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:106:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   'otherSessionsRevoked',
+    -   'pendingChallengesInvalidated',
+    -   'pendingResetLinksInvalidated'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'otherSessionsRevoked'
+    1: 'pendingChallengesInvalidated'
+    2: 'pendingResetLinksInvalidated'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:108:53)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: changePassword still checks old password under FOR UPDATE lock
+ok 18 - changePassword still checks old password under FOR UPDATE lock
+  ---
+  duration_ms: 1.318545
+  type: 'test'
+  ...
+# Subtest: no migration or altered tenant isolation is introduced for password lifecycle fixes
+ok 19 - no migration or altered tenant isolation is introduced for password lifecycle fixes
+  ---
+  duration_ms: 0.286652
+  type: 'test'
+  ...
+# Subtest: CI must require the v83 suite before live integrations
+not ok 20 - CI must require the v83 suite before live integrations
+  ---
+  duration_ms: 1.52752
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:119:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /npm run verify:v83/. Input:
+    
+    'name: AssetTrust v0.70 CI — isolated Kali integration provisioning\n' +
+      'on:\n' +
+      '  push:\n' +
+      '  pull_request:\n' +
+      'jobs:\n' +
+      '  integration:\n' +
+      '    runs-on: ubuntu-latest\n' +
+      '    services:\n' +
+      '      clamav:\n' +
+      '        image: clamav/clamav:stable\n' +
+      '        ports:\n' +
+      '          - 3310:3310\n' +
+      '      postgres:\n' +
+      '        image: postgis/postgis:17-3.5\n' +
+      '        env:\n' +
+      '          POSTGRES_USER: assettrust\n' +
+      '          POSTGRES_PASSWORD: local_ci_only_password\n' +
+      '          POSTGRES_DB: assettrust_ci\n' +
+      '        ports:\n' +
+      '          - 5432:5432\n' +
+      '        options: >-\n' +
+      "          --health-cmd 'pg_isready -U assettrust -d assettrust_ci'\n" +
+      '          --health-interval 10s\n' +
+      '          --health-timeout 5s\n' +
+      '          --health-retries 10\n' +
+      '    env:\n' +
+      '      DATABASE_URL: postgres://assettrust:local_ci_only_password@127.0.0.1:5432/assettrust_ci\n' +
+      '      DOCUMENT_ACTIVE_KEY_ID: ci_v13\n' +
+      '      WEB_ORIGIN: http://localhost:5173\n' +
+      '      UPLOAD_DIR: /tmp/assettrust-ci-files\n' +
+      '      NODE_ENV: test\n' +
+      '      ASSETTRUST_V57_ENFORCE_RUNTIME_ROLE: "YES"\n' +
+      '      CLAMAV_TCP_PORT: "3310"\n' +
+      '      PORT: 4000\n' +
+      '    steps:\n' +
+      '      - uses: actions/checkout@v4\n' +
+      '        with:\n' +
+      '          fetch-depth: 0 # required for whole-history secret scanning\n' +
+      '      - uses: actions/setup-node@v4\n' +
+      '        with:\n' +
+      "          node-version: '22'\n" +
+      '      - name: Validate real GitHub Actions YAML syntax and release-security contract before any install\n' +
+      '        run: ruby tools/workflow-policy-v53.rb\n' +
+      '      - name: Enforce reviewed, complete npm lockfile before dependency install\n' +
+      '        run: |\n' +
+      '          npm run verify:ci:v41\n' +
+      '          npm run verify:ci:v53\n' +
+      '          npm run verify:v17\n' +
+      '          npm run release:gate:v17\n' +
+      '          npm run supply-chain:v51\n' +
+      '          npm run lockfile:check:v55\n' +
+      '          npm run verify:v55\n' +
+      '          npm run verify:v56\n' +
+      '          npm run verify:v57\n' +
+      '          npm run verify:v58\n' +
+      '          npm run verify:v59\n' +
+      '          npm run verify:v60\n' +
+      '      - name: Verify Vite entrypoint and local source dependency graph before install\n' +
+      '        run: |\n' +
+      '          npm run build:source:v56\n' +
+      '          npm run build:imports:v80\n' +
+      '      - name: Install project dependencies\n' +
+      '        run: npm ci\n' +
+      '      - name: Generate disposable security keys\n' +
+      '        shell: bash\n' +
+      '        run: |\n' +
+      '          set -euo pipefail\n' +
+      '          marker="assettrust-ci-$(openssl rand -hex 24)"\n' +
+      '          echo "ASSETTRUST_E2E_TARGET_ID=${marker}" >> "$GITHUB_ENV"\n' +
+      '          echo "ASSETTRUST_E2E_EXPECT_TARGET=${marker}" >> "$GITHUB_ENV"\n' +
+      '          echo "JWT_SECRET=$(openssl rand -hex 32)" >> "$GITHUB_ENV"\n' +
+      '          echo "MFA_ENCRYPTION_KEY=$(openssl rand -hex 32)" >> "$GITHUB_ENV"\n' +
+      '          echo "LOGIN_ABUSE_PEPPER=$(openssl rand -hex 32)" >> "$GITHUB_ENV"\n' +
+      '          document_key="$(openssl rand -hex 32)"\n' +
+      `          printf 'DOCUMENT_ENCRYPTION_KEYS={"ci_v13":"%s"}\\n' "$document_key" >> "$GITHUB_ENV"\n` +
+      '      - name: Verify release integrity and lockfile\n' +
+      '        run: npm run release:gate\n' +
+      '      - name: Assert build prerequisites\n' +
+      '        run: npm run preflight:v14\n' +
+      '      - name: Check runtime configuration\n' +
+      '        run: node tools/ci-security-preflight.cjs\n' +
+      '      - name: Unit and offline policy checks\n' +
+      '        run: |\n' +
+      '          npm run smoke:offline\n' +
+      '          npm run verify:v03\n' +
+      '          npm run verify:v04\n' +
+      '          npm run verify:v05\n' +
+      '          npm run verify:v06\n' +
+      '          npm run verify:v07\n' +
+      '          npm run verify:v08\n' +
+      '          npm run verify:v09\n' +
+      '          npm run verify:v10\n' +
+      '          npm run verify:v11\n' +
+      '          npm run verify:v12\n' +
+      '          npm run verify:v13\n' +
+      '          npm run verify:v14\n' +
+      '          npm run verify:v15\n' +
+      '          npm run verify:v16\n' +
+      '          npm run verify:v17\n' +
+      '          npm run verify:v18\n' +
+      '          npm run verify:v19\n' +
+      '          npm run verify:v20\n' +
+      '          npm run verify:v21\n' +
+      '          npm run verify:v22\n' +
+      '          npm run verify:v23\n' +
+      '          npm run verify:v24\n' +
+      '          npm run verify:v25\n' +
+      '          npm run verify:v26\n' +
+      '          npm run verify:v27\n' +
+      '          npm run verify:v28\n' +
+      '          npm run verify:v29\n' +
+      '          npm run verify:v30\n' +
+      '          npm run verify:v31\n' +
+      '          npm run verify:v32\n' +
+      '          npm run verify:v33\n' +
+      '          npm run verify:v34\n' +
+      '          npm run verify:v35\n' +
+      '          npm run verify:v36\n' +
+      '          npm run verify:v37\n' +
+      '          npm run verify:v38\n' +
+      '          npm run verify:v39\n' +
+      '          npm run verify:v40\n' +
+      '          npm run verify:v41\n' +
+      '          npm run verify:v42\n' +
+      '          npm run verify:v43\n' +
+      '          npm run verify:v44\n' +
+      '          npm run verify:v45\n' +
+      '          npm run verify:v46\n' +
+      '          npm run verify:v47\n' +
+      '          npm run verify:v48\n' +
+      '          npm run verify:v49\n' +
+      '          npm run verify:v50\n' +
+      '          npm run verify:v51\n' +
+      '          npm run verify:v52\n' +
+      '          npm run verify:v53\n' +
+      '          npm run verify:v54\n' +
+      '          npm run verify:v55\n' +
+      '          npm run verify:v56\n' +
+      '          npm run verify:v57\n' +
+      '          npm run verify:v58\n' +
+      '          npm run verify:v59\n' +
+      '          npm run verify:v60\n' +
+      '          npm run verify:v61\n' +
+      '          npm run verify:v62\n' +
+      '          npm run verify:v63\n' +
+      '          npm run verify:v64\n' +
+      '          npm run verify:v65\n' +
+      '          npm run verify:v66\n' +
+      '          npm run verify:v67\n' +
+      '          npm run verify:v68\n' +
+      '          npm run verify:v69\n' +
+      '          npm run verify:v70\n' +
+      '          npm run verify:v71\n' +
+      '          npm run verify:v72\n' +
+      '          npm run verify:v73\n' +
+      '          npm run verify:v74\n' +
+      '          npm run verify:v75\n' +
+      '          npm run verify:v76\n' +
+      '          npm run verify:v77\n' +
+      '          npm run verify:v78\n' +
+      '          npm run verify:v79\n' +
+      '          npm run verify:v80\n' +
+      '          npm run verify:v81\n' +
+      '          npm run verify:v82\n' +
+      '          npm run release:plan:v51\n' +
+      '          npm run security:scan:v43 -- --history\n' +
+      '          npm run security:scan:v54\n' +
+      '          npm run verify:architecture\n' +
+      '          npm run verify:syntax\n' +
+      '          npm test\n' +
+      '      - name: Require live ClamAV clean and threat verdicts before any HTTP upload tests\n' +
+      '        shell: bash\n' +
+      '        run: |\n' +
+      '          set -euo pipefail\n' +
+      '          ready=0\n' +
+      '          for attempt in $(seq 1 40); do\n' +
+      '            if npm run security:clamav:v52; then ready=1; break; fi\n' +
+      '            sleep 5\n' +
+      '          done\n' +
+      '          test "$ready" -eq 1\n' +
+      '      - name: Audit production dependency vulnerabilities (high or critical fail)\n' +
+      '        run: npm audit --omit=dev --audit-level=high\n' +
+      '      - name: Compile API and React\n' +
+      '        run: npm run build\n' +
+      '      - name: Verify compiled browser assets and server-only credential boundaries\n' +
+      '        run: npm run build:artifacts:v56\n' +
+      '      - name: Require inspected compiled output and valid lockfile (v0.68)\n' +
+      '        run: npm run build:acceptance:artifacts:v68\n' +
+      '      - name: Apply schema migrations to fresh PostgreSQL\n' +
+      '        run: npm run db:migrate --workspace apps/api\n' +
+      '      - name: Verify migration idempotence and immutable checksums\n' +
+      '        run: |\n' +
+      '          npm run db:migrate --workspace apps/api\n' +
+      '          npm run db:check --workspace apps/api\n' +
+      '      - name: Prove non-blocking migration lock and checksummed ledger integrity against live PostgreSQL (v0.78)\n' +
+      '        env:\n' +
+      "          CI: 'true'\n" +
+      '          NODE_ENV: test\n' +
+      '          ASSETTRUST_E2E_ALLOW_MUTATION: YES # compatibility with disposable PG policy; test is read-only\n' +
+      '          ASSETTRUST_V78_PG_CONFIRM: YES\n' +
+      '        run: npm run test:pg:migration-lock:v78\n' +
+      '      - name: Provision separate non-bypass PostgreSQL API login on disposable CI database\n' +
+      '        env:\n' +
+      '          ASSETTRUST_E2E_ALLOW_MUTATION: YES\n' +
+      '        run: node tools/provision-ci-runtime-role-v57.mjs\n' +
+      '      - name: Prove real API runtime database role cannot bypass RLS\n' +
+      '        env:\n' +
+      '          ASSETTRUST_E2E_ALLOW_MUTATION: YES\n' +
+      '        run: npm run test:pg:runtime-role:v57\n' +
+      '      - name: Prove live PostgreSQL tenant and recipient policies have not been widened or replaced (v0.63)\n' +
+      '        env:\n' +
+      '          NODE_ENV: test\n' +
+      '          ASSETTRUST_V63_POLICY_CONFIRM: YES\n' +
+      '          ASSETTRUST_E2E_ALLOW_MUTATION: YES # compatibility for the existing CI test:pg authorization checker; this audit is read-only\n' +
+      '        run: npm run test:pg:policy-contract:v63\n' +
+      '      - name: Confirm restricted runtime cannot mutate schema ledger or audit history\n' +
+      '        env:\n' +
+      '          ASSETTRUST_E2E_ALLOW_MUTATION: YES # Legacy CI policy requires this for all test:pg steps; audit is read-only\n' +
+      '        run: npm run test:pg:runtime-privileges:v60\n' +
+      '      - name: Prove append-only audit-event tenant isolation using two PostgreSQL logins (v0.61)\n' +
+      '        env:\n' +
+      '          ASSETTRUST_E2E_ALLOW_MUTATION: YES\n' +
+      '          ASSETTRUST_V61_AUDIT_RLS_CONFIRM: YES\n' +
+      '        run: npm run test:pg:audit-rls:v61\n' +
+      '      - name: Prove operational records and recipient inbox RLS with two organizations (v0.62)\n' +
+      '        env:\n' +
+      '          ASSETTRUST_E2E_ALLOW_MUTATION: YES\n' +
+      '          ASSETTRUST_V62_OPERATIONAL_RLS_CONFIRM: YES\n' +
+      '        run: npm run test:pg:operational-rls:v62\n' +
+      '      - name: Exercise real cross-case dispute concurrency using restricted PostgreSQL role (v0.77)\n' +
+      '        env:\n' +
+      "          CI: 'true'\n" +
+      '          NODE_ENV: test\n' +
+      '          ASSETTRUST_E2E_ALLOW_MUTATION: YES\n' +
+      '          ASSETTRUST_V77_PG_CONFIRM: YES\n' +
+      '        run: npm run test:pg:disputes:v77\n' +
+      '      - name: Prove seeded two-organization RLS isolation through real restricted API database login (v0.58)\n' +
+      '        env:\n' +
+      '          ASSETTRUST_E2E_ALLOW_MUTATION: YES\n' +
+      '          ASSETTRUST_V58_SEEDED_RLS_CONFIRM: YES\n' +
+      '        run: npm run test:pg:runtime-tenant-isolation:v58\n' +
+      '      - name: Verify authorized tenant CRUD and denied cross-tenant writes through restricted PostgreSQL runtime (v0.59)\n' +
+      '        env:\n' +
+      '          ASSETTRUST_E2E_ALLOW_MUTATION: YES\n' +
+      '          ASSETTRUST_V58_SEEDED_RLS_CONFIRM: YES\n' +
+      '          ASSETTRUST_V59_CRUD_CONFIRM: YES\n' +
+      '          NODE_ENV: test\n' +
+      '        run: npm run test:pg:runtime-tenant-crud:v59\n' +
+      '      - name: Verify surveyor accreditation against live disposable PostgreSQL\n' +
+      '        env:\n' +
+      '          ASSETTRUST_E2E_ALLOW_MUTATION: YES\n' +
+      '        run: npm run test:pg:parcel-auth:v21\n' +
+      '      - name: Verify professional reviewer session expiry against disposable PostgreSQL\n' +
+      '        env:\n' +
+      '          ASSETTRUST_E2E_ALLOW_MUTATION: YES\n' +
+      '        run: npm run test:pg:trust-session:v22\n' +
+      '      - name: Verify live transactional asset and case permission checks\n' +
+      '        env:\n' +
+      '          ASSETTRUST_E2E_ALLOW_MUTATION: Y'... 4809 more characters
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    name: AssetTrust v0.70 CI — isolated Kali integration provisioning
+    on:
+      push:
+      pull_request:
+    jobs:
+      integration:
+        runs-on: ubuntu-latest
+        services:
+          clamav:
+            image: clamav/clamav:stable
+            ports:
+              - 3310:3310
+          postgres:
+            image: postgis/postgis:17-3.5
+            env:
+              POSTGRES_USER: assettrust
+              POSTGRES_PASSWORD: local_ci_only_password
+              POSTGRES_DB: assettrust_ci
+            ports:
+              - 5432:5432
+            options: >-
+              --health-cmd 'pg_isready -U assettrust -d assettrust_ci'
+              --health-interval 10s
+              --health-timeout 5s
+              --health-retries 10
+        env:
+          DATABASE_URL: postgres://assettrust:local_ci_only_password@127.0.0.1:5432/assettrust_ci
+          DOCUMENT_ACTIVE_KEY_ID: ci_v13
+          WEB_ORIGIN: http://localhost:5173
+          UPLOAD_DIR: /tmp/assettrust-ci-files
+          NODE_ENV: test
+          ASSETTRUST_V57_ENFORCE_RUNTIME_ROLE: "YES"
+          CLAMAV_TCP_PORT: "3310"
+          PORT: 4000
+        steps:
+          - uses: actions/checkout@v4
+            with:
+              fetch-depth: 0 # required for whole-history secret scanning
+          - uses: actions/setup-node@v4
+            with:
+              node-version: '22'
+          - name: Validate real GitHub Actions YAML syntax and release-security contract before any install
+            run: ruby tools/workflow-policy-v53.rb
+          - name: Enforce reviewed, complete npm lockfile before dependency install
+            run: |
+              npm run verify:ci:v41
+              npm run verify:ci:v53
+              npm run verify:v17
+              npm run release:gate:v17
+              npm run supply-chain:v51
+              npm run lockfile:check:v55
+              npm run verify:v55
+              npm run verify:v56
+              npm run verify:v57
+              npm run verify:v58
+              npm run verify:v59
+              npm run verify:v60
+          - name: Verify Vite entrypoint and local source dependency graph before install
+            run: |
+              npm run build:source:v56
+              npm run build:imports:v80
+          - name: Install project dependencies
+            run: npm ci
+          - name: Generate disposable security keys
+            shell: bash
+            run: |
+              set -euo pipefail
+              marker="assettrust-ci-$(openssl rand -hex 24)"
+              echo "ASSETTRUST_E2E_TARGET_ID=${marker}" >> "$GITHUB_ENV"
+              echo "ASSETTRUST_E2E_EXPECT_TARGET=${marker}" >> "$GITHUB_ENV"
+              echo "JWT_SECRET=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+              echo "MFA_ENCRYPTION_KEY=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+              echo "LOGIN_ABUSE_PEPPER=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+              document_key="$(openssl rand -hex 32)"
+              printf 'DOCUMENT_ENCRYPTION_KEYS={"ci_v13":"%s"}\n' "$document_key" >> "$GITHUB_ENV"
+          - name: Verify release integrity and lockfile
+            run: npm run release:gate
+          - name: Assert build prerequisites
+            run: npm run preflight:v14
+          - name: Check runtime configuration
+            run: node tools/ci-security-preflight.cjs
+          - name: Unit and offline policy checks
+            run: |
+              npm run smoke:offline
+              npm run verify:v03
+              npm run verify:v04
+              npm run verify:v05
+              npm run verify:v06
+              npm run verify:v07
+              npm run verify:v08
+              npm run verify:v09
+              npm run verify:v10
+              npm run verify:v11
+              npm run verify:v12
+              npm run verify:v13
+              npm run verify:v14
+              npm run verify:v15
+              npm run verify:v16
+              npm run verify:v17
+              npm run verify:v18
+              npm run verify:v19
+              npm run verify:v20
+              npm run verify:v21
+              npm run verify:v22
+              npm run verify:v23
+              npm run verify:v24
+              npm run verify:v25
+              npm run verify:v26
+              npm run verify:v27
+              npm run verify:v28
+              npm run verify:v29
+              npm run verify:v30
+              npm run verify:v31
+              npm run verify:v32
+              npm run verify:v33
+              npm run verify:v34
+              npm run verify:v35
+              npm run verify:v36
+              npm run verify:v37
+              npm run verify:v38
+              npm run verify:v39
+              npm run verify:v40
+              npm run verify:v41
+              npm run verify:v42
+              npm run verify:v43
+              npm run verify:v44
+              npm run verify:v45
+              npm run verify:v46
+              npm run verify:v47
+              npm run verify:v48
+              npm run verify:v49
+              npm run verify:v50
+              npm run verify:v51
+              npm run verify:v52
+              npm run verify:v53
+              npm run verify:v54
+              npm run verify:v55
+              npm run verify:v56
+              npm run verify:v57
+              npm run verify:v58
+              npm run verify:v59
+              npm run verify:v60
+              npm run verify:v61
+              npm run verify:v62
+              npm run verify:v63
+              npm run verify:v64
+              npm run verify:v65
+              npm run verify:v66
+              npm run verify:v67
+              npm run verify:v68
+              npm run verify:v69
+              npm run verify:v70
+              npm run verify:v71
+              npm run verify:v72
+              npm run verify:v73
+              npm run verify:v74
+              npm run verify:v75
+              npm run verify:v76
+              npm run verify:v77
+              npm run verify:v78
+              npm run verify:v79
+              npm run verify:v80
+              npm run verify:v81
+              npm run verify:v82
+              npm run release:plan:v51
+              npm run security:scan:v43 -- --history
+              npm run security:scan:v54
+              npm run verify:architecture
+              npm run verify:syntax
+              npm test
+          - name: Require live ClamAV clean and threat verdicts before any HTTP upload tests
+            shell: bash
+            run: |
+              set -euo pipefail
+              ready=0
+              for attempt in $(seq 1 40); do
+                if npm run security:clamav:v52; then ready=1; break; fi
+                sleep 5
+              done
+              test "$ready" -eq 1
+          - name: Audit production dependency vulnerabilities (high or critical fail)
+            run: npm audit --omit=dev --audit-level=high
+          - name: Compile API and React
+            run: npm run build
+          - name: Verify compiled browser assets and server-only credential boundaries
+            run: npm run build:artifacts:v56
+          - name: Require inspected compiled output and valid lockfile (v0.68)
+            run: npm run build:acceptance:artifacts:v68
+          - name: Apply schema migrations to fresh PostgreSQL
+            run: npm run db:migrate --workspace apps/api
+          - name: Verify migration idempotence and immutable checksums
+            run: |
+              npm run db:migrate --workspace apps/api
+              npm run db:check --workspace apps/api
+          - name: Prove non-blocking migration lock and checksummed ledger integrity against live PostgreSQL (v0.78)
+            env:
+              CI: 'true'
+              NODE_ENV: test
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES # compatibility with disposable PG policy; test is read-only
+              ASSETTRUST_V78_PG_CONFIRM: YES
+            run: npm run test:pg:migration-lock:v78
+          - name: Provision separate non-bypass PostgreSQL API login on disposable CI database
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: node tools/provision-ci-runtime-role-v57.mjs
+          - name: Prove real API runtime database role cannot bypass RLS
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:runtime-role:v57
+          - name: Prove live PostgreSQL tenant and recipient policies have not been widened or replaced (v0.63)
+            env:
+              NODE_ENV: test
+              ASSETTRUST_V63_POLICY_CONFIRM: YES
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES # compatibility for the existing CI test:pg authorization checker; this audit is read-only
+            run: npm run test:pg:policy-contract:v63
+          - name: Confirm restricted runtime cannot mutate schema ledger or audit history
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES # Legacy CI policy requires this for all test:pg steps; audit is read-only
+            run: npm run test:pg:runtime-privileges:v60
+          - name: Prove append-only audit-event tenant isolation using two PostgreSQL logins (v0.61)
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+              ASSETTRUST_V61_AUDIT_RLS_CONFIRM: YES
+            run: npm run test:pg:audit-rls:v61
+          - name: Prove operational records and recipient inbox RLS with two organizations (v0.62)
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+              ASSETTRUST_V62_OPERATIONAL_RLS_CONFIRM: YES
+            run: npm run test:pg:operational-rls:v62
+          - name: Exercise real cross-case dispute concurrency using restricted PostgreSQL role (v0.77)
+            env:
+              CI: 'true'
+              NODE_ENV: test
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+              ASSETTRUST_V77_PG_CONFIRM: YES
+            run: npm run test:pg:disputes:v77
+          - name: Prove seeded two-organization RLS isolation through real restricted API database login (v0.58)
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+              ASSETTRUST_V58_SEEDED_RLS_CONFIRM: YES
+            run: npm run test:pg:runtime-tenant-isolation:v58
+          - name: Verify authorized tenant CRUD and denied cross-tenant writes through restricted PostgreSQL runtime (v0.59)
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+              ASSETTRUST_V58_SEEDED_RLS_CONFIRM: YES
+              ASSETTRUST_V59_CRUD_CONFIRM: YES
+              NODE_ENV: test
+            run: npm run test:pg:runtime-tenant-crud:v59
+          - name: Verify surveyor accreditation against live disposable PostgreSQL
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:parcel-auth:v21
+          - name: Verify professional reviewer session expiry against disposable PostgreSQL
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:trust-session:v22
+          - name: Verify live transactional asset and case permission checks
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:access:v23
+          - name: Verify live case evidence submission permissions against disposable PostgreSQL
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:case-evidence:v24
+          - name: Verify current workflow and assignment roles against disposable PostgreSQL
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:workflow:v25
+          - name: Verify co-administrator MFA and invitations against disposable PostgreSQL
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:coadmin:v27
+          - name: Verify admin control constraints against disposable PostgreSQL
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:admin:v28
+          - name: Verify member lifecycle constraints against disposable PostgreSQL
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:members:v29
+          - name: Verify workflow-admin SQL constraints against disposable PostgreSQL
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:workflows:v30
+          - name: Verify content template tenant constraints against disposable PostgreSQL
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:content:v31
+          - name: Verify published templates and private tenant isolation against disposable PostgreSQL
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:publish:v32
+          - name: Verify staged notification provider records against disposable PostgreSQL
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:providers:v33
+          - name: Verify report issuance SQL constraints against disposable PostgreSQL
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:reports:v34
+          - name: Verify governed report withdrawal constraints against disposable PostgreSQL
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:withdrawals:v35
+          - name: Verify recipient sharing FK, approval and redemption PostgreSQL contracts (v0.39)
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:recipient:v39
+          - name: Verify shared recipient attempt windows in PostgreSQL (v0.40)
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:attempts:v40
+          - name: Verify counter contention through two independent PostgreSQL sessions (v0.41)
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+              ASSETTRUST_V41_CONCURRENCY_CONTRACT: YES
+            run: npm run test:pg:shared-counter:v41
+          - name: Verify two owned real API processes against the same disposable PostgreSQL
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+              ASSETTRUST_V42_TWO_API_CONTRACT: YES
+              ASSETTRUST_V66_HTTP_CONFIRM: YES
+              ASSETTRUST_E2E_URL: http://127.0.0.1:4000
+            run: npm run test:e2e:two-api:v42
+          - name: Read-only release prerequisite preflight (does not approve production)
+            run: npm run release:preflight:v41
+          - name: Run supervised HTTP/PostgreSQL integration suites
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+              ASSETTRUST_E2E_URL: http://127.0.0.1:4000
+            run: node tools/ci-live-integration.mjs
+    
+          - name: Verify password reset one-use and rate-limit schema against disposable PostgreSQL (v0.44)
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:reset:v44
+    
+          - name: Verify distributed login abuse SQL contract against disposable PostgreSQL (v0.45)
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:login-abuse:v45
+    
+          - name: Verify PostgreSQL RLS tenant isolation across private PDF layout tables (v0.46)
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:layout-rls:v46
+    
+          - name: Verify core tenant relationship constraints in disposable PostgreSQL (v0.47)
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:core-relations:v47
+    
+    
+          - name: Verify case evidence tenant RLS on disposable PostgreSQL (v0.48)
+            env:
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:evidence-rls:v48
+    
+          - name: Verify assets and cases tenant RLS on disposable PostgreSQL (v0.49)
+            env:
+              NODE_ENV: test
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:assets-cases-rls:v49
+    
+          - name: Verify documents tenant RLS on disposable PostgreSQL (v0.50)
+            env:
+              NODE_ENV: test
+              ASSETTRUST_E2E_ALLOW_MUTATION: YES
+            run: npm run test:pg:documents-rls:v50
+    
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:121:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: MFA completion locks current user before challenge row and session creation
+not ok 21 - MFA completion locks current user before challenge row and session creation
+  ---
+  duration_ms: 4.522269
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:144:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert(inTx)
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    x.service.lookup (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:140:35)
+    AuthenticationService.completeMfa (/mnt/data/assettrust-v82/apps/api/src/auth.ts:167:61)
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:145:46)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: MFA completion denies challenge from an account suspended after challenge issuance
+not ok 22 - MFA completion denies challenge from an account suspended after challenge issuance
+  ---
+  duration_ms: 1.518626
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:151:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The error is expected to be an instance of "UnauthorizedException". Received "AssertionError"
+    
+    Error message:
+    
+    The expression evaluated to a falsy value:
+    
+      assert(inTx)
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:152:47)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: MFA completion denies missing challenge without locking or creating a session
+not ok 23 - MFA completion denies missing challenge without locking or creating a session
+  ---
+  duration_ms: 1.624897
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:155:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The error is expected to be an instance of "UnauthorizedException". Received "AssertionError"
+    
+    Error message:
+    
+    The expression evaluated to a falsy value:
+    
+      assert(inTx)
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:156:52)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: MFA completion rejects expired or consumed challenge without minting a session
+ok 24 - MFA completion rejects expired or consumed challenge without minting a session
+  ---
+  duration_ms: 1.476312
+  type: 'test'
+  ...
+# Subtest: MFA completion rolls back challenge consumption if session verification write fails
+not ok 25 - MFA completion rolls back challenge consumption if session verification write fails
+  ---
+  duration_ms: 1.609142
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:163:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /DB_FAILED/. Input:
+    
+    'AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n' +
+      '\n' +
+      '  assert(inTx)\n'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert(inTx)
+    
+  stack: |-
+    x.service.lookup (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:140:35)
+    AuthenticationService.completeMfa (/mnt/data/assettrust-v82/apps/api/src/auth.ts:167:61)
+    async waitForActual (node:assert:566:5)
+    async Function.rejects (node:assert:687:25)
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:165:2)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:165:2)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: MFA enrollment checks current password while account is locked against credential change
+not ok 26 - MFA enrollment checks current password while account is locked against credential change
+  ---
+  duration_ms: 1.442151
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:168:1'
+  failureType: 'testCodeFailure'
+  error: 'this.db.query is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    AuthenticationService.assertPassword (/mnt/data/assettrust-v82/apps/api/src/auth.ts:189:131)
+    AuthenticationService.beginMfa (/mnt/data/assettrust-v82/apps/api/src/auth.ts:192:20)
+    TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:175:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: MFA enrollment rejects password invalidated before its row lock is acquired
+not ok 27 - MFA enrollment rejects password invalidated before its row lock is acquired
+  ---
+  duration_ms: 1.432927
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:179:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The error is expected to be an instance of "UnauthorizedException". Received "TypeError"
+    
+    Error message:
+    
+    this.db.query is not a function
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:186:2)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: MFA confirmation takes a conflicting account row lock before activating authenticator
+not ok 28 - MFA confirmation takes a conflicting account row lock before activating authenticator
+  ---
+  duration_ms: 2.002345
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:189:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /FOR NO KEY UPDATE/. Input:
+    
+    'SELECT secret_ciphertext,enabled,last_used_step FROM auth_mfa_credentials WHERE user_id=$1 FOR UPDATE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'SELECT secret_ciphertext,enabled,last_used_step FROM auth_mfa_credentials WHERE user_id=$1 FOR UPDATE'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:197:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: MFA confirmation cannot proceed for account suspended before activation
+not ok 29 - MFA confirmation cannot proceed for account suspended before activation
+  ---
+  duration_ms: 1.460418
+  type: 'test'
+  location: '/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:199:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The error is expected to be an instance of "UnauthorizedException". Received "BadRequestException"
+    
+    Error message:
+    
+    No pending MFA setup
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (/mnt/data/assettrust-v83/tools/tests-v83/credential-lifecycle-v83.test.cjs:202:2)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 5
+# fail 24
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 485.787872

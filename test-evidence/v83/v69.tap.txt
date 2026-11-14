@@ -1,0 +1,147 @@
+
+> assettrust-platform@0.83.0 verify:v69
+> node --test --test-concurrency=1 tools/tests-v69/*.test.cjs
+
+TAP version 13
+# Subtest: v69 scripts and workspace versions registered consistently
+ok 1 - v69 scripts and workspace versions registered consistently
+  ---
+  duration_ms: 2.379521
+  type: 'test'
+  ...
+# Subtest: accepts explicit, identity-bound disposable local environment
+ok 2 - accepts explicit, identity-bound disposable local environment
+  ---
+  duration_ms: 10.739893
+  type: 'test'
+  ...
+# Subtest: rejects missing test consent, production mode and missing restricted role
+ok 3 - rejects missing test consent, production mode and missing restricted role
+  ---
+  duration_ms: 0.501405
+  type: 'test'
+  ...
+# Subtest: rejects remote and arbitrary database names
+ok 4 - rejects remote and arbitrary database names
+  ---
+  duration_ms: 0.533623
+  type: 'test'
+  ...
+# Subtest: rejects runtime role identical to operator or an unauthorized identity
+ok 5 - rejects runtime role identical to operator or an unauthorized identity
+  ---
+  duration_ms: 0.229656
+  type: 'test'
+  ...
+# Subtest: rejects mismatched runtime target and absent unpredictable process identity
+ok 6 - rejects mismatched runtime target and absent unpredictable process identity
+  ---
+  duration_ms: 0.300743
+  type: 'test'
+  ...
+# Subtest: blocks non-loopback, redirectable, embedded-credential and malformed API origins
+ok 7 - blocks non-loopback, redirectable, embedded-credential and malformed API origins
+  ---
+  duration_ms: 0.675026
+  type: 'test'
+  ...
+# Subtest: checks version, ownership marker, 27 migrations, 16 policies, 13 tables before mutation
+ok 8 - checks version, ownership marker, 27 migrations, 16 policies, 13 tables before mutation
+  ---
+  duration_ms: 1.716654
+  type: 'test'
+  ...
+# Subtest: rejects other local listener before consulting readiness or creating a tenant
+ok 9 - rejects other local listener before consulting readiness or creating a tenant
+  ---
+  duration_ms: 2.047622
+  type: 'test'
+  ...
+# Subtest: rejects weakened readiness policy before creating users
+ok 10 - rejects weakened readiness policy before creating users
+  ---
+  duration_ms: 1.243531
+  type: 'test'
+  ...
+# Subtest: authenticated integration journey verifies platform/tenant/member boundaries and session revocation
+ok 11 - authenticated integration journey verifies platform/tenant/member boundaries and session revocation
+  ---
+  duration_ms: 3.337503
+  type: 'test'
+  ...
+# Subtest: unexpected platform authorization fails closed even if all earlier steps pass
+ok 12 - unexpected platform authorization fails closed even if all earlier steps pass
+  ---
+  duration_ms: 1.781962
+  type: 'test'
+  ...
+# Subtest: a token still valid after logout fails revocation verification
+ok 13 - a token still valid after logout fails revocation verification
+  ---
+  duration_ms: 2.263126
+  type: 'test'
+  ...
+# Subtest: rejects insecure test nonce before creating synthetic accounts
+ok 14 - rejects insecure test nonce before creating synthetic accounts
+  ---
+  duration_ms: 1.635571
+  type: 'test'
+  ...
+# Subtest: bad HTTP JSON and transport failure never authorize test mutations
+ok 15 - bad HTTP JSON and transport failure never authorize test mutations
+  ---
+  duration_ms: 1.227878
+  type: 'test'
+  ...
+# Subtest: no credentials, access tokens, invite tokens, or account identifiers in pass report
+ok 16 - no credentials, access tokens, invite tokens, or account identifiers in pass report
+  ---
+  duration_ms: 1.391374
+  type: 'test'
+  ...
+# Subtest: private report writing uses 0600 and never follows symlink destination
+ok 17 - private report writing uses 0600 and never follows symlink destination
+  ---
+  duration_ms: 3.030742
+  type: 'test'
+  ...
+# Subtest: rejects symlinked test-evidence directory
+ok 18 - rejects symlinked test-evidence directory
+  ---
+  duration_ms: 0.333001
+  type: 'test'
+  ...
+# Subtest: plan identifies mutations and does not claim release or live browser verification
+ok 19 - plan identifies mutations and does not claim release or live browser verification
+  ---
+  duration_ms: 0.132079
+  type: 'test'
+  ...
+# Subtest: CI offline tests and owned HTTP integration both include v69 acceptance
+ok 20 - CI offline tests and owned HTTP integration both include v69 acceptance
+  ---
+  duration_ms: 0.169335
+  type: 'test'
+  ...
+# Subtest: unexpected HTTP failures report fixed codes, never response content or resource identifiers
+ok 21 - unexpected HTTP failures report fixed codes, never response content or resource identifiers
+  ---
+  duration_ms: 1.1431
+  type: 'test'
+  ...
+# Subtest: attempting to run with unauthorized environment never starts an API request
+ok 22 - attempting to run with unauthorized environment never starts an API request
+  ---
+  duration_ms: 0.416016
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 91.980528
+

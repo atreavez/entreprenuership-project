@@ -1,0 +1,176 @@
+
+> assettrust-platform@0.83.0 verify:v29
+> node --test tools/tests-v29/*.test.cjs && tsc --noEmit --strict --target ES2022 --module commonjs apps/api/src/contexts/member-management/domain/member-policy.ts
+
+TAP version 13
+# Subtest: suspended account with correct password is rejected after Argon2 verification
+ok 1 - suspended account with correct password is rejected after Argon2 verification
+  ---
+  duration_ms: 4.846176
+  type: 'test'
+  ...
+# Subtest: active account retains existing login behavior
+ok 2 - active account retains existing login behavior
+  ---
+  duration_ms: 1.234294
+  type: 'test'
+  ...
+# Subtest: authentication lookup excludes suspended records for existing access and refresh sessions
+ok 3 - authentication lookup excludes suspended records for existing access and refresh sessions
+  ---
+  duration_ms: 0.98304
+  type: 'test'
+  ...
+# Subtest: pending MFA challenges cannot complete after an account is suspended
+ok 4 - pending MFA challenges cannot complete after an account is suspended
+  ---
+  duration_ms: 1.077612
+  type: 'test'
+  ...
+# Subtest: current administrator step-up must check member is not suspended
+ok 5 - current administrator step-up must check member is not suspended
+  ---
+  duration_ms: 0.306521
+  type: 'test'
+  ...
+# Subtest: domain strictly separates ORG_ADMIN from ordinary roles
+ok 6 - domain strictly separates ORG_ADMIN from ordinary roles
+  ---
+  duration_ms: 1.024763
+  type: 'test'
+  ...
+# Subtest: role changes require an actual change and cannot be self-service
+ok 7 - role changes require an actual change and cannot be self-service
+  ---
+  duration_ms: 0.229135
+  type: 'test'
+  ...
+# Subtest: suspension policy blocks self lockout and privileged lifecycle bypass
+ok 8 - suspension policy blocks self lockout and privileged lifecycle bypass
+  ---
+  duration_ms: 0.149936
+  type: 'test'
+  ...
+# Subtest: mandatory reason and decision validation is independent of API inputs
+ok 9 - mandatory reason and decision validation is independent of API inputs
+  ---
+  duration_ms: 0.198108
+  type: 'test'
+  ...
+# Subtest: member directory excludes other organizations and returns no credentials
+ok 10 - member directory excludes other organizations and returns no credentials
+  ---
+  duration_ms: 0.65102
+  type: 'test'
+  ...
+# Subtest: role change remains pending with no immediate privilege change
+ok 11 - role change remains pending with no immediate privilege change
+  ---
+  duration_ms: 0.845313
+  type: 'test'
+  ...
+# Subtest: role proposal requires fresh MFA
+ok 12 - role proposal requires fresh MFA
+  ---
+  duration_ms: 0.442326
+  type: 'test'
+  ...
+# Subtest: cross-tenant role proposal cannot find target or change it
+ok 13 - cross-tenant role proposal cannot find target or change it
+  ---
+  duration_ms: 0.209265
+  type: 'test'
+  ...
+# Subtest: administrator cannot assign ORG_ADMIN via normal role changes
+ok 14 - administrator cannot assign ORG_ADMIN via normal role changes
+  ---
+  duration_ms: 0.394964
+  type: 'test'
+  ...
+# Subtest: one pending role proposal per member
+ok 15 - one pending role proposal per member
+  ---
+  duration_ms: 0.559713
+  type: 'test'
+  ...
+# Subtest: author cannot approve own privileged role change
+ok 16 - author cannot approve own privileged role change
+  ---
+  duration_ms: 0.490648
+  type: 'test'
+  ...
+# Subtest: second admin approves role change, resets vetting and revokes sessions
+ok 17 - second admin approves role change, resets vetting and revokes sessions
+  ---
+  duration_ms: 0.953365
+  type: 'test'
+  ...
+# Subtest: second admin rejects proposal without changing role or sessions
+ok 18 - second admin rejects proposal without changing role or sessions
+  ---
+  duration_ms: 0.33228
+  type: 'test'
+  ...
+# Subtest: stale role change after independently changed user fails closed
+ok 19 - stale role change after independently changed user fails closed
+  ---
+  duration_ms: 0.40478
+  type: 'test'
+  ...
+# Subtest: a downgraded proposer cannot have pending proposal approved
+ok 20 - a downgraded proposer cannot have pending proposal approved
+  ---
+  duration_ms: 0.353112
+  type: 'test'
+  ...
+# Subtest: outsider cannot read or decide role proposals in another tenant
+ok 21 - outsider cannot read or decide role proposals in another tenant
+  ---
+  duration_ms: 0.388235
+  type: 'test'
+  ...
+# Subtest: suspending member immediately revokes sessions and cancels pending changes
+ok 22 - suspending member immediately revokes sessions and cancels pending changes
+  ---
+  duration_ms: 0.37833
+  type: 'test'
+  ...
+# Subtest: suspended user cannot get new role proposal
+ok 23 - suspended user cannot get new role proposal
+  ---
+  duration_ms: 0.234353
+  type: 'test'
+  ...
+# Subtest: restoring member leaves previous sessions invalidated
+ok 24 - restoring member leaves previous sessions invalidated
+  ---
+  duration_ms: 0.206351
+  type: 'test'
+  ...
+# Subtest: ordinary workflow cannot suspend an admin or self
+ok 25 - ordinary workflow cannot suspend an admin or self
+  ---
+  duration_ms: 0.344028
+  type: 'test'
+  ...
+# Subtest: role catalog advertises no unrestricted professional approvals
+ok 26 - role catalog advertises no unrestricted professional approvals
+  ---
+  duration_ms: 0.193191
+  type: 'test'
+  ...
+# Subtest: database schema enforces organization-matching target and administrator references
+ok 27 - database schema enforces organization-matching target and administrator references
+  ---
+  duration_ms: 0.28529
+  type: 'test'
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 372.254865

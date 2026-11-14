@@ -1,0 +1,56 @@
+
+> assettrust-platform@0.83.0 verify:v20
+> node --test tools/tests-v20/*.test.cjs
+
+TAP version 13
+# Subtest: RED→GREEN: disabling MFA clears recent step-up status on CURRENT session
+ok 1 - RED→GREEN: disabling MFA clears recent step-up status on CURRENT session
+  ---
+  duration_ms: 143.328183
+  type: 'test'
+  ...
+# Subtest: MFA disable clears verification for all user sessions, not only other sessions
+ok 2 - MFA disable clears verification for all user sessions, not only other sessions
+  ---
+  duration_ms: 68.806084
+  type: 'test'
+  ...
+# Subtest: RED→GREEN: parcel review step-up rechecks active MFA inside the review transaction
+ok 3 - RED→GREEN: parcel review step-up rechecks active MFA inside the review transaction
+  ---
+  duration_ms: 0.273211
+  type: 'test'
+  ...
+# Subtest: parcel review locks MFA and session rows to prevent concurrent disable from racing review
+ok 4 - parcel review locks MFA and session rows to prevent concurrent disable from racing review
+  ---
+  duration_ms: 0.110677
+  type: 'test'
+  ...
+# Subtest: professional trust review still requires a live MFA credential
+ok 5 - professional trust review still requires a live MFA credential
+  ---
+  duration_ms: 0.598761
+  type: 'test'
+  ...
+# Subtest: RED→GREEN: actual repository rejects parcel approval with disabled MFA and stale step-up timestamp
+ok 6 - RED→GREEN: actual repository rejects parcel approval with disabled MFA and stale step-up timestamp
+  ---
+  duration_ms: 26.166916
+  type: 'test'
+  ...
+# Subtest: actual repository can continue an independent review with enabled MFA and fresh step-up
+ok 7 - actual repository can continue an independent review with enabled MFA and fresh step-up
+  ---
+  duration_ms: 21.986362
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 479.441313

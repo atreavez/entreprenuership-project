@@ -1,0 +1,129 @@
+
+> assettrust-platform@0.83.0 verify:v74
+> node --test --test-concurrency=1 tools/tests-v74/*.test.cjs
+
+TAP version 13
+# Subtest: current administrator guard locks active membership inside same tenant transaction
+ok 1 - current administrator guard locks active membership inside same tenant transaction
+  ---
+  duration_ms: 1.725968
+  type: 'test'
+  ...
+# Subtest: a stale ORG_ADMIN JWT cannot create grants after current role changes to CLIENT
+ok 2 - a stale ORG_ADMIN JWT cannot create grants after current role changes to CLIENT
+  ---
+  duration_ms: 0.693624
+  type: 'test'
+  ...
+# Subtest: a stale ORG_ADMIN JWT cannot create grants after current role changes to REVIEWER
+ok 3 - a stale ORG_ADMIN JWT cannot create grants after current role changes to REVIEWER
+  ---
+  duration_ms: 0.15331
+  type: 'test'
+  ...
+# Subtest: a stale ORG_ADMIN JWT cannot create grants after current role changes to SURVEYOR
+ok 4 - a stale ORG_ADMIN JWT cannot create grants after current role changes to SURVEYOR
+  ---
+  duration_ms: 0.203607
+  type: 'test'
+  ...
+# Subtest: a stale ORG_ADMIN JWT cannot create grants after current role changes to LEGAL_REVIEWER
+ok 5 - a stale ORG_ADMIN JWT cannot create grants after current role changes to LEGAL_REVIEWER
+  ---
+  duration_ms: 0.135865
+  type: 'test'
+  ...
+# Subtest: a suspended administrator cannot create grants even with unexpired JWT
+ok 6 - a suspended administrator cannot create grants even with unexpired JWT
+  ---
+  duration_ms: 0.162896
+  type: 'test'
+  ...
+# Subtest: a demoted administrator cannot revoke grants and audit is not emitted
+ok 7 - a demoted administrator cannot revoke grants and audit is not emitted
+  ---
+  duration_ms: 0.317228
+  type: 'test'
+  ...
+# Subtest: a demoted administrator cannot list grant recipient details
+ok 8 - a demoted administrator cannot list grant recipient details
+  ---
+  duration_ms: 0.29926
+  type: 'test'
+  ...
+# Subtest: current administrator grant uses a locked asset and active grantee before writing
+ok 9 - current administrator grant uses a locked asset and active grantee before writing
+  ---
+  duration_ms: 0.497329
+  type: 'test'
+  ...
+# Subtest: administrator cannot grant cross-tenant or nonexistent asset
+ok 10 - administrator cannot grant cross-tenant or nonexistent asset
+  ---
+  duration_ms: 0.459062
+  type: 'test'
+  ...
+# Subtest: administrator cannot grant a suspended or outside-tenant member
+ok 11 - administrator cannot grant a suspended or outside-tenant member
+  ---
+  duration_ms: 0.296086
+  type: 'test'
+  ...
+# Subtest: current administrator can revoke and writes audit inside one transaction
+ok 12 - current administrator can revoke and writes audit inside one transaction
+  ---
+  duration_ms: 0.202545
+  type: 'test'
+  ...
+# Subtest: current administrator can list only verified-asset grants
+ok 13 - current administrator can list only verified-asset grants
+  ---
+  duration_ms: 0.260372
+  type: 'test'
+  ...
+# Subtest: grant change does not produce audit when the database write throws
+ok 14 - grant change does not produce audit when the database write throws
+  ---
+  duration_ms: 0.640454
+  type: 'test'
+  ...
+# Subtest: document listing checks current SQL membership and role, not token role
+ok 15 - document listing checks current SQL membership and role, not token role
+  ---
+  duration_ms: 0.449867
+  type: 'test'
+  ...
+# Subtest: suspended actor gets no documents even if token claims ORG_ADMIN
+ok 16 - suspended actor gets no documents even if token claims ORG_ADMIN
+  ---
+  duration_ms: 0.121723
+  type: 'test'
+  ...
+# Subtest: a current administrator may list organization documents
+ok 17 - a current administrator may list organization documents
+  ---
+  duration_ms: 0.091818
+  type: 'test'
+  ...
+# Subtest: case evidence is not revealed through an ordinary asset grant in document listing
+ok 18 - case evidence is not revealed through an ordinary asset grant in document listing
+  ---
+  duration_ms: 0.127152
+  type: 'test'
+  ...
+# Subtest: v74 does not change any SQL migrations or weaken the required RLS contract
+ok 19 - v74 does not change any SQL migrations or weaken the required RLS contract
+  ---
+  duration_ms: 0.417269
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 315.236854
+

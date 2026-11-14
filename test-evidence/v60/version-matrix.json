@@ -1,0 +1,240 @@
+{
+  "schema": "ASSETTRUST_V60_OFFLINE_MATRIX",
+  "version_suites": 58,
+  "passed": 58,
+  "failed": 0,
+  "results": [
+    {
+      "name": "verify:v03",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v04",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v05",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v06",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v07",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v08",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v09",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v10",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v11",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v12",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v13",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v14",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v15",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v16",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v17",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v18",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v19",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v20",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v21",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v22",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v23",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v24",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v25",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v26",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v27",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v28",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v29",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v30",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v31",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v32",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v33",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v34",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v35",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v36",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v37",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v38",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v39",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v40",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v41",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v42",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v43",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v44",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v45",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v46",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v47",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v48",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v49",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v50",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v51",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v52",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v53",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v54",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v55",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v56",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v57",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v58",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v59",
+      "exit_code": 0
+    },
+    {
+      "name": "verify:v60",
+      "exit_code": 0
+    }
+  ]
+}

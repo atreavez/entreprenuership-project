@@ -1,0 +1,24 @@
+{
+  "offline_commands_passed": 34,
+  "offline_commands_failed": [
+    [
+      "npm run release:gate:v17",
+      "FAIL"
+    ],
+    [
+      "npm run build",
+      "FAIL"
+    ],
+    [
+      "npm run test:pg:reports:v34",
+      "FAIL"
+    ]
+  ],
+  "new_tests": 28,
+  "syntax_files": 82,
+  "migrations_exact": 14,
+  "full_build": "BLOCKED_NO_INSTALLED_NPM_DEPENDENCIES",
+  "npm_lockfile": "MISSING",
+  "live_postgresql": "NOT_EXECUTED_DISPOSABLE_AUTHORIZATION_GUARD_VERIFIED",
+  "browser_runtime": "NOT_EXECUTED_SOURCE_BASED_PREVIEW_ONLY"
+}

@@ -1,0 +1,188 @@
+[
+  {
+    "command": "smoke:offline",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 0.6
+  },
+  {
+    "command": "verify:architecture",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 0.1
+  },
+  {
+    "command": "verify:v03",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 0.4
+  },
+  {
+    "command": "verify:v04",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 0.9
+  },
+  {
+    "command": "verify:v05",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 1.4
+  },
+  {
+    "command": "verify:v06",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 0.7
+  },
+  {
+    "command": "verify:v07",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 0.5
+  },
+  {
+    "command": "verify:v08",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 1.5
+  },
+  {
+    "command": "verify:v09",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 2.1
+  },
+  {
+    "command": "verify:v10",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 1.2
+  },
+  {
+    "command": "verify:v11",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 1.1
+  },
+  {
+    "command": "verify:v12",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 1.1
+  },
+  {
+    "command": "verify:v13",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 5.1
+  },
+  {
+    "command": "verify:v14",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 0.2
+  },
+  {
+    "command": "verify:v15",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 1.2
+  },
+  {
+    "command": "verify:v16",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 0.2
+  },
+  {
+    "command": "verify:v17",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 0.2
+  },
+  {
+    "command": "verify:v18",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 0.5
+  },
+  {
+    "command": "verify:v19",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 0.5
+  },
+  {
+    "command": "verify:v20",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 0.6
+  },
+  {
+    "command": "verify:v21",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 0.4
+  },
+  {
+    "command": "verify:v22",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 0.4
+  },
+  {
+    "command": "verify:v23",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 0.9
+  },
+  {
+    "command": "verify:v24",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 1.0
+  },
+  {
+    "command": "verify:v25",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 1.1
+  },
+  {
+    "command": "verify:v26",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 1.3
+  },
+  {
+    "command": "verify:v27",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 1.3
+  },
+  {
+    "command": "verify:v28",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 1.5
+  },
+  {
+    "command": "verify:v29",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 1.4
+  },
+  {
+    "command": "verify:v30",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 1.5
+  },
+  {
+    "command": "verify:syntax",
+    "status": "PASS",
+    "exitCode": 0,
+    "seconds": 1.1
+  }
+]

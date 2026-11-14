@@ -1,0 +1,19 @@
+{
+  "schema": "ASSETTRUST_V55_AUDIT_SUMMARY",
+  "sourceVersion": "0.55.0",
+  "versionSuiteCount": 53,
+  "versionSuitesPassed": 53,
+  "newTestsPassed": 16,
+  "newTestsTotal": 16,
+  "migrationFilesUnchanged": 25,
+  "sourceScanFiles": 2317,
+  "sourceScanHighConfidenceMatches": 0,
+  "npmLockfilePresent": false,
+  "fullBuildPassed": false,
+  "productionApproved": false,
+  "livePostgreSQLTestsExecuted": false,
+  "liveClamavTestsPassed": false,
+  "originalGitHistoryScanExecuted": false,
+  "releasePrerequisitesPresent": 3,
+  "releasePrerequisitesRequired": 11
+}

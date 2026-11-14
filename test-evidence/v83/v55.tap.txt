@@ -1,0 +1,111 @@
+
+> assettrust-platform@0.83.0 verify:v55
+> node --test --test-concurrency=1 tools/tests-v55/*.test.cjs
+
+TAP version 13
+# Subtest: read-only check blocks an absent authentic npm lockfile
+ok 1 - read-only check blocks an absent authentic npm lockfile
+  ---
+  duration_ms: 3.933522
+  type: 'test'
+  ...
+# Subtest: production release is never asserted even for a valid fixture lock
+ok 2 - production release is never asserted even for a valid fixture lock
+  ---
+  duration_ms: 1.752207
+  type: 'test'
+  ...
+# Subtest: cannot generate without explicit authorization or while a lockfile exists
+ok 3 - cannot generate without explicit authorization or while a lockfile exists
+  ---
+  duration_ms: 2.337329
+  type: 'test'
+  ...
+# Subtest: authentic generation command never runs install scripts or permits unreviewed registry
+ok 4 - authentic generation command never runs install scripts or permits unreviewed registry
+  ---
+  duration_ms: 3.123542
+  type: 'test'
+  ...
+# Subtest: a failed network/npm attempt removes only its newly created lockfile
+ok 5 - a failed network/npm attempt removes only its newly created lockfile
+  ---
+  duration_ms: 1.201529
+  type: 'test'
+  ...
+# Subtest: malicious resolved package URLs reject the generated lock, then clean the fresh output
+ok 6 - malicious resolved package URLs reject the generated lock, then clean the fresh output
+  ---
+  duration_ms: 1.416061
+  type: 'test'
+  ...
+# Subtest: a changed workspace manifest is detected and not accepted
+ok 7 - a changed workspace manifest is detected and not accepted
+  ---
+  duration_ms: 1.252316
+  type: 'test'
+  ...
+# Subtest: workspace version mismatch is rejected before any install
+ok 8 - workspace version mismatch is rejected before any install
+  ---
+  duration_ms: 1.254208
+  type: 'test'
+  ...
+# Subtest: symlink lockfiles cannot be overwritten
+ok 9 - symlink lockfiles cannot be overwritten
+  ---
+  duration_ms: 0.874797
+  type: 'test'
+  ...
+# Subtest: direct file, github and URL dependencies fail the manifest preflight
+ok 10 - direct file, github and URL dependencies fail the manifest preflight
+  ---
+  duration_ms: 1.339176
+  type: 'test'
+  ...
+# Subtest: minimum supported node engine must be enforced
+ok 11 - minimum supported node engine must be enforced
+  ---
+  duration_ms: 0.310958
+  type: 'test'
+  ...
+# Subtest: API health version is derived from the installed package rather than pinned to an old release
+ok 12 - API health version is derived from the installed package rather than pinned to an old release
+  ---
+  duration_ms: 0.492531
+  type: 'test'
+  ...
+# Subtest: CI runs version checks and lock verification ahead of npm ci
+ok 13 - CI runs version checks and lock verification ahead of npm ci
+  ---
+  duration_ms: 0.189415
+  type: 'test'
+  ...
+# Subtest: supervised release uses the batched history scanner on an explicitly selected original clone
+ok 14 - supervised release uses the batched history scanner on an explicitly selected original clone
+  ---
+  duration_ms: 2.588807
+  type: 'test'
+  ...
+# Subtest: evidence review can inspect git metadata from original clone without copying it into archive
+ok 15 - evidence review can inspect git metadata from original clone without copying it into archive
+  ---
+  duration_ms: 1.738097
+  type: 'test'
+  ...
+# Subtest: production hosts may not generate or replace dependency lockfiles
+ok 16 - production hosts may not generate or replace dependency lockfiles
+  ---
+  duration_ms: 0.690169
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 119.538786
+

@@ -1,0 +1,188 @@
+
+> assettrust-platform@0.83.0 verify:v83
+> node --test --test-concurrency=1 tools/tests-v83/*.test.cjs
+
+TAP version 13
+# Subtest: RED/GREEN: old password verified before change must not create a new session after digest rotates
+ok 1 - RED/GREEN: old password verified before change must not create a new session after digest rotates
+  ---
+  duration_ms: 8.209319
+  type: 'test'
+  ...
+# Subtest: RED/GREEN: changed password cannot mint pending MFA challenge after commit
+ok 2 - RED/GREEN: changed password cannot mint pending MFA challenge after commit
+  ---
+  duration_ms: 2.403068
+  type: 'test'
+  ...
+# Subtest: login reads current user digest under a database transaction row lock
+ok 3 - login reads current user digest under a database transaction row lock
+  ---
+  duration_ms: 2.233943
+  type: 'test'
+  ...
+# Subtest: login must reject a suspended user even if initial query saw active account
+ok 4 - login must reject a suspended user even if initial query saw active account
+  ---
+  duration_ms: 1.346938
+  type: 'test'
+  ...
+# Subtest: login must reject a deleted user even if initial lookup succeeded
+ok 5 - login must reject a deleted user even if initial lookup succeeded
+  ---
+  duration_ms: 1.852149
+  type: 'test'
+  ...
+# Subtest: successful MFA login challenges are inserted while account credential row is locked
+ok 6 - successful MFA login challenges are inserted while account credential row is locked
+  ---
+  duration_ms: 1.898268
+  type: 'test'
+  ...
+# Subtest: failed MFA challenge insert cannot create or return a valid challenge
+ok 7 - failed MFA challenge insert cannot create or return a valid challenge
+  ---
+  duration_ms: 1.969335
+  type: 'test'
+  ...
+# Subtest: invalid login password cannot enter session transaction or mint a challenge
+ok 8 - invalid login password cannot enter session transaction or mint a challenge
+  ---
+  duration_ms: 1.436773
+  type: 'test'
+  ...
+# Subtest: newly enabled MFA cannot be bypassed by a credential lookup that predates confirmation
+ok 9 - newly enabled MFA cannot be bypassed by a credential lookup that predates confirmation
+  ---
+  duration_ms: 1.996105
+  type: 'test'
+  ...
+# Subtest: login reuses no stale ORG_ADMIN role if locked account role changed
+ok 10 - login reuses no stale ORG_ADMIN role if locked account role changed
+  ---
+  duration_ms: 1.791968
+  type: 'test'
+  ...
+# Subtest: RED/GREEN: password change revokes all outstanding MFA login challenges atomically
+ok 11 - RED/GREEN: password change revokes all outstanding MFA login challenges atomically
+  ---
+  duration_ms: 1.759469
+  type: 'test'
+  ...
+# Subtest: RED/GREEN: password change invalidates all unused password-reset requests atomically
+ok 12 - RED/GREEN: password change invalidates all unused password-reset requests atomically
+  ---
+  duration_ms: 1.360378
+  type: 'test'
+  ...
+# Subtest: revocations execute after password replacement and before commit/audit
+ok 13 - revocations execute after password replacement and before commit/audit
+  ---
+  duration_ms: 1.518436
+  type: 'test'
+  ...
+# Subtest: password changes continue revoking all other sessions while preserving the initiating session
+ok 14 - password changes continue revoking all other sessions while preserving the initiating session
+  ---
+  duration_ms: 1.471105
+  type: 'test'
+  ...
+# Subtest: password change failure revoking challenges cannot commit without invalidation
+ok 15 - password change failure revoking challenges cannot commit without invalidation
+  ---
+  duration_ms: 1.294179
+  type: 'test'
+  ...
+# Subtest: password change failure revoking reset links cannot commit without invalidation
+ok 16 - password change failure revoking reset links cannot commit without invalidation
+  ---
+  duration_ms: 1.744476
+  type: 'test'
+  ...
+# Subtest: password change event records only boolean invalidation proof, no secrets
+ok 17 - password change event records only boolean invalidation proof, no secrets
+  ---
+  duration_ms: 1.402442
+  type: 'test'
+  ...
+# Subtest: changePassword still checks old password under FOR UPDATE lock
+ok 18 - changePassword still checks old password under FOR UPDATE lock
+  ---
+  duration_ms: 1.300298
+  type: 'test'
+  ...
+# Subtest: no migration or altered tenant isolation is introduced for password lifecycle fixes
+ok 19 - no migration or altered tenant isolation is introduced for password lifecycle fixes
+  ---
+  duration_ms: 0.408715
+  type: 'test'
+  ...
+# Subtest: CI must require the v83 suite before live integrations
+ok 20 - CI must require the v83 suite before live integrations
+  ---
+  duration_ms: 0.361173
+  type: 'test'
+  ...
+# Subtest: MFA completion locks current user before challenge row and session creation
+ok 21 - MFA completion locks current user before challenge row and session creation
+  ---
+  duration_ms: 1.950096
+  type: 'test'
+  ...
+# Subtest: MFA completion denies challenge from an account suspended after challenge issuance
+ok 22 - MFA completion denies challenge from an account suspended after challenge issuance
+  ---
+  duration_ms: 1.659929
+  type: 'test'
+  ...
+# Subtest: MFA completion denies missing challenge without locking or creating a session
+ok 23 - MFA completion denies missing challenge without locking or creating a session
+  ---
+  duration_ms: 1.544876
+  type: 'test'
+  ...
+# Subtest: MFA completion rejects expired or consumed challenge without minting a session
+ok 24 - MFA completion rejects expired or consumed challenge without minting a session
+  ---
+  duration_ms: 3.180218
+  type: 'test'
+  ...
+# Subtest: MFA completion rolls back challenge consumption if session verification write fails
+ok 25 - MFA completion rolls back challenge consumption if session verification write fails
+  ---
+  duration_ms: 1.579688
+  type: 'test'
+  ...
+# Subtest: MFA enrollment checks current password while account is locked against credential change
+ok 26 - MFA enrollment checks current password while account is locked against credential change
+  ---
+  duration_ms: 3.676545
+  type: 'test'
+  ...
+# Subtest: MFA enrollment rejects password invalidated before its row lock is acquired
+ok 27 - MFA enrollment rejects password invalidated before its row lock is acquired
+  ---
+  duration_ms: 3.523455
+  type: 'test'
+  ...
+# Subtest: MFA confirmation takes a conflicting account row lock before activating authenticator
+ok 28 - MFA confirmation takes a conflicting account row lock before activating authenticator
+  ---
+  duration_ms: 3.90886
+  type: 'test'
+  ...
+# Subtest: MFA confirmation cannot proceed for account suspended before activation
+ok 29 - MFA confirmation cannot proceed for account suspended before activation
+  ---
+  duration_ms: 1.557495
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 430.504731

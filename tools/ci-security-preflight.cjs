@@ -7,13 +7,11 @@ const {join,resolve}=require('node:path');
 function checkEnvironment(env=process.env){
  const temp=mkdtempSync(join(tmpdir(),'assettrust-ci-runtime-'));
  try{
-  const code=spawnSync(process.execPath,[
-   require.resolve('typescript/bin/tsc'),
+  const code=spawnSync('tsc',[
    '--strict','--target','es2022','--module','commonjs','--noEmitOnError',
    '--outDir',temp,resolve(__dirname,'../apps/api/src/contexts/platform/domain/runtime-config.ts')
   ],{encoding:'utf8'});
-  if(code.error)throw Error('Cannot start TypeScript compiler: '+code.error.message);
-  if(code.status!==0)throw Error('Cannot compile runtime configuration domain policy: '+String(code.stderr||code.stdout||'Compiler exited without output').slice(0,600));
+  if(code.status!==0)throw Error('Cannot compile runtime configuration domain policy: '+(code.stderr||code.stdout).slice(0,600));
   const {validateRuntimeConfig}=require(join(temp,'runtime-config.js'));
   const result=validateRuntimeConfig(env);
   if(!result.ok)throw Error('Startup rejected configuration: '+result.issues.map(i=>i.code).join(', '));

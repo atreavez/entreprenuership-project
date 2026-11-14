@@ -1,0 +1,141 @@
+
+> assettrust-platform@0.83.0 verify:v71
+> node --test --test-concurrency=1 tools/tests-v71/*.test.cjs
+
+TAP version 13
+# Subtest: v71 version consistency and CI tests are registered
+ok 1 - v71 version consistency and CI tests are registered
+  ---
+  duration_ms: 2.450748
+  type: 'test'
+  ...
+# Subtest: plan explicitly remains non-production and no commands execute
+ok 2 - plan explicitly remains non-production and no commands execute
+  ---
+  duration_ms: 0.207752
+  type: 'test'
+  ...
+# Subtest: inspection remains read-only and returns no secrets
+ok 3 - inspection remains read-only and returns no secrets
+  ---
+  duration_ms: 3.135278
+  type: 'test'
+  ...
+# Subtest: production and missing authorizations cannot start operations
+ok 4 - production and missing authorizations cannot start operations
+  ---
+  duration_ms: 4.866875
+  type: 'test'
+  ...
+# Subtest: invalid private fixture is rejected before invoking build
+ok 5 - invalid private fixture is rejected before invoking build
+  ---
+  duration_ms: 1.259205
+  type: 'test'
+  ...
+# Subtest: build stage gets only sanitized, test-only environment
+ok 6 - build stage gets only sanitized, test-only environment
+  ---
+  duration_ms: 8.742789
+  type: 'test'
+  ...
+# Subtest: first build failure stops before docker and writes only structured evidence
+ok 7 - first build failure stops before docker and writes only structured evidence
+  ---
+  duration_ms: 5.929844
+  type: 'test'
+  ...
+# Subtest: successful fake build without provenance evidence is rejected
+ok 8 - successful fake build without provenance evidence is rejected
+  ---
+  duration_ms: 5.828222
+  type: 'test'
+  ...
+# Subtest: authentic provenance requires all six ordered build stages and manifest hashes
+ok 9 - authentic provenance requires all six ordered build stages and manifest hashes
+  ---
+  duration_ms: 2.59162
+  type: 'test'
+  ...
+# Subtest: provenance rejects missing lockfile, tampered version or truncated build steps
+ok 10 - provenance rejects missing lockfile, tampered version or truncated build steps
+  ---
+  duration_ms: 2.170867
+  type: 'test'
+  ...
+# Subtest: successful simulated sequence writes non-release evidence, never stdout or URLs
+ok 11 - successful simulated sequence writes non-release evidence, never stdout or URLs
+  ---
+  duration_ms: 5.9735
+  type: 'test'
+  ...
+# Subtest: brand new role is provisioned in correct order before verify
+ok 12 - brand new role is provisioned in correct order before verify
+  ---
+  duration_ms: 5.077021
+  type: 'test'
+  ...
+# Subtest: any failed subcommand stops before migration and reports stage without output
+ok 13 - any failed subcommand stops before migration and reports stage without output
+  ---
+  duration_ms: 5.165695
+  type: 'test'
+  ...
+# Subtest: a supposed passing v70 step with zero child commands must fail closed
+ok 14 - a supposed passing v70 step with zero child commands must fail closed
+  ---
+  duration_ms: 4.410948
+  type: 'test'
+  ...
+# Subtest: private evidence directory and filename reject symlink and cross-user access
+ok 15 - private evidence directory and filename reject symlink and cross-user access
+  ---
+  duration_ms: 3.613027
+  type: 'test'
+  ...
+# Subtest: existing evidence file cannot be overwritten
+ok 16 - existing evidence file cannot be overwritten
+  ---
+  duration_ms: 5.14263
+  type: 'test'
+  ...
+# Subtest: unexpected child execution errors map only to controlled codes
+ok 17 - unexpected child execution errors map only to controlled codes
+  ---
+  duration_ms: 0.14569
+  type: 'test'
+  ...
+# Subtest: source files and private fixtures remain unchanged by safe --plan/--inspect
+ok 18 - source files and private fixtures remain unchanged by safe --plan/--inspect
+  ---
+  duration_ms: 0.540884
+  type: 'test'
+  ...
+# Subtest: private evidence itself is never committed into the source repository
+ok 19 - private evidence itself is never committed into the source repository
+  ---
+  duration_ms: 0.17264
+  type: 'test'
+  ...
+# Subtest: read-only command does not authorize destructive operations
+ok 20 - read-only command does not authorize destructive operations
+  ---
+  duration_ms: 0.625071
+  type: 'test'
+  ...
+# Subtest: unexpected build process exception identifies build as first failure without revealing message
+ok 21 - unexpected build process exception identifies build as first failure without revealing message
+  ---
+  duration_ms: 5.431334
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 152.326154
+

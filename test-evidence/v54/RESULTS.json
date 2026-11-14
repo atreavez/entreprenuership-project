@@ -1,0 +1,19 @@
+{
+  "schema": "ASSETTRUST_V54_OFFLINE_EVIDENCE",
+  "version": "0.54.0",
+  "productionApproved": false,
+  "versionSuitesPassed": 52,
+  "newTestsPassed": 15,
+  "newTestsTotal": 15,
+  "migrationsUnchanged": 25,
+  "releaseStagesPlanned": 89,
+  "liveStagesPassed": 0,
+  "results": {
+    "offline": "PASS",
+    "gitHistory": "NOT_RUN_ON_REAL_REPOSITORY",
+    "build": "FAILED_MISSING_DEPENDENCIES",
+    "postgres": "NOT_RUN",
+    "clamav": "BLOCKED",
+    "release": "NO_GO"
+  }
+}

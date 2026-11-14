@@ -26,7 +26,7 @@ test('unapproved surveyors cannot verify field evidence',()=>assert.equal(policy
 test('approved surveyors can verify field evidence',()=>assert.equal(policy.isStageReviewer(survey,'FIELD_INSPECTION'),true));
 test('surveyors cannot approve legal review',()=>assert.equal(policy.isStageReviewer(survey,'LEGAL_REVIEW'),false));
 test('approved legal reviewers can approve legal evidence',()=>assert.equal(policy.isStageReviewer(lawyer,'LEGAL_REVIEW'),true));
-test('final evidence acceptance requires accredited legal reviewer, not organization admin',()=>{assert.equal(policy.isStageReviewer(admin,'FINAL_REVIEW'),false);assert.equal(policy.isStageReviewer(lawyer,'FINAL_REVIEW'),true);assert.equal(policy.isStageReviewer({...lawyer,professionalApproved:false},'FINAL_REVIEW'),false)});
+test('v0.26 final decision requires independent organization administrator, after accredited legal-stage review',()=>{assert.equal(policy.isStageReviewer({...admin,professionalApproved:false},'FINAL_REVIEW'),true);assert.equal(policy.isStageReviewer(lawyer,'FINAL_REVIEW'),false);assert.equal(policy.isStageReviewer(rev,'FINAL_REVIEW'),false);assert.equal(policy.isStageReviewer(lawyer,'LEGAL_REVIEW'),true)});
 // Configuration regression guard: test snippets against routes and SQL, not database behavior.
 const cases=fs.readFileSync(path.join(repo,'apps/api/src/cases.ts'),'utf8');
 const sql=fs.readFileSync(path.join(repo,'apps/api/sql/003_evidence_review.sql'),'utf8');

@@ -11,6 +11,7 @@ class FakeRepository {
   this.c=caseRow;this.e=evidence;this.disputed=disputed;this.events=[];this.assetStatus=null;this.transactions=0;
  }
  async transaction(work){this.transactions++;return work({
+  getCurrentActor:async(actor)=>actor,
   getCase:async (id,org)=> this.c?.id===id&&this.c.organizationId===org?this.c:null,
   getEvidence:async(id,caseId,org)=>this.c?.id===caseId&&this.c.organizationId===org?this.e.find(e=>e.id===id)||null:null,
   getEvidenceForStage:async (id,org,stage)=>this.c?.id===id&&this.c.organizationId===org?this.e.filter(e=>e.stage===stage):[],

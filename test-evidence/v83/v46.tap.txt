@@ -1,0 +1,93 @@
+
+> assettrust-platform@0.83.0 verify:v46
+> node --test tools/tests-v46/*.test.cjs
+
+TAP version 13
+# Subtest: valid organization IDs normalize consistently, with no wildcard grants
+ok 1 - valid organization IDs normalize consistently, with no wildcard grants
+  ---
+  duration_ms: 1.128979
+  type: 'test'
+  ...
+# Subtest: tenant context rejects arbitrary strings, SQL, wildcard, empty and malicious content
+ok 2 - tenant context rejects arbitrary strings, SQL, wildcard, empty and malicious content
+  ---
+  duration_ms: 0.508446
+  type: 'test'
+  ...
+# Subtest: adapter sets only transaction-local parameterized tenant context and does not interpolate ID
+ok 3 - adapter sets only transaction-local parameterized tenant context and does not interpolate ID
+  ---
+  duration_ms: 0.201253
+  type: 'test'
+  ...
+# Subtest: invalid context is rejected before querying a pooled database
+ok 4 - invalid context is rejected before querying a pooled database
+  ---
+  duration_ms: 0.234524
+  type: 'test'
+  ...
+# Subtest: additive migration enables FORCE RLS for all 3 private PDF-layout tables with tenant read/write guards
+ok 5 - additive migration enables FORCE RLS for all 3 private PDF-layout tables with tenant read/write guards
+  ---
+  duration_ms: 0.479372
+  type: 'test'
+  ...
+# Subtest: only the private report-layout RLS tables are enabled; no public verifier or users RLS activation
+ok 6 - only the private report-layout RLS tables are enabled; no public verifier or users RLS activation
+  ---
+  duration_ms: 0.644821
+  type: 'test'
+  ...
+# Subtest: layout admin scopes all four operation paths after current MFA authorization
+ok 7 - layout admin scopes all four operation paths after current MFA authorization
+  ---
+  duration_ms: 0.240251
+  type: 'test'
+  ...
+# Subtest: recipient redeem scopes only after resolving the report share organization and validating credentials
+ok 8 - recipient redeem scopes only after resolving the report share organization and validating credentials
+  ---
+  duration_ms: 0.151939
+  type: 'test'
+  ...
+# Subtest: production DB startup refuses RLS-bypass roles and unprotected layout tables
+ok 9 - production DB startup refuses RLS-bypass roles and unprotected layout tables
+  ---
+  duration_ms: 0.291429
+  type: 'test'
+  ...
+# Subtest: v0.46 migration appended with exact byte digest without rewriting old migrations
+ok 10 - v0.46 migration appended with exact byte digest without rewriting old migrations
+  ---
+  duration_ms: 3.434671
+  type: 'test'
+  ...
+# Subtest: CI includes the RLS tests, disposable DB contract and release gates
+ok 11 - CI includes the RLS tests, disposable DB contract and release gates
+  ---
+  duration_ms: 0.21237
+  type: 'test'
+  ...
+# Subtest: live RLS contract requires guarded disposable target and executes as a different non-bypass role
+ok 12 - live RLS contract requires guarded disposable target and executes as a different non-bypass role
+  ---
+  duration_ms: 0.124177
+  type: 'test'
+  ...
+# Subtest: production database initialization checks role and RLS before accepting requests
+ok 13 - production database initialization checks role and RLS before accepting requests
+  ---
+  duration_ms: 207.749931
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 487.417859
+

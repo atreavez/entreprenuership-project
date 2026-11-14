@@ -2,27 +2,41 @@
 import {Injectable} from '@nestjs/common';
 import {PoolClient} from 'pg';
 import {Database} from '../../../database';
+import {setTenantScope} from '../../tenant-isolation/application/tenant-scope';
 import {AuditService} from '../../../audit';
 import {WorkflowRepository,WorkflowTransaction} from '../application/evidence-workflow';
 import {CaseRecord,ReviewDecision,ReviewActor} from '../domain/evidence-policy';
+import {loadCurrentWorkflowActor} from './current-workflow-authorizer';
+import {defaultWorkflowPolicy,prepareWorkflowPolicy} from '../../workflow-admin/domain/workflow-policy';
 @Injectable()
 export class PostgresWorkflowRepository implements WorkflowRepository{
  constructor(private readonly db:Database,private readonly auditService:AuditService){}
  transaction<T>(work:(tx:WorkflowTransaction)=>Promise<T>):Promise<T>{
   return this.db.transaction(async (connection:PoolClient)=>{
    const tx:WorkflowTransaction={
+    getCurrentActor:(actor,stage)=>loadCurrentWorkflowActor(connection,actor,stage),
+    getStagePolicy:async(orgId,stage)=>{
+     const {rows}=await connection.query(`SELECT stage,target_days,reminder_days,additional_evidence_type,version FROM workflow_stage_policies
+       WHERE organization_id=$1 AND stage=$2 FOR SHARE`,[orgId,stage]);
+     if(!rows.length)return defaultWorkflowPolicy(stage);
+     const r=rows[0];const valid=prepareWorkflowPolicy(r.stage,{targetDays:r.target_days,reminderDays:r.reminder_days,additionalEvidenceType:r.additional_evidence_type});
+     return {...valid,version:Number(r.version)};
+    },
     getCase:async(id,orgId)=>{
+     await setTenantScope(connection,orgId);
      const {rows}=await connection.query(`SELECT id,organization_id,asset_id,stage,status,assigned_to,created_by
        FROM verification_cases WHERE id=$1 AND organization_id=$2 FOR UPDATE`,[id,orgId]);
      const c=rows[0];return c?{id:c.id,organizationId:c.organization_id,assetId:c.asset_id,
       stage:c.stage,status:c.status,assignedTo:c.assigned_to,createdBy:c.created_by} as CaseRecord:null;
     },
     getEvidence:async(evidenceId,caseId,orgId)=>{
+     await setTenantScope(connection,orgId);
      const {rows}=await connection.query(`SELECT id,stage,evidence_type,recorded_by,review_status,reviewed_by
       FROM case_evidence WHERE id=$1 AND case_id=$2 AND organization_id=$3 FOR UPDATE`,[evidenceId,caseId,orgId]);
      return rows[0]||null;
     },
     getEvidenceForStage:async(caseId,orgId,stage)=>{
+     await setTenantScope(connection,orgId);
      const {rows}=await connection.query(`SELECT id,stage,evidence_type,recorded_by,review_status,reviewed_by
       FROM case_evidence WHERE case_id=$1 AND organization_id=$2 AND stage=$3`,[caseId,orgId,stage]);return rows;
     },

@@ -1,0 +1,62 @@
+
+> assettrust-platform@0.83.0 verify:v37
+> node --test tools/tests-v37/*.test.cjs
+
+TAP version 13
+# Subtest: live service export signs matching PDF bytes and audits tenant-scoped current-status snapshot
+ok 1 - live service export signs matching PDF bytes and audits tenant-scoped current-status snapshot
+  ---
+  duration_ms: 14.42616
+  type: 'test'
+  ...
+# Subtest: cross-tenant requests, failed MFA, altered saved evidence, missing signer block export and audit
+ok 2 - cross-tenant requests, failed MFA, altered saved evidence, missing signer block export and audit
+  ---
+  duration_ms: 1.269902
+  type: 'test'
+  ...
+# Subtest: withdrawn, superseded, pending withdrawal and dispute states remain visible in authenticated PDF receipt
+ok 3 - withdrawn, superseded, pending withdrawal and dispute states remain visible in authenticated PDF receipt
+  ---
+  duration_ms: 19.681762
+  type: 'test'
+  ...
+# Subtest: A4 PDF renders complete case and evidence details with legal warning
+ok 4 - A4 PDF renders complete case and evidence details with legal warning
+  ---
+  duration_ms: 68.714775
+  type: 'test'
+  ...
+# Subtest: Ed25519 detached receipt verifies exact PDF bytes and rejects altered PDF, status and untrusted key
+ok 5 - Ed25519 detached receipt verifies exact PDF bytes and rejects altered PDF, status and untrusted key
+  ---
+  duration_ms: 10.444725
+  type: 'test'
+  ...
+# Subtest: independent CLI accepts verified bytes and rejects modified bytes, keys and signed metadata
+ok 6 - independent CLI accepts verified bytes and rejects modified bytes, keys and signed metadata
+  ---
+  duration_ms: 135.112472
+  type: 'test'
+  ...
+# Subtest: PDF escapes malicious input and preserves multipage evidence, showing stale-status warning
+ok 7 - PDF escapes malicious input and preserves multipage evidence, showing stale-status warning
+  ---
+  duration_ms: 59.471354
+  type: 'test'
+  ...
+# Subtest: routes require current admin step-up, org isolation, hash integrity, signing and auditing; UI downloads two artifacts
+ok 8 - routes require current admin step-up, org isolation, hash integrity, signing and auditing; UI downloads two artifacts
+  ---
+  duration_ms: 0.80344
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 741.794347

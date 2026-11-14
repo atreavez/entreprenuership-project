@@ -1,0 +1,219 @@
+{
+  "version": "0.70.0",
+  "scope": "offline version-script regressions, NOT live database tests",
+  "suitePass": 30,
+  "suiteRun": 30,
+  "testCasesCounted": 482,
+  "results": [
+    {
+      "suite": "v41",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 9,
+      "elapsedSeconds": 0.34
+    },
+    {
+      "suite": "v42",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 8,
+      "elapsedSeconds": 0.3
+    },
+    {
+      "suite": "v43",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 8,
+      "elapsedSeconds": 3.95
+    },
+    {
+      "suite": "v44",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 16,
+      "elapsedSeconds": 10.16
+    },
+    {
+      "suite": "v45",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 11,
+      "elapsedSeconds": 1.04
+    },
+    {
+      "suite": "v46",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 13,
+      "elapsedSeconds": 0.81
+    },
+    {
+      "suite": "v47",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 10,
+      "elapsedSeconds": 0.41
+    },
+    {
+      "suite": "v48",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 9,
+      "elapsedSeconds": 0.32
+    },
+    {
+      "suite": "v49",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 9,
+      "elapsedSeconds": 0.76
+    },
+    {
+      "suite": "v50",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 9,
+      "elapsedSeconds": 0.77
+    },
+    {
+      "suite": "v51",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 17,
+      "elapsedSeconds": 0.44
+    },
+    {
+      "suite": "v52",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 13,
+      "elapsedSeconds": 0.69
+    },
+    {
+      "suite": "v53",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 18,
+      "elapsedSeconds": 1.46
+    },
+    {
+      "suite": "v54",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 15,
+      "elapsedSeconds": 1.67
+    },
+    {
+      "suite": "v55",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 16,
+      "elapsedSeconds": 0.3
+    },
+    {
+      "suite": "v56",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 20,
+      "elapsedSeconds": 0.35
+    },
+    {
+      "suite": "v57",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 20,
+      "elapsedSeconds": 0.4
+    },
+    {
+      "suite": "v58",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 15,
+      "elapsedSeconds": 0.53
+    },
+    {
+      "suite": "v59",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 15,
+      "elapsedSeconds": 0.58
+    },
+    {
+      "suite": "v60",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 15,
+      "elapsedSeconds": 0.42
+    },
+    {
+      "suite": "v61",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 16,
+      "elapsedSeconds": 0.65
+    },
+    {
+      "suite": "v62",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 18,
+      "elapsedSeconds": 0.82
+    },
+    {
+      "suite": "v63",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 31,
+      "elapsedSeconds": 0.8
+    },
+    {
+      "suite": "v64",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 15,
+      "elapsedSeconds": 0.43
+    },
+    {
+      "suite": "v65",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 16,
+      "elapsedSeconds": 0.74
+    },
+    {
+      "suite": "v66",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 25,
+      "elapsedSeconds": 1.13
+    },
+    {
+      "suite": "v67",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 19,
+      "elapsedSeconds": 0.93
+    },
+    {
+      "suite": "v68",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 25,
+      "elapsedSeconds": 0.5
+    },
+    {
+      "suite": "v69",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 22,
+      "elapsedSeconds": 0.38
+    },
+    {
+      "suite": "v70",
+      "passed": true,
+      "exitCode": 0,
+      "testsCounted": 29,
+      "elapsedSeconds": 0.44
+    }
+  ]
+}

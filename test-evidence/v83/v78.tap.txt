@@ -1,0 +1,195 @@
+
+> assettrust-platform@0.83.0 verify:v78
+> node --test --test-concurrency=1 tools/tests-v78/*.test.cjs
+
+TAP version 13
+# Subtest: planning is read-only, actionable and not release approval
+ok 1 - planning is read-only, actionable and not release approval
+  ---
+  duration_ms: 0.706012
+  type: 'test'
+  ...
+# Subtest: Kali wrapper rejects missing confirmation
+ok 2 - Kali wrapper rejects missing confirmation
+  ---
+  duration_ms: 0.307192
+  type: 'test'
+  ...
+# Subtest: Kali wrapper rejects production even with confirmations
+ok 3 - Kali wrapper rejects production even with confirmations
+  ---
+  duration_ms: 0.150857
+  type: 'test'
+  ...
+# Subtest: Kali wrapper rejects private config not test-locked
+ok 4 - Kali wrapper rejects private config not test-locked
+  ---
+  duration_ms: 0.198219
+  type: 'test'
+  ...
+# Subtest: Kali wrapper refuses partial/unstructured success payload
+ok 5 - Kali wrapper refuses partial/unstructured success payload
+  ---
+  duration_ms: 0.24577
+  type: 'test'
+  ...
+# Subtest: Kali wrapper accepts only six valid read-only PG checks, still release blocked
+ok 6 - Kali wrapper accepts only six valid read-only PG checks, still release blocked
+  ---
+  duration_ms: 0.314253
+  type: 'test'
+  ...
+# Subtest: Kali wrapper CLI rejects live run with no local setup
+ok 7 - Kali wrapper CLI rejects live run with no local setup
+  ---
+  duration_ms: 30.035913
+  type: 'test'
+  ...
+# Subtest: Kali wrapper plans without invoking a database
+ok 8 - Kali wrapper plans without invoking a database
+  ---
+  duration_ms: 26.702405
+  type: 'test'
+  ...
+# Subtest: 27 audited SQL migrations remain contiguous, unmodified and nonempty
+ok 9 - 27 audited SQL migrations remain contiguous, unmodified and nonempty
+  ---
+  duration_ms: 1.543033
+  type: 'test'
+  ...
+# Subtest: advisory lock is deterministic and PostgreSQL BIGINT parameterized
+ok 10 - advisory lock is deterministic and PostgreSQL BIGINT parameterized
+  ---
+  duration_ms: 3.198105
+  type: 'test'
+  ...
+# Subtest: contended lock refuses before any ledger/schema query and closes session
+ok 11 - contended lock refuses before any ledger/schema query and closes session
+  ---
+  duration_ms: 1.72708
+  type: 'test'
+  ...
+# Subtest: malformed/unknown lock result fails closed
+ok 12 - malformed/unknown lock result fails closed
+  ---
+  duration_ms: 0.949229
+  type: 'test'
+  ...
+# Subtest: connection failure closes the constructed client
+ok 13 - connection failure closes the constructed client
+  ---
+  duration_ms: 0.977241
+  type: 'test'
+  ...
+# Subtest: read-only full ledger check works without DDL or writes
+ok 14 - read-only full ledger check works without DDL or writes
+  ---
+  duration_ms: 1.074026
+  type: 'test'
+  ...
+# Subtest: missing ledger under --check is a failure, no schema creation
+ok 15 - missing ledger under --check is a failure, no schema creation
+  ---
+  duration_ms: 1.390884
+  type: 'test'
+  ...
+# Subtest: tampered migration checksum is never accepted as ready
+ok 16 - tampered migration checksum is never accepted as ready
+  ---
+  duration_ms: 0.87015
+  type: 'test'
+  ...
+# Subtest: missing migration is reported, not silently baselined
+ok 17 - missing migration is reported, not silently baselined
+  ---
+  duration_ms: 1.097081
+  type: 'test'
+  ...
+# Subtest: a new database applies migrations in per-file transactions and releases lock
+ok 18 - a new database applies migrations in per-file transactions and releases lock
+  ---
+  duration_ms: 1.958148
+  type: 'test'
+  ...
+# Subtest: SQL execution failure rolls back and does not mark that migration applied
+ok 19 - SQL execution failure rolls back and does not mark that migration applied
+  ---
+  duration_ms: 1.902364
+  type: 'test'
+  ...
+# Subtest: rollback failure is explicit and original SQL cause is retained
+ok 20 - rollback failure is explicit and original SQL cause is retained
+  ---
+  duration_ms: 1.002079
+  type: 'test'
+  ...
+# Subtest: COMMIT error never claims migration success; instructs ledger inspection
+ok 21 - COMMIT error never claims migration success; instructs ledger inspection
+  ---
+  duration_ms: 1.052775
+  type: 'test'
+  ...
+# Subtest: BEGIN failure does not claim a transaction or attempt inappropriate rollback
+ok 22 - BEGIN failure does not claim a transaction or attempt inappropriate rollback
+  ---
+  duration_ms: 0.994488
+  type: 'test'
+  ...
+# Subtest: unlock failure blocks success while still closing the connection
+ok 23 - unlock failure blocks success while still closing the connection
+  ---
+  duration_ms: 1.184493
+  type: 'test'
+  ...
+# Subtest: an original failed check is not replaced by later unlock failure
+ok 24 - an original failed check is not replaced by later unlock failure
+  ---
+  duration_ms: 0.864402
+  type: 'test'
+  ...
+# Subtest: socket close failure cannot be reported as a successful run
+ok 25 - socket close failure cannot be reported as a successful run
+  ---
+  duration_ms: 0.938713
+  type: 'test'
+  ...
+# Subtest: an original ledger error takes priority over a secondary close failure
+ok 26 - an original ledger error takes priority over a secondary close failure
+  ---
+  duration_ms: 0.794516
+  type: 'test'
+  ...
+# Subtest: baseline and check cannot be combined
+ok 27 - baseline and check cannot be combined
+  ---
+  duration_ms: 0.132008
+  type: 'test'
+  ...
+# Subtest: without credentials and factory the migration runner rejects
+ok 28 - without credentials and factory the migration runner rejects
+  ---
+  duration_ms: 0.106811
+  type: 'test'
+  ...
+# Subtest: new CLI plan is available offline without a DB URL or installed pg
+ok 29 - new CLI plan is available offline without a DB URL or installed pg
+  ---
+  duration_ms: 28.505995
+  type: 'test'
+  ...
+# Subtest: new live PG tool refuses unsafe/unconfirmed execution before importing pg
+ok 30 - new live PG tool refuses unsafe/unconfirmed execution before importing pg
+  ---
+  duration_ms: 28.29655
+  type: 'test'
+  ...
+1..30
+# tests 30
+# suites 0
+# pass 30
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 253.809167
+

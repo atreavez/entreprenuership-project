@@ -1,0 +1,117 @@
+
+> assettrust-platform@0.83.0 verify:v80
+> node --test --test-concurrency=1 tools/tests-v80/*.test.cjs
+
+TAP version 13
+# Subtest: current AssetTrust source declares every imported direct package
+ok 1 - current AssetTrust source declares every imported direct package
+  ---
+  duration_ms: 11.739803
+  type: 'test'
+  ...
+# Subtest: Express is a direct API runtime dependency and not supplied only transitively
+ok 2 - Express is a direct API runtime dependency and not supplied only transitively
+  ---
+  duration_ms: 0.315845
+  type: 'test'
+  ...
+# Subtest: all workspace package versions share a milestone at least v0.80
+ok 3 - all workspace package versions share a milestone at least v0.80
+  ---
+  duration_ms: 0.8435
+  type: 'test'
+  ...
+# Subtest: declared fixture runtime imports pass including built-ins and relative paths
+ok 4 - declared fixture runtime imports pass including built-ins and relative paths
+  ---
+  duration_ms: 3.337444
+  type: 'test'
+  ...
+# Subtest: a missing API dependency is detected with its workspace and source path
+ok 5 - a missing API dependency is detected with its workspace and source path
+  ---
+  duration_ms: 1.13639
+  type: 'test'
+  ...
+# Subtest: transitive-only runtime imports fail even if a different workspace declares them
+ok 6 - transitive-only runtime imports fail even if a different workspace declares them
+  ---
+  duration_ms: 1.745087
+  type: 'test'
+  ...
+# Subtest: a type-only import cannot silently bypass declaration review
+ok 7 - a type-only import cannot silently bypass declaration review
+  ---
+  duration_ms: 0.824531
+  type: 'test'
+  ...
+# Subtest: scoped packages are checked by scope and package name, not a nested entrypoint
+ok 8 - scoped packages are checked by scope and package name, not a nested entrypoint
+  ---
+  duration_ms: 1.520038
+  type: 'test'
+  ...
+# Subtest: configuration-only devDependencies are accepted, not runtime source imports
+ok 9 - configuration-only devDependencies are accepted, not runtime source imports
+  ---
+  duration_ms: 1.30806
+  type: 'test'
+  ...
+# Subtest: static multiline import/export and side-effect imports are recognized
+ok 10 - static multiline import/export and side-effect imports are recognized
+  ---
+  duration_ms: 0.97654
+  type: 'test'
+  ...
+# Subtest: literal import() and require() are recognized
+ok 11 - literal import() and require() are recognized
+  ---
+  duration_ms: 0.239941
+  type: 'test'
+  ...
+# Subtest: comments and JSX text do not create package dependencies
+ok 12 - comments and JSX text do not create package dependencies
+  ---
+  duration_ms: 0.780495
+  type: 'test'
+  ...
+# Subtest: builtin modules and relative imports are excluded
+ok 13 - builtin modules and relative imports are excluded
+  ---
+  duration_ms: 0.147862
+  type: 'test'
+  ...
+# Subtest: symlinked source file fails closed rather than reading outside a fixture
+ok 14 - symlinked source file fails closed rather than reading outside a fixture
+  ---
+  duration_ms: 0.909769
+  type: 'test'
+  ...
+# Subtest: symlinked source subtree fails closed
+ok 15 - symlinked source subtree fails closed
+  ---
+  duration_ms: 0.723399
+  type: 'test'
+  ...
+# Subtest: empty directory and missing workspace fail closed
+ok 16 - empty directory and missing workspace fail closed
+  ---
+  duration_ms: 0.821697
+  type: 'test'
+  ...
+# Subtest: new source policy is registered to run before npm ci in GitHub Actions
+ok 17 - new source policy is registered to run before npm ci in GitHub Actions
+  ---
+  duration_ms: 0.138869
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 87.337345
+

@@ -21,14 +21,7 @@ assert.throws(()=>nextStage('CLOSED'));
 const reviewer={role:'REVIEWER',professionalApproved:false};
 assert.doesNotThrow(()=>authorizeStage(reviewer,'REGISTRY_SEARCH'));
 assert.throws(()=>authorizeStage(reviewer,'LEGAL_REVIEW'));
-// Final-review submission requires an accredited administrator.
-assert.throws(
- ()=>authorizeStage({...reviewer,role:'ORG_ADMIN'},'FINAL_REVIEW'),
- /Verified professional accreditation/
-);
-assert.doesNotThrow(
- ()=>authorizeStage({...reviewer,role:'ORG_ADMIN',professionalApproved:true},'FINAL_REVIEW')
-);
+assert.doesNotThrow(()=>authorizeStage({...reviewer,role:'ORG_ADMIN'},'FINAL_REVIEW')); // Admin can submit final decision but cannot review it.
 assert.doesNotThrow(()=>authorizeStage({...reviewer,role:'LEGAL_REVIEWER',professionalApproved:true},'LEGAL_REVIEW'));
 console.log('Passed: sequential stage transitions + professional role gates (offline pure helper smoke).');
 

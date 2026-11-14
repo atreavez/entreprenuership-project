@@ -1,0 +1,135 @@
+
+> assettrust-platform@0.83.0 verify:v57
+> node --test --test-concurrency=1 tools/tests-v57/*.test.cjs
+
+TAP version 13
+# Subtest: allows a distinct and scoped runtime login only for a disposable local DB
+ok 1 - allows a distinct and scoped runtime login only for a disposable local DB
+  ---
+  duration_ms: 1.08977
+  type: 'test'
+  ...
+# Subtest: rejects privileged operator login as application login
+ok 2 - rejects privileged operator login as application login
+  ---
+  duration_ms: 1.074107
+  type: 'test'
+  ...
+# Subtest: rejects remote runtime DB even if operator is loopback
+ok 3 - rejects remote runtime DB even if operator is loopback
+  ---
+  duration_ms: 0.156505
+  type: 'test'
+  ...
+# Subtest: rejects production and unrelated database names
+ok 4 - rejects production and unrelated database names
+  ---
+  duration_ms: 0.180431
+  type: 'test'
+  ...
+# Subtest: rejects non-disposable operator URLs
+ok 5 - rejects non-disposable operator URLs
+  ---
+  duration_ms: 0.239801
+  type: 'test'
+  ...
+# Subtest: rejects unexpected runtime role and URL overrides
+ok 6 - rejects unexpected runtime role and URL overrides
+  ---
+  duration_ms: 0.178428
+  type: 'test'
+  ...
+# Subtest: refuses invalid runtime modes and missing runtime URL before spawning an API
+ok 7 - refuses invalid runtime modes and missing runtime URL before spawning an API
+  ---
+  duration_ms: 0.237878
+  type: 'test'
+  ...
+# Subtest: passes a verified separate runtime URL only in supervised test mode
+ok 8 - passes a verified separate runtime URL only in supervised test mode
+  ---
+  duration_ms: 0.135584
+  type: 'test'
+  ...
+# Subtest: ordinary development does not overwrite DATABASE_URL without CI opt-in
+ok 9 - ordinary development does not overwrite DATABASE_URL without CI opt-in
+  ---
+  duration_ms: 0.577669
+  type: 'test'
+  ...
+# Subtest: CI HTTP API cannot bypass the runtime-role boundary by removing its opt-in flag
+ok 10 - CI HTTP API cannot bypass the runtime-role boundary by removing its opt-in flag
+  ---
+  duration_ms: 0.441524
+  type: 'test'
+  ...
+# Subtest: rejects superuser and BYPASSRLS runtime roles
+ok 11 - rejects superuser and BYPASSRLS runtime roles
+  ---
+  duration_ms: 0.297067
+  type: 'test'
+  ...
+# Subtest: rejects every missing or unforced RLS table
+ok 12 - rejects every missing or unforced RLS table
+  ---
+  duration_ms: 0.314824
+  type: 'test'
+  ...
+# Subtest: rejects tables owned by the HTTP runtime role
+ok 13 - rejects tables owned by the HTTP runtime role
+  ---
+  duration_ms: 0.097587
+  type: 'test'
+  ...
+# Subtest: accepts only complete FORCE RLS inventory and restricted runtime role
+ok 14 - accepts only complete FORCE RLS inventory and restricted runtime role
+  ---
+  duration_ms: 0.143856
+  type: 'test'
+  ...
+# Subtest: CI workflow provisions runtime login after migration but before real API tests
+ok 15 - CI workflow provisions runtime login after migration but before real API tests
+  ---
+  duration_ms: 0.160602
+  type: 'test'
+  ...
+# Subtest: real HTTP test runners swap only child database URL, not fixture operator URL
+ok 16 - real HTTP test runners swap only child database URL, not fixture operator URL
+  ---
+  duration_ms: 0.135684
+  type: 'test'
+  ...
+# Subtest: database runtime role guard is enforced in production and opted-in CI testing
+ok 17 - database runtime role guard is enforced in production and opted-in CI testing
+  ---
+  duration_ms: 0.105479
+  type: 'test'
+  ...
+# Subtest: live runtime test refuses unapproved DB before importing pg
+ok 18 - live runtime test refuses unapproved DB before importing pg
+  ---
+  duration_ms: 29.600467
+  type: 'test'
+  ...
+# Subtest: CI provisioning refuses operation outside supervised disposable CI
+ok 19 - CI provisioning refuses operation outside supervised disposable CI
+  ---
+  duration_ms: 34.870635
+  type: 'test'
+  ...
+# Subtest: project manifests agree at v0.57.0 or a compatible later release
+ok 20 - project manifests agree at v0.57.0 or a compatible later release
+  ---
+  duration_ms: 0.867606
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 127.156413
+

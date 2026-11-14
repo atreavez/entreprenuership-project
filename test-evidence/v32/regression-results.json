@@ -1,0 +1,200 @@
+[
+  {
+    "command": "npm run smoke:offline",
+    "exit": 0,
+    "seconds": 0.61,
+    "log": "npm_run_smoke-offline.log"
+  },
+  {
+    "command": "npm run verify:v03",
+    "exit": 0,
+    "seconds": 0.31,
+    "log": "npm_run_verify-v03.log"
+  },
+  {
+    "command": "npm run verify:v04",
+    "exit": 0,
+    "seconds": 0.81,
+    "log": "npm_run_verify-v04.log"
+  },
+  {
+    "command": "npm run verify:v05",
+    "exit": 0,
+    "seconds": 1.4,
+    "log": "npm_run_verify-v05.log"
+  },
+  {
+    "command": "npm run verify:v06",
+    "exit": 0,
+    "seconds": 0.75,
+    "log": "npm_run_verify-v06.log"
+  },
+  {
+    "command": "npm run verify:v07",
+    "exit": 0,
+    "seconds": 0.53,
+    "log": "npm_run_verify-v07.log"
+  },
+  {
+    "command": "npm run verify:v08",
+    "exit": 0,
+    "seconds": 1.68,
+    "log": "npm_run_verify-v08.log"
+  },
+  {
+    "command": "npm run verify:v09",
+    "exit": 0,
+    "seconds": 2.11,
+    "log": "npm_run_verify-v09.log"
+  },
+  {
+    "command": "npm run verify:v10",
+    "exit": 0,
+    "seconds": 1.27,
+    "log": "npm_run_verify-v10.log"
+  },
+  {
+    "command": "npm run verify:v11",
+    "exit": 0,
+    "seconds": 1.1,
+    "log": "npm_run_verify-v11.log"
+  },
+  {
+    "command": "npm run verify:v12",
+    "exit": 0,
+    "seconds": 1.23,
+    "log": "npm_run_verify-v12.log"
+  },
+  {
+    "command": "npm run verify:v13",
+    "exit": 0,
+    "seconds": 5.18,
+    "log": "npm_run_verify-v13.log"
+  },
+  {
+    "command": "npm run verify:v14",
+    "exit": 0,
+    "seconds": 0.2,
+    "log": "npm_run_verify-v14.log"
+  },
+  {
+    "command": "npm run verify:v15",
+    "exit": 0,
+    "seconds": 1.25,
+    "log": "npm_run_verify-v15.log"
+  },
+  {
+    "command": "npm run verify:v16",
+    "exit": 0,
+    "seconds": 0.18,
+    "log": "npm_run_verify-v16.log"
+  },
+  {
+    "command": "npm run verify:v17",
+    "exit": 0,
+    "seconds": 0.21,
+    "log": "npm_run_verify-v17.log"
+  },
+  {
+    "command": "npm run verify:v18",
+    "exit": 0,
+    "seconds": 0.52,
+    "log": "npm_run_verify-v18.log"
+  },
+  {
+    "command": "npm run verify:v19",
+    "exit": 0,
+    "seconds": 0.47,
+    "log": "npm_run_verify-v19.log"
+  },
+  {
+    "command": "npm run verify:v20",
+    "exit": 0,
+    "seconds": 0.59,
+    "log": "npm_run_verify-v20.log"
+  },
+  {
+    "command": "npm run verify:v21",
+    "exit": 0,
+    "seconds": 0.42,
+    "log": "npm_run_verify-v21.log"
+  },
+  {
+    "command": "npm run verify:v22",
+    "exit": 0,
+    "seconds": 0.45,
+    "log": "npm_run_verify-v22.log"
+  },
+  {
+    "command": "npm run verify:v23",
+    "exit": 0,
+    "seconds": 1.03,
+    "log": "npm_run_verify-v23.log"
+  },
+  {
+    "command": "npm run verify:v24",
+    "exit": 1,
+    "seconds": 0.49,
+    "log": "npm_run_verify-v24.log"
+  },
+  {
+    "command": "npm run verify:v25",
+    "exit": 1,
+    "seconds": 0.64,
+    "log": "npm_run_verify-v25.log"
+  },
+  {
+    "command": "npm run verify:v26",
+    "exit": 0,
+    "seconds": 1.43,
+    "log": "npm_run_verify-v26.log"
+  },
+  {
+    "command": "npm run verify:v27",
+    "exit": 0,
+    "seconds": 1.36,
+    "log": "npm_run_verify-v27.log"
+  },
+  {
+    "command": "npm run verify:v28",
+    "exit": 0,
+    "seconds": 1.42,
+    "log": "npm_run_verify-v28.log"
+  },
+  {
+    "command": "npm run verify:v29",
+    "exit": 0,
+    "seconds": 1.25,
+    "log": "npm_run_verify-v29.log"
+  },
+  {
+    "command": "npm run verify:v30",
+    "exit": 0,
+    "seconds": 1.49,
+    "log": "npm_run_verify-v30.log"
+  },
+  {
+    "command": "npm run verify:v31",
+    "exit": 0,
+    "seconds": 1.38,
+    "log": "npm_run_verify-v31.log"
+  },
+  {
+    "command": "npm run verify:architecture",
+    "exit": 0,
+    "seconds": 0.13,
+    "log": "npm_run_verify-architecture.log"
+  },
+  {
+    "command": "npm run verify:syntax",
+    "exit": 0,
+    "seconds": 1.12,
+    "log": "npm_run_verify-syntax.log"
+  },
+  {
+    "command": "npm run verify:v31",
+    "exit": 0,
+    "seconds": 1.45,
+    "log": "npm_run_verify-v31.log"
+  }
+]

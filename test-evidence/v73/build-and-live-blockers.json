@@ -1,0 +1,12 @@
+{
+  "milestone": "0.73.0",
+  "productionApproved": false,
+  "lockfile": "MISSING",
+  "fullBuild": "FAILED_MISSING_INSTALLED_DEPENDENCIES",
+  "registry": "UNREACHABLE_FROM_AUTHORING_ENVIRONMENT",
+  "livePostgreSQL": "NOT_RUN",
+  "liveClamAV": "NOT_RUN",
+  "liveHTTPRevocation": "NOT_RUN",
+  "originalGitHistoryScan": "NOT_RUN",
+  "releasePreflight": "BLOCKED_AUTHENTIC_LOCKFILE_REQUIRED"
+}

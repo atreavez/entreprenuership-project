@@ -1,0 +1,378 @@
+TAP version 13
+# Subtest: RED: current account absence fails closed before a stale legal reviewer can review
+not ok 1 - RED: current account absence fails closed before a stale legal reviewer can review
+  ---
+  duration_ms: 1.177525
+  type: 'test'
+  location: '/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:28:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, open '/mnt/data/assettrust-v25-work/assettrust-v25/apps/api/src/contexts/verification/infrastructure/current-workflow-authorizer.ts'"
+  code: 'ENOENT'
+  stack: |-
+    Object.readFileSync (node:fs:442:20)
+    load (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:14:51)
+    TestContext.<anonymous> (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:29:35)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: current role downgrade supersedes the authenticated snapshot
+not ok 2 - current role downgrade supersedes the authenticated snapshot
+  ---
+  duration_ms: 0.214315
+  type: 'test'
+  location: '/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:32:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, open '/mnt/data/assettrust-v25-work/assettrust-v25/apps/api/src/contexts/verification/infrastructure/current-workflow-authorizer.ts'"
+  code: 'ENOENT'
+  stack: |-
+    Object.readFileSync (node:fs:442:20)
+    load (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:14:51)
+    TestContext.<anonymous> (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:33:35)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: revoked professional credential cannot be treated as approved
+not ok 3 - revoked professional credential cannot be treated as approved
+  ---
+  duration_ms: 0.397713
+  type: 'test'
+  location: '/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:38:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, open '/mnt/data/assettrust-v25-work/assettrust-v25/apps/api/src/contexts/verification/infrastructure/current-workflow-authorizer.ts'"
+  code: 'ENOENT'
+  stack: |-
+    Object.readFileSync (node:fs:442:20)
+    load (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:14:51)
+    TestContext.<anonymous> (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:39:35)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: approved professional may review with verified current credentials
+not ok 4 - approved professional may review with verified current credentials
+  ---
+  duration_ms: 0.16519
+  type: 'test'
+  location: '/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:44:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, open '/mnt/data/assettrust-v25-work/assettrust-v25/apps/api/src/contexts/verification/infrastructure/current-workflow-authorizer.ts'"
+  code: 'ENOENT'
+  stack: |-
+    Object.readFileSync (node:fs:442:20)
+    load (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:14:51)
+    TestContext.<anonymous> (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:45:35)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: organization administrator never inherits stale professional approval
+not ok 5 - organization administrator never inherits stale professional approval
+  ---
+  duration_ms: 0.208266
+  type: 'test'
+  location: '/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:49:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, open '/mnt/data/assettrust-v25-work/assettrust-v25/apps/api/src/contexts/verification/infrastructure/current-workflow-authorizer.ts'"
+  code: 'ENOENT'
+  stack: |-
+    Object.readFileSync (node:fs:442:20)
+    load (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:14:51)
+    TestContext.<anonymous> (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:50:35)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: RED: a downgraded admin cannot reassign a case using stale token
+not ok 6 - RED: a downgraded admin cannot reassign a case using stale token
+  ---
+  duration_ms: 0.156618
+  type: 'test'
+  location: '/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:62:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, open '/mnt/data/assettrust-v25-work/assettrust-v25/apps/api/src/contexts/verification/infrastructure/current-case-assignment.ts'"
+  code: 'ENOENT'
+  stack: |-
+    Object.readFileSync (node:fs:442:20)
+    load (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:14:51)
+    TestContext.<anonymous> (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:63:39)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: deleted or cross-organization assignee cannot be assigned
+not ok 7 - deleted or cross-organization assignee cannot be assigned
+  ---
+  duration_ms: 0.19128
+  type: 'test'
+  location: '/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:66:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, open '/mnt/data/assettrust-v25-work/assettrust-v25/apps/api/src/contexts/verification/infrastructure/current-case-assignment.ts'"
+  code: 'ENOENT'
+  stack: |-
+    Object.readFileSync (node:fs:442:20)
+    load (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:14:51)
+    TestContext.<anonymous> (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:67:39)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: closed case cannot be reassigned
+not ok 8 - closed case cannot be reassigned
+  ---
+  duration_ms: 0.178771
+  type: 'test'
+  location: '/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:70:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, open '/mnt/data/assettrust-v25-work/assettrust-v25/apps/api/src/contexts/verification/infrastructure/current-case-assignment.ts'"
+  code: 'ENOENT'
+  stack: |-
+    Object.readFileSync (node:fs:442:20)
+    load (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:14:51)
+    TestContext.<anonymous> (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:71:39)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: unaccredited surveyor cannot be appointed to active field stage
+not ok 9 - unaccredited surveyor cannot be appointed to active field stage
+  ---
+  duration_ms: 0.363281
+  type: 'test'
+  location: '/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:74:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, open '/mnt/data/assettrust-v25-work/assettrust-v25/apps/api/src/contexts/verification/infrastructure/current-case-assignment.ts'"
+  code: 'ENOENT'
+  stack: |-
+    Object.readFileSync (node:fs:442:20)
+    load (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:14:51)
+    TestContext.<anonymous> (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:75:39)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: field assignment requires stage-qualified role
+not ok 10 - field assignment requires stage-qualified role
+  ---
+  duration_ms: 0.406636
+  type: 'test'
+  location: '/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:78:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, open '/mnt/data/assettrust-v25-work/assettrust-v25/apps/api/src/contexts/verification/infrastructure/current-case-assignment.ts'"
+  code: 'ENOENT'
+  stack: |-
+    Object.readFileSync (node:fs:442:20)
+    load (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:14:51)
+    TestContext.<anonymous> (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:79:39)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: current accredited surveyor can be assigned while case and users are locked
+not ok 11 - current accredited surveyor can be assigned while case and users are locked
+  ---
+  duration_ms: 0.213314
+  type: 'test'
+  location: '/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:82:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, open '/mnt/data/assettrust-v25-work/assettrust-v25/apps/api/src/contexts/verification/infrastructure/current-case-assignment.ts'"
+  code: 'ENOENT'
+  stack: |-
+    Object.readFileSync (node:fs:442:20)
+    load (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:14:51)
+    TestContext.<anonymous> (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:83:39)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: workflow requests a fresh actor inside the same transaction before evidence review and advancement
+not ok 12 - workflow requests a fresh actor inside the same transaction before evidence review and advancement
+  ---
+  duration_ms: 1.236594
+  type: 'test'
+  location: '/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:87:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /await tx\.getCurrentActor\(actor,c\.stage\)/. Input:
+    
+    "import {ReviewActor,ReviewDecision,CaseRecord,EvidenceRecord,Readiness,mayReviewEvidence,evaluateReadiness,DISCLAIMER} from '../domain/evidence-policy';\n" +
+      '/** APPLICATION: use cases depend only on repository ports and pure domain rules. */\n' +
+      'export class WorkflowFailure extends Error{\n' +
+      " constructor(readonly code:string,message:string){super(message);this.name='WorkflowFailure';}\n" +
+      '}\n' +
+      'export interface WorkflowTransaction{\n' +
+      ' getCase(id:string,orgId:string):Promise<CaseRecord|null>;\n' +
+      ' getEvidence(evidenceId:string,caseId:string,orgId:string):Promise<EvidenceRecord|null>;\n' +
+      ' getEvidenceForStage(caseId:string,orgId:string,stage:string):Promise<EvidenceRecord[]>;\n' +
+      ' hasUnresolvedDispute(caseId:string,orgId:string):Promise<boolean>;\n' +
+      ' recordDecision(evidenceId:string,actorId:string,decision:ReviewDecision,notes:string):Promise<void>;\n' +
+      ' changeStage(caseId:string,orgId:string,newStage:string,status:string):Promise<void>;\n' +
+      ' completeAsset(assetId:string,orgId:string):Promise<void>;\n' +
+      ' audit(actor:ReviewActor,action:string,caseId:string,details:Record<string,unknown>):Promise<void>;\n' +
+      '}\n' +
+      'export interface WorkflowRepository{\n' +
+      ' transaction<T>(work:(tx:WorkflowTransaction)=>Promise<T>):Promise<T>;\n' +
+      '}\n' +
+      'export class EvidenceWorkflow{\n' +
+      ' constructor(private readonly repo:WorkflowRepository){}\n' +
+      ' private async findCase(tx:WorkflowTransaction,actor:ReviewActor,id:string):Promise<CaseRecord>{\n' +
+      '  const c=await tx.getCase(id,actor.organizationId);\n' +
+      "  if(!c)throw new WorkflowFailure('CASE_NOT_FOUND','Case not found');return c;\n" +
+      ' }\n' +
+      ' async review(actor:ReviewActor,caseId:string,evidenceId:string,decision:ReviewDecision,notes:string){\n' +
+      "  if(decision!=='ACCEPTED'&&decision!=='REJECTED')throw new WorkflowFailure('INVALID_DECISION','Unknown review decision');\n" +
+      "  if(typeof notes!=='string'||notes.trim().length<8||notes.length>2000)throw new WorkflowFailure('INVALID_NOTES','Review rationale must be 8–2000 characters');\n" +
+      '  return this.repo.transaction(async tx=>{\n' +
+      '   const c=await this.findCase(tx,actor,caseId);\n' +
+      "   if(c.status!=='OPEN')throw new WorkflowFailure('CASE_NOT_OPEN','Cannot review a closed or blocked case');\n" +
+      "   if(await tx.hasUnresolvedDispute(caseId,actor.organizationId))throw new WorkflowFailure('DISPUTE_OPEN','Resolve active disputes first');\n" +
+      '   const e=await tx.getEvidence(evidenceId,caseId,actor.organizationId);\n' +
+      "   if(!e)throw new WorkflowFailure('EVIDENCE_NOT_FOUND','Evidence not found');\n" +
+      "   if(!mayReviewEvidence(actor,e,c.stage))throw new WorkflowFailure('REVIEW_NOT_AUTHORIZED','Requires a separate authorized reviewer and pending evidence for this stage');\n" +
+      '   await tx.recordDecision(evidenceId,actor.id,decision,notes.trim());\n' +
+      "   await tx.audit(actor,'EVIDENCE_REVIEWED',caseId,{evidenceId,stage:c.stage,decision,reviewerId:actor.id});\n" +
+      '   return {id:evidenceId,decision,reviewedBy:actor.id,notice:DISCLAIMER};\n' +
+      '  });\n' +
+      ' }\n' +
+      ' async readiness(actor:ReviewActor,caseId:string):Promise<Readiness>{\n' +
+      '  return this.repo.transaction(async tx=>{\n' +
+      '   const c=await this.findCase(tx,actor,caseId);\n' +
+      '   const e=await tx.getEvidenceForStage(caseId,actor.organizationId,c.stage);\n' +
+      '   const disputed=await tx.hasUnresolvedDispute(caseId,actor.organizationId);\n' +
+      '   return evaluateReadiness(actor,c,e,disputed);\n' +
+      '  });\n' +
+      ' }\n' +
+      ' async advance(actor:ReviewActor,caseId:string){\n' +
+      '  return this.repo.transaction(async tx=>{\n' +
+      '   const c=await this.findCase(tx,actor,caseId);\n' +
+      '   const evidence=await tx.getEvidenceForStage(caseId,actor.organizationId,c.stage);\n' +
+      '   const disputed=await tx.hasUnresolvedDispute(caseId,actor.organizationId);\n' +
+      '   const readiness=evaluateReadiness(actor,c,evidence,disputed);\n' +
+      "   if(!readiness.canAdvance)throw new WorkflowFailure(readiness.blockers[0],`Cannot advance: ${readiness.blockers.join(', ')}`);\n" +
+      '   const next=readiness.nextStage!;\n' +
+      "   await tx.changeStage(caseId,actor.organizationId,next,next==='CLOSED'?'CLOSED':'OPEN');\n" +
+      "   if(next==='CLOSED')await tx.completeAsset(c.assetId,actor.organizationId);\n" +
+      "   await tx.audit(actor,'CASE_STAGE_ADVANCED',caseId,{from:c.stage,to:next,evidenceAccepted:true});\n" +
+      "   return {caseId,stage:next,status:next==='CLOSED'?'CLOSED':'OPEN',notice:DISCLAIMER};\n" +
+      '  });\n' +
+      ' }\n' +
+      '}\n'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    import {ReviewActor,ReviewDecision,CaseRecord,EvidenceRecord,Readiness,mayReviewEvidence,evaluateReadiness,DISCLAIMER} from '../domain/evidence-policy';
+    /** APPLICATION: use cases depend only on repository ports and pure domain rules. */
+    export class WorkflowFailure extends Error{
+     constructor(readonly code:string,message:string){super(message);this.name='WorkflowFailure';}
+    }
+    export interface WorkflowTransaction{
+     getCase(id:string,orgId:string):Promise<CaseRecord|null>;
+     getEvidence(evidenceId:string,caseId:string,orgId:string):Promise<EvidenceRecord|null>;
+     getEvidenceForStage(caseId:string,orgId:string,stage:string):Promise<EvidenceRecord[]>;
+     hasUnresolvedDispute(caseId:string,orgId:string):Promise<boolean>;
+     recordDecision(evidenceId:string,actorId:string,decision:ReviewDecision,notes:string):Promise<void>;
+     changeStage(caseId:string,orgId:string,newStage:string,status:string):Promise<void>;
+     completeAsset(assetId:string,orgId:string):Promise<void>;
+     audit(actor:ReviewActor,action:string,caseId:string,details:Record<string,unknown>):Promise<void>;
+    }
+    export interface WorkflowRepository{
+     transaction<T>(work:(tx:WorkflowTransaction)=>Promise<T>):Promise<T>;
+    }
+    export class EvidenceWorkflow{
+     constructor(private readonly repo:WorkflowRepository){}
+     private async findCase(tx:WorkflowTransaction,actor:ReviewActor,id:string):Promise<CaseRecord>{
+      const c=await tx.getCase(id,actor.organizationId);
+      if(!c)throw new WorkflowFailure('CASE_NOT_FOUND','Case not found');return c;
+     }
+     async review(actor:ReviewActor,caseId:string,evidenceId:string,decision:ReviewDecision,notes:string){
+      if(decision!=='ACCEPTED'&&decision!=='REJECTED')throw new WorkflowFailure('INVALID_DECISION','Unknown review decision');
+      if(typeof notes!=='string'||notes.trim().length<8||notes.length>2000)throw new WorkflowFailure('INVALID_NOTES','Review rationale must be 8–2000 characters');
+      return this.repo.transaction(async tx=>{
+       const c=await this.findCase(tx,actor,caseId);
+       if(c.status!=='OPEN')throw new WorkflowFailure('CASE_NOT_OPEN','Cannot review a closed or blocked case');
+       if(await tx.hasUnresolvedDispute(caseId,actor.organizationId))throw new WorkflowFailure('DISPUTE_OPEN','Resolve active disputes first');
+       const e=await tx.getEvidence(evidenceId,caseId,actor.organizationId);
+       if(!e)throw new WorkflowFailure('EVIDENCE_NOT_FOUND','Evidence not found');
+       if(!mayReviewEvidence(actor,e,c.stage))throw new WorkflowFailure('REVIEW_NOT_AUTHORIZED','Requires a separate authorized reviewer and pending evidence for this stage');
+       await tx.recordDecision(evidenceId,actor.id,decision,notes.trim());
+       await tx.audit(actor,'EVIDENCE_REVIEWED',caseId,{evidenceId,stage:c.stage,decision,reviewerId:actor.id});
+       return {id:evidenceId,decision,reviewedBy:actor.id,notice:DISCLAIMER};
+      });
+     }
+     async readiness(actor:ReviewActor,caseId:string):Promise<Readiness>{
+      return this.repo.transaction(async tx=>{
+       const c=await this.findCase(tx,actor,caseId);
+       const e=await tx.getEvidenceForStage(caseId,actor.organizationId,c.stage);
+       const disputed=await tx.hasUnresolvedDispute(caseId,actor.organizationId);
+       return evaluateReadiness(actor,c,e,disputed);
+      });
+     }
+     async advance(actor:ReviewActor,caseId:string){
+      return this.repo.transaction(async tx=>{
+       const c=await this.findCase(tx,actor,caseId);
+       const evidence=await tx.getEvidenceForStage(caseId,actor.organizationId,c.stage);
+       const disputed=await tx.hasUnresolvedDispute(caseId,actor.organizationId);
+       const readiness=evaluateReadiness(actor,c,evidence,disputed);
+       if(!readiness.canAdvance)throw new WorkflowFailure(readiness.blockers[0],`Cannot advance: ${readiness.blockers.join(', ')}`);
+       const next=readiness.nextStage!;
+       await tx.changeStage(caseId,actor.organizationId,next,next==='CLOSED'?'CLOSED':'OPEN');
+       if(next==='CLOSED')await tx.completeAsset(c.assetId,actor.organizationId);
+       await tx.audit(actor,'CASE_STAGE_ADVANCED',caseId,{from:c.stage,to:next,evidenceAccepted:true});
+       return {caseId,stage:next,status:next==='CLOSED'?'CLOSED':'OPEN',notice:DISCLAIMER};
+      });
+     }
+    }
+    
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:89:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 0
+# fail 12
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 230.647058

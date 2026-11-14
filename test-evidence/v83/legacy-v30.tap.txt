@@ -1,0 +1,158 @@
+
+> assettrust-platform@0.83.0 verify:v30
+> node --test tools/tests-v30/*.test.cjs && tsc --noEmit --strict --target ES2022 --module commonjs apps/api/src/contexts/verification/domain/evidence-policy.ts apps/api/src/contexts/workflow-admin/domain/workflow-policy.ts apps/api/src/contexts/verification/application/evidence-workflow.ts
+
+TAP version 13
+# Subtest: stage catalogue is tenant scoped, lists mandatory evidence and defaults
+ok 1 - stage catalogue is tenant scoped, lists mandatory evidence and defaults
+  ---
+  duration_ms: 1.586229
+  type: 'test'
+  ...
+# Subtest: organization admin cannot edit protected stage order or mandatory reviewer requirements
+ok 2 - organization admin cannot edit protected stage order or mandatory reviewer requirements
+  ---
+  duration_ms: 0.788177
+  type: 'test'
+  ...
+# Subtest: missing fresh MFA blocks proposal before any write
+ok 3 - missing fresh MFA blocks proposal before any write
+  ---
+  duration_ms: 0.404469
+  type: 'test'
+  ...
+# Subtest: proposal is pending and cannot affect stage behavior until second admin approves
+ok 4 - proposal is pending and cannot affect stage behavior until second admin approves
+  ---
+  duration_ms: 0.320282
+  type: 'test'
+  ...
+# Subtest: same admin cannot approve or reject their own proposal
+ok 5 - same admin cannot approve or reject their own proposal
+  ---
+  duration_ms: 0.658271
+  type: 'test'
+  ...
+# Subtest: different org cannot view or approve a workflow proposal
+ok 6 - different org cannot view or approve a workflow proposal
+  ---
+  duration_ms: 0.614626
+  type: 'test'
+  ...
+# Subtest: pending proposal for same stage blocks duplicate changes and stale version
+ok 7 - pending proposal for same stage blocks duplicate changes and stale version
+  ---
+  duration_ms: 0.356337
+  type: 'test'
+  ...
+# Subtest: current independent admin approves and updates exactly one version with audit
+ok 8 - current independent admin approves and updates exactly one version with audit
+  ---
+  duration_ms: 0.419782
+  type: 'test'
+  ...
+# Subtest: independent rejection is audited without activating change
+ok 9 - independent rejection is audited without activating change
+  ---
+  duration_ms: 0.835528
+  type: 'test'
+  ...
+# Subtest: revoked proposer loses approval eligibility
+ok 10 - revoked proposer loses approval eligibility
+  ---
+  duration_ms: 0.778192
+  type: 'test'
+  ...
+# Subtest: stale revision is rejected after stage policy changes
+ok 11 - stale revision is rejected after stage policy changes
+  ---
+  duration_ms: 0.45852
+  type: 'test'
+  ...
+# Subtest: policy approval serializes by advisory lock and row lock, and all data is tenant keyed
+ok 12 - policy approval serializes by advisory lock and row lock, and all data is tenant keyed
+  ---
+  duration_ms: 0.344839
+  type: 'test'
+  ...
+# Subtest: denies read for suspended or downgraded administrator
+ok 13 - denies read for suspended or downgraded administrator
+  ---
+  duration_ms: 0.253532
+  type: 'test'
+  ...
+# Subtest: approved stronger workflow blocks advancement with only mandatory evidence
+ok 14 - approved stronger workflow blocks advancement with only mandatory evidence
+  ---
+  duration_ms: 2.682819
+  type: 'test'
+  ...
+# Subtest: mandatory plus independent accepted extra evidence allows stage advance
+ok 15 - mandatory plus independent accepted extra evidence allows stage advance
+  ---
+  duration_ms: 0.66406
+  type: 'test'
+  ...
+# Subtest: approval does not bypass mandatory evidence, reviewer or dispute
+ok 16 - approval does not bypass mandatory evidence, reviewer or dispute
+  ---
+  duration_ms: 0.514134
+  type: 'test'
+  ...
+# Subtest: optional adapters retain old test compatibility but production adapter uses approved version
+ok 17 - optional adapters retain old test compatibility but production adapter uses approved version
+  ---
+  duration_ms: 0.435115
+  type: 'test'
+  ...
+# Subtest: migration is append-only and enforces tenant keys, approval states and stricter gates
+ok 18 - migration is append-only and enforces tenant keys, approval states and stricter gates
+  ---
+  duration_ms: 0.889709
+  type: 'test'
+  ...
+# Subtest: required stage order and legal disclaimers are not configurable
+ok 19 - required stage order and legal disclaimers are not configurable
+  ---
+  duration_ms: 81.454413
+  type: 'test'
+  ...
+# Subtest: requires strongly typed target and reminder bounds
+ok 20 - requires strongly typed target and reminder bounds
+  ---
+  duration_ms: 35.76968
+  type: 'test'
+  ...
+# Subtest: additional evidence is stricter, never replaces mandatory type
+ok 21 - additional evidence is stricter, never replaces mandatory type
+  ---
+  duration_ms: 30.211734
+  type: 'test'
+  ...
+# Subtest: independently accepted extra evidence is enforced, not merely displayed
+ok 22 - independently accepted extra evidence is enforced, not merely displayed
+  ---
+  duration_ms: 28.042918
+  type: 'test'
+  ...
+# Subtest: self-review, wrong stage, and rejected additional evidence do not count
+ok 23 - self-review, wrong stage, and rejected additional evidence do not count
+  ---
+  duration_ms: 24.073702
+  type: 'test'
+  ...
+# Subtest: concurrency uses bounded nonnegative expected versions
+ok 24 - concurrency uses bounded nonnegative expected versions
+  ---
+  duration_ms: 11.357528
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 461.182725

@@ -1,0 +1,129 @@
+
+> assettrust-platform@0.83.0 verify:v67
+> node --test --test-concurrency=1 tools/tests-v67/*.test.cjs
+
+TAP version 13
+# Subtest: explicitly verified live response can be displayed
+ok 1 - explicitly verified live response can be displayed
+  ---
+  duration_ms: 1.121929
+  type: 'test'
+  ...
+# Subtest: legacy health-only and readiness-less responses never count as ready
+ok 2 - legacy health-only and readiness-less responses never count as ready
+  ---
+  duration_ms: 0.285139
+  type: 'test'
+  ...
+# Subtest: misleading service/schema/security strings fail closed
+ok 3 - misleading service/schema/security strings fail closed
+  ---
+  duration_ms: 0.215745
+  type: 'test'
+  ...
+# Subtest: null, zero, fractional, negative and unsafe counts rejected
+ok 4 - null, zero, fractional, negative and unsafe counts rejected
+  ---
+  duration_ms: 0.463508
+  type: 'test'
+  ...
+# Subtest: unverifiable version labels and malformed semver rejected
+ok 5 - unverifiable version labels and malformed semver rejected
+  ---
+  duration_ms: 0.181042
+  type: 'test'
+  ...
+# Subtest: parser only returns allowlisted response attributes
+ok 6 - parser only returns allowlisted response attributes
+  ---
+  duration_ms: 0.309696
+  type: 'test'
+  ...
+# Subtest: frontend cancels previous readiness fetch before starting a new one
+ok 7 - frontend cancels previous readiness fetch before starting a new one
+  ---
+  duration_ms: 0.114923
+  type: 'test'
+  ...
+# Subtest: response and async integration updates are gated by latest request identity
+ok 8 - response and async integration updates are gated by latest request identity
+  ---
+  duration_ms: 0.11336
+  type: 'test'
+  ...
+# Subtest: unmount or role change aborts previous readiness request
+ok 9 - unmount or role change aborts previous readiness request
+  ---
+  duration_ms: 0.242125
+  type: 'test'
+  ...
+# Subtest: UI has explicit release disclaimer and never claims production approval
+ok 10 - UI has explicit release disclaimer and never claims production approval
+  ---
+  duration_ms: 0.343006
+  type: 'test'
+  ...
+# Subtest: single-flight executes one probe for parallel requests and returns one promise
+ok 11 - single-flight executes one probe for parallel requests and returns one promise
+  ---
+  duration_ms: 0.888026
+  type: 'test'
+  ...
+# Subtest: successful result is never cached for the NEXT readiness probe
+ok 12 - successful result is never cached for the NEXT readiness probe
+  ---
+  duration_ms: 0.156375
+  type: 'test'
+  ...
+# Subtest: failed result never leaves coordinator stuck or falsely ready
+ok 13 - failed result never leaves coordinator stuck or falsely ready
+  ---
+  duration_ms: 0.507504
+  type: 'test'
+  ...
+# Subtest: synchronous throw is converted into a rejection and reset
+ok 14 - synchronous throw is converted into a rejection and reset
+  ---
+  duration_ms: 0.184387
+  type: 'test'
+  ...
+# Subtest: SchemaProbe shares exactly one real catalog inspection across concurrent checks
+ok 15 - SchemaProbe shares exactly one real catalog inspection across concurrent checks
+  ---
+  duration_ms: 0.655166
+  type: 'test'
+  ...
+# Subtest: a later RLS drift fails the next check rather than reusing last success
+ok 16 - a later RLS drift fails the next check rather than reusing last success
+  ---
+  duration_ms: 0.296065
+  type: 'test'
+  ...
+# Subtest: a recovered policy failure does not poison subsequent readiness
+ok 17 - a recovered policy failure does not poison subsequent readiness
+  ---
+  duration_ms: 0.351579
+  type: 'test'
+  ...
+# Subtest: SQL errors fail closed without leaking driver data
+ok 18 - SQL errors fail closed without leaking driver data
+  ---
+  duration_ms: 0.278259
+  type: 'test'
+  ...
+# Subtest: readiness source never includes time-based cached success or forced acceptance
+ok 19 - readiness source never includes time-based cached success or forced acceptance
+  ---
+  duration_ms: 0.552161
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 544.78135
+

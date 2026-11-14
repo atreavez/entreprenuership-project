@@ -1,0 +1,1 @@
+[{'screen': 'desktop', 'scrollWidth': 1440, 'viewport': 1440, 'height': 2688}, {'screen': 'mobile', 'scrollWidth': 390, 'viewport': 390, 'height': 4765}, {'screen': 'auth-desktop', 'scrollWidth': 1440, 'viewport': 1440, 'height': 940}]

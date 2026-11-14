@@ -1,0 +1,45 @@
+{
+  "schema": "ASSETTRUST_V56_VERIFICATION_EVIDENCE",
+  "version": "0.56.0",
+  "productionApproved": false,
+  "newTests": {
+    "passed": 20,
+    "total": 20
+  },
+  "historicalVersionSuites": {
+    "passed": 54,
+    "total": 54,
+    "versions": "v03-v56",
+    "evidencePath": "test-evidence/v56/verify-vNN.log"
+  },
+  "sourceGraph": {
+    "checkedFiles": 101,
+    "relativeImports": 283,
+    "passed": true
+  },
+  "syntaxSourceFiles": 104,
+  "migrations": {
+    "total": 25,
+    "unchanged": true,
+    "databaseExecuted": false
+  },
+  "staticChecks": {
+    "ciCoverage": true,
+    "workflowYaml": true,
+    "architecture": true,
+    "sourceBootstrap": true,
+    "snapshotSecretScan": true
+  },
+  "blocked": {
+    "npmLockfile": true,
+    "cleanNpmCi": true,
+    "fullBuild": true,
+    "actualCompiledBuildArtifactGate": true,
+    "livePostgreSQL": true,
+    "liveClamAV": true,
+    "actualGitHistory": true,
+    "liveBrowserTls": true
+  },
+  "releaseVerdict": "NO_GO",
+  "notes": "Offline policy evidence only. A real Vite build, browser evaluation, database and live ingress security still require a connected test environment."
+}

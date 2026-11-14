@@ -1,0 +1,140 @@
+
+> assettrust-platform@0.83.0 verify:v05
+> node --test tools/tests-v05/*.test.cjs
+
+TAP version 13
+# Subtest: opaque refresh token includes UUID and cryptographically random bearer secret
+ok 1 - opaque refresh token includes UUID and cryptographically random bearer secret
+  ---
+  duration_ms: 2.20517
+  type: 'test'
+  ...
+# Subtest: malformed session tokens rejected
+ok 2 - malformed session tokens rejected
+  ---
+  duration_ms: 0.396647
+  type: 'test'
+  ...
+# Subtest: refresh token equality uses digest-safe comparison
+ok 3 - refresh token equality uses digest-safe comparison
+  ---
+  duration_ms: 0.345891
+  type: 'test'
+  ...
+# Subtest: refresh rotation disallows expired and revoked sessions
+ok 4 - refresh rotation disallows expired and revoked sessions
+  ---
+  duration_ms: 0.761076
+  type: 'test'
+  ...
+# Subtest: password policy rejects weak, long and whitespace-only values
+ok 5 - password policy rejects weak, long and whitespace-only values
+  ---
+  duration_ms: 0.454424
+  type: 'test'
+  ...
+# Subtest: TOTP matches RFC 6238 SHA1 test vector and denies wrong or replayed step
+ok 6 - TOTP matches RFC 6238 SHA1 test vector and denies wrong or replayed step
+  ---
+  duration_ms: 0.771031
+  type: 'test'
+  ...
+# Subtest: TOTP verifier enforces 6 ASCII digits and checks only the grace window
+ok 7 - TOTP verifier enforces 6 ASCII digits and checks only the grace window
+  ---
+  duration_ms: 0.561515
+  type: 'test'
+  ...
+# Subtest: MFA secret AES-256-GCM roundtrip and authentication failure
+ok 8 - MFA secret AES-256-GCM roundtrip and authentication failure
+  ---
+  duration_ms: 0.930451
+  type: 'test'
+  ...
+# Subtest: identity domain and session use case do not depend on NestJS, PostgreSQL, Express or React
+ok 9 - identity domain and session use case do not depend on NestJS, PostgreSQL, Express or React
+  ---
+  duration_ms: 5.424287
+  type: 'test'
+  ...
+# Subtest: session repository uses atomic refresh rotation with a row lock and commits revocation on hash mismatch
+ok 10 - session repository uses atomic refresh rotation with a row lock and commits revocation on hash mismatch
+  ---
+  duration_ms: 0.449377
+  type: 'test'
+  ...
+# Subtest: API enforces authenticated and active server-side sessions, not only JWT signature
+ok 11 - API enforces authenticated and active server-side sessions, not only JWT signature
+  ---
+  duration_ms: 0.340442
+  type: 'test'
+  ...
+# Subtest: refresh token is cookie-only and security flags are configured
+ok 12 - refresh token is cookie-only and security flags are configured
+  ---
+  duration_ms: 0.48513
+  type: 'test'
+  ...
+# Subtest: MFA challenges cannot issue regular sessions without a valid second factor
+ok 13 - MFA challenges cannot issue regular sessions without a valid second factor
+  ---
+  duration_ms: 0.356196
+  type: 'test'
+  ...
+# Subtest: credential updates serialize with a user row lock and create audit entries
+ok 14 - credential updates serialize with a user row lock and create audit entries
+  ---
+  duration_ms: 0.236726
+  type: 'test'
+  ...
+# Subtest: database schema contains encrypted MFA and hashed secrets but no raw recovery-code field
+ok 15 - database schema contains encrypted MFA and hashed secrets but no raw recovery-code field
+  ---
+  duration_ms: 0.55117
+  type: 'test'
+  ...
+# Subtest: new session stores refresh hash only and emits 15-minute JWT
+ok 16 - new session stores refresh hash only and emits 15-minute JWT
+  ---
+  duration_ms: 2.034934
+  type: 'test'
+  ...
+# Subtest: refresh rotates credential: old is rejected and replay revokes the session
+ok 17 - refresh rotates credential: old is rejected and replay revokes the session
+  ---
+  duration_ms: 1.147648
+  type: 'test'
+  ...
+# Subtest: valid refreshed token still works and remains scoped to original subject
+ok 18 - valid refreshed token still works and remains scoped to original subject
+  ---
+  duration_ms: 0.378019
+  type: 'test'
+  ...
+# Subtest: expired session denies refresh and bearer access
+ok 19 - expired session denies refresh and bearer access
+  ---
+  duration_ms: 0.337688
+  type: 'test'
+  ...
+# Subtest: revoke and revoke-all invalidate sessions immediately
+ok 20 - revoke and revoke-all invalidate sessions immediately
+  ---
+  duration_ms: 0.503057
+  type: 'test'
+  ...
+# Subtest: other users cannot revoke or list another user session through repository guard
+ok 21 - other users cannot revoke or list another user session through repository guard
+  ---
+  duration_ms: 0.237908
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1359.211614

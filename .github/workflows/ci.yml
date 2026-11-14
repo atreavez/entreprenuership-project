@@ -1,4 +1,4 @@
-name: AssetTrust v0.22 professional session expiry and integration validation
+name: AssetTrust v0.70 CI — isolated Kali integration provisioning
 on:
   push:
   pull_request:
@@ -6,6 +6,10 @@ jobs:
   integration:
     runs-on: ubuntu-latest
     services:
+      clamav:
+        image: clamav/clamav:stable
+        ports:
+          - 3310:3310
       postgres:
         image: postgis/postgis:17-3.5
         env:
@@ -15,7 +19,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U assettrust -d assettrust_ci"
+          --health-cmd 'pg_isready -U assettrust -d assettrust_ci'
           --health-interval 10s
           --health-timeout 5s
           --health-retries 10
@@ -25,16 +29,36 @@ jobs:
       WEB_ORIGIN: http://localhost:5173
       UPLOAD_DIR: /tmp/assettrust-ci-files
       NODE_ENV: test
+      ASSETTRUST_V57_ENFORCE_RUNTIME_ROLE: "YES"
+      CLAMAV_TCP_PORT: "3310"
       PORT: 4000
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # required for whole-history secret scanning
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Validate real GitHub Actions YAML syntax and release-security contract before any install
+        run: ruby tools/workflow-policy-v53.rb
       - name: Enforce reviewed, complete npm lockfile before dependency install
         run: |
+          npm run verify:ci:v41
+          npm run verify:ci:v53
           npm run verify:v17
           npm run release:gate:v17
+          npm run supply-chain:v51
+          npm run lockfile:check:v55
+          npm run verify:v55
+          npm run verify:v56
+          npm run verify:v57
+          npm run verify:v58
+          npm run verify:v59
+          npm run verify:v60
+      - name: Verify Vite entrypoint and local source dependency graph before install
+        run: |
+          npm run build:source:v56
+          npm run build:imports:v80
       - name: Install project dependencies
         run: npm ci
       - name: Generate disposable security keys
@@ -46,6 +70,7 @@ jobs:
           echo "ASSETTRUST_E2E_EXPECT_TARGET=${marker}" >> "$GITHUB_ENV"
           echo "JWT_SECRET=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
           echo "MFA_ENCRYPTION_KEY=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+          echo "LOGIN_ABUSE_PEPPER=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
           document_key="$(openssl rand -hex 32)"
           printf 'DOCUMENT_ENCRYPTION_KEYS={"ci_v13":"%s"}\n' "$document_key" >> "$GITHUB_ENV"
       - name: Verify release integrity and lockfile
@@ -77,16 +102,161 @@ jobs:
           npm run verify:v20
           npm run verify:v21
           npm run verify:v22
+          npm run verify:v23
+          npm run verify:v24
+          npm run verify:v25
+          npm run verify:v26
+          npm run verify:v27
+          npm run verify:v28
+          npm run verify:v29
+          npm run verify:v30
+          npm run verify:v31
+          npm run verify:v32
+          npm run verify:v33
+          npm run verify:v34
+          npm run verify:v35
+          npm run verify:v36
+          npm run verify:v37
+          npm run verify:v38
+          npm run verify:v39
+          npm run verify:v40
+          npm run verify:v41
+          npm run verify:v42
+          npm run verify:v43
+          npm run verify:v44
+          npm run verify:v45
+          npm run verify:v46
+          npm run verify:v47
+          npm run verify:v48
+          npm run verify:v49
+          npm run verify:v50
+          npm run verify:v51
+          npm run verify:v52
+          npm run verify:v53
+          npm run verify:v54
+          npm run verify:v55
+          npm run verify:v56
+          npm run verify:v57
+          npm run verify:v58
+          npm run verify:v59
+          npm run verify:v60
+          npm run verify:v61
+          npm run verify:v62
+          npm run verify:v63
+          npm run verify:v64
+          npm run verify:v65
+          npm run verify:v66
+          npm run verify:v67
+          npm run verify:v68
+          npm run verify:v69
+          npm run verify:v70
+          npm run verify:v71
+          npm run verify:v72
+          npm run verify:v73
+          npm run verify:v74
+          npm run verify:v75
+          npm run verify:v76
+          npm run verify:v77
+          npm run verify:v78
+          npm run verify:v79
+          npm run verify:v80
+          npm run verify:v81
+          npm run verify:v82
+          npm run verify:v83
+          npm run verify:v84
+          npm run verify:v85
+          npm run verify:v86
+          npm run verify:v87
+          npm run release:plan:v51
+          npm run security:scan:v43 -- --history
+          npm run security:scan:v54
+          npm run verify:architecture
           npm run verify:syntax
           npm test
+      - name: Require live ClamAV clean and threat verdicts before any HTTP upload tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          ready=0
+          for attempt in $(seq 1 40); do
+            if npm run security:clamav:v52; then ready=1; break; fi
+            sleep 5
+          done
+          test "$ready" -eq 1
+      - name: Audit production dependency vulnerabilities (high or critical fail)
+        run: npm audit --omit=dev --audit-level=high
       - name: Compile API and React
         run: npm run build
+      - name: Verify compiled browser assets and server-only credential boundaries
+        run: npm run build:artifacts:v56
+      - name: Require inspected compiled output and valid lockfile (v0.68)
+        run: npm run build:acceptance:artifacts:v68
+      - name: Require complete supervised build provenance before disposable live acceptance (v0.86)
+        env:
+          ASSETTRUST_V68_BUILD_CONFIRM: 'YES'
+        run: |
+          npm run build:acceptance:run:v68
+          npm run acceptance:provenance:inspect:v86
       - name: Apply schema migrations to fresh PostgreSQL
         run: npm run db:migrate --workspace apps/api
       - name: Verify migration idempotence and immutable checksums
         run: |
           npm run db:migrate --workspace apps/api
           npm run db:check --workspace apps/api
+      - name: Prove non-blocking migration lock and checksummed ledger integrity against live PostgreSQL (v0.78)
+        env:
+          CI: 'true'
+          NODE_ENV: test
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES # compatibility with disposable PG policy; test is read-only
+          ASSETTRUST_V78_PG_CONFIRM: YES
+        run: npm run test:pg:migration-lock:v78
+      - name: Provision separate non-bypass PostgreSQL API login on disposable CI database
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: node tools/provision-ci-runtime-role-v57.mjs
+      - name: Prove real API runtime database role cannot bypass RLS
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:runtime-role:v57
+      - name: Prove live PostgreSQL tenant and recipient policies have not been widened or replaced (v0.63)
+        env:
+          NODE_ENV: test
+          ASSETTRUST_V63_POLICY_CONFIRM: YES
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES # compatibility for the existing CI test:pg authorization checker; this audit is read-only
+        run: npm run test:pg:policy-contract:v63
+      - name: Confirm restricted runtime cannot mutate schema ledger or audit history
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES # Legacy CI policy requires this for all test:pg steps; audit is read-only
+        run: npm run test:pg:runtime-privileges:v60
+      - name: Prove append-only audit-event tenant isolation using two PostgreSQL logins (v0.61)
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+          ASSETTRUST_V61_AUDIT_RLS_CONFIRM: YES
+        run: npm run test:pg:audit-rls:v61
+      - name: Prove operational records and recipient inbox RLS with two organizations (v0.62)
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+          ASSETTRUST_V62_OPERATIONAL_RLS_CONFIRM: YES
+        run: npm run test:pg:operational-rls:v62
+      - name: Exercise real cross-case dispute concurrency using restricted PostgreSQL role (v0.77)
+        env:
+          CI: 'true'
+          NODE_ENV: test
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+          ASSETTRUST_V77_PG_CONFIRM: YES
+        run: npm run test:pg:disputes:v77
+      - name: Prove seeded two-organization RLS isolation through real restricted API database login (v0.58)
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+          ASSETTRUST_V58_SEEDED_RLS_CONFIRM: YES
+        run: npm run test:pg:runtime-tenant-isolation:v58
+      - name: Verify authorized tenant CRUD and denied cross-tenant writes through restricted PostgreSQL runtime (v0.59)
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+          ASSETTRUST_V58_SEEDED_RLS_CONFIRM: YES
+          ASSETTRUST_V59_CRUD_CONFIRM: YES
+          NODE_ENV: test
+        run: npm run test:pg:runtime-tenant-crud:v59
       - name: Verify surveyor accreditation against live disposable PostgreSQL
         env:
           ASSETTRUST_E2E_ALLOW_MUTATION: YES
@@ -95,8 +265,119 @@ jobs:
         env:
           ASSETTRUST_E2E_ALLOW_MUTATION: YES
         run: npm run test:pg:trust-session:v22
+      - name: Verify live transactional asset and case permission checks
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:access:v23
+      - name: Verify live case evidence submission permissions against disposable PostgreSQL
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:case-evidence:v24
+      - name: Verify current workflow and assignment roles against disposable PostgreSQL
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:workflow:v25
+      - name: Verify co-administrator MFA and invitations against disposable PostgreSQL
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:coadmin:v27
+      - name: Verify admin control constraints against disposable PostgreSQL
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:admin:v28
+      - name: Verify member lifecycle constraints against disposable PostgreSQL
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:members:v29
+      - name: Verify workflow-admin SQL constraints against disposable PostgreSQL
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:workflows:v30
+      - name: Verify content template tenant constraints against disposable PostgreSQL
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:content:v31
+      - name: Verify published templates and private tenant isolation against disposable PostgreSQL
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:publish:v32
+      - name: Verify staged notification provider records against disposable PostgreSQL
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:providers:v33
+      - name: Verify report issuance SQL constraints against disposable PostgreSQL
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:reports:v34
+      - name: Verify governed report withdrawal constraints against disposable PostgreSQL
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:withdrawals:v35
+      - name: Verify recipient sharing FK, approval and redemption PostgreSQL contracts (v0.39)
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:recipient:v39
+      - name: Verify shared recipient attempt windows in PostgreSQL (v0.40)
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:attempts:v40
+      - name: Verify counter contention through two independent PostgreSQL sessions (v0.41)
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+          ASSETTRUST_V41_CONCURRENCY_CONTRACT: YES
+        run: npm run test:pg:shared-counter:v41
+      - name: Verify two owned real API processes against the same disposable PostgreSQL
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+          ASSETTRUST_V42_TWO_API_CONTRACT: YES
+          ASSETTRUST_V66_HTTP_CONFIRM: YES
+          ASSETTRUST_E2E_URL: http://127.0.0.1:4000
+        run: npm run test:e2e:two-api:v42
+      - name: Read-only release prerequisite preflight (does not approve production)
+        run: npm run release:preflight:v41
       - name: Run supervised HTTP/PostgreSQL integration suites
         env:
           ASSETTRUST_E2E_ALLOW_MUTATION: YES
           ASSETTRUST_E2E_URL: http://127.0.0.1:4000
         run: node tools/ci-live-integration.mjs
+
+      - name: Verify password reset one-use and rate-limit schema against disposable PostgreSQL (v0.44)
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:reset:v44
+
+      - name: Verify distributed login abuse SQL contract against disposable PostgreSQL (v0.45)
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:login-abuse:v45
+
+      - name: Verify PostgreSQL RLS tenant isolation across private PDF layout tables (v0.46)
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:layout-rls:v46
+
+      - name: Verify core tenant relationship constraints in disposable PostgreSQL (v0.47)
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:core-relations:v47
+
+
+      - name: Verify case evidence tenant RLS on disposable PostgreSQL (v0.48)
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:evidence-rls:v48
+
+      - name: Verify assets and cases tenant RLS on disposable PostgreSQL (v0.49)
+        env:
+          NODE_ENV: test
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:assets-cases-rls:v49
+
+      - name: Verify documents tenant RLS on disposable PostgreSQL (v0.50)
+        env:
+          NODE_ENV: test
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+        run: npm run test:pg:documents-rls:v50
+
+      - name: Recheck exact reviewed source and compiled outputs after ALL disposable live suites (v0.87)
+        run: npm run acceptance:provenance:inspect:v86

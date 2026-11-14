@@ -1,0 +1,128 @@
+
+> assettrust-platform@0.83.0 verify:v27
+> node --test tools/tests-v27/*.test.cjs && tsc --noEmit --strict --target ES2022 --module commonjs apps/api/src/contexts/identity/domain/coadmin-policy.ts
+
+TAP version 13
+# Subtest: pending privileged administrator cannot read protected workspace records
+ok 1 - pending privileged administrator cannot read protected workspace records
+  ---
+  duration_ms: 1.803325
+  type: 'test'
+  ...
+# Subtest: pending privileged administrator may enroll and confirm MFA only
+ok 2 - pending privileged administrator may enroll and confirm MFA only
+  ---
+  duration_ms: 0.567314
+  type: 'test'
+  ...
+# Subtest: MFA-confirmed coadministrator can access workspace but revoked session remains rejected
+ok 3 - MFA-confirmed coadministrator can access workspace but revoked session remains rejected
+  ---
+  duration_ms: 0.322786
+  type: 'test'
+  ...
+# Subtest: nonprivileged roles are not subjected to coadministrator enrollment restriction
+ok 4 - nonprivileged roles are not subjected to coadministrator enrollment restriction
+  ---
+  duration_ms: 0.154572
+  type: 'test'
+  ...
+# Subtest: an active coadministrator cannot disable mandatory MFA
+ok 5 - an active coadministrator cannot disable mandatory MFA
+  ---
+  duration_ms: 0.514114
+  type: 'test'
+  ...
+# Subtest: session header remains mandatory for MFA enrollment routes
+ok 6 - session header remains mandatory for MFA enrollment routes
+  ---
+  duration_ms: 0.159189
+  type: 'test'
+  ...
+# Subtest: privileged invitation is single-use, time-bounded and revocable
+ok 7 - privileged invitation is single-use, time-bounded and revocable
+  ---
+  duration_ms: 1.110782
+  type: 'test'
+  ...
+# Subtest: only narrow authenticated endpoints allow pending co-admin MFA enrollment
+ok 8 - only narrow authenticated endpoints allow pending co-admin MFA enrollment
+  ---
+  duration_ms: 0.31195
+  type: 'test'
+  ...
+# Subtest: current-role and MFA-step-up SQL rejects missing or stale session
+ok 9 - current-role and MFA-step-up SQL rejects missing or stale session
+  ---
+  duration_ms: 0.789158
+  type: 'test'
+  ...
+# Subtest: current administrator and recently stepped-up session pass SQL check
+ok 10 - current administrator and recently stepped-up session pass SQL check
+  ---
+  duration_ms: 0.237758
+  type: 'test'
+  ...
+# Subtest: schema migration preserves prior history and introduces permanent MFA requirement
+ok 11 - schema migration preserves prior history and introduces permanent MFA requirement
+  ---
+  duration_ms: 0.634606
+  type: 'test'
+  ...
+# Subtest: current admin step-up is required; no invitation or audit on denial
+ok 12 - current admin step-up is required; no invitation or audit on denial
+  ---
+  duration_ms: 1.908563
+  type: 'test'
+  ...
+# Subtest: only a short-lived hashed one-time token is persisted, with a coadmin audit event
+ok 13 - only a short-lived hashed one-time token is persisted, with a coadmin audit event
+  ---
+  duration_ms: 1.040736
+  type: 'test'
+  ...
+# Subtest: privileged invite acceptance sets required MFA, is one-time, and writes audit evidence
+ok 14 - privileged invite acceptance sets required MFA, is one-time, and writes audit evidence
+  ---
+  duration_ms: 0.707365
+  type: 'test'
+  ...
+# Subtest: expired/revoked invitations and sponsor downgrade cannot be accepted
+ok 15 - expired/revoked invitations and sponsor downgrade cannot be accepted
+  ---
+  duration_ms: 3.751899
+  type: 'test'
+  ...
+# Subtest: ordinary team-accept endpoint cannot redeem a privileged co-admin token
+ok 16 - ordinary team-accept endpoint cannot redeem a privileged co-admin token
+  ---
+  duration_ms: 0.515035
+  type: 'test'
+  ...
+# Subtest: revoke requires fresh current administrator step-up and prevents redemption
+ok 17 - revoke requires fresh current administrator step-up and prevents redemption
+  ---
+  duration_ms: 0.793715
+  type: 'test'
+  ...
+# Subtest: ordinary invitation endpoint cannot grant the ORG_ADMIN role
+ok 18 - ordinary invitation endpoint cannot grant the ORG_ADMIN role
+  ---
+  duration_ms: 0.346592
+  type: 'test'
+  ...
+# Subtest: a duplicate pending co-admin invitation is not silently issued
+ok 19 - a duplicate pending co-admin invitation is not silently issued
+  ---
+  duration_ms: 0.356747
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 382.254701

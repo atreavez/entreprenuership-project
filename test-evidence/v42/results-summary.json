@@ -1,0 +1,35 @@
+{
+  "schema": "ASSETTRUST_V42_OFFLINE_TEST_MATRIX",
+  "checkpointVersion": "0.42.0",
+  "date": "2026-11-11",
+  "versionChecks": {
+    "passed": 40,
+    "total": 40
+  },
+  "newSecurityUnitTests": {
+    "passed": 8,
+    "total": 8
+  },
+  "typescriptSyntaxScan": {
+    "sourceFiles": 92,
+    "syntaxDiagnostics": 0
+  },
+  "sqlMigrations": {
+    "sha256Matches": 18,
+    "total": 18
+  },
+  "ciCoverage": {
+    "offlineVersionCommands": 40,
+    "declaredPostgresContracts": 17,
+    "includesTwoApiSmoke": true
+  },
+  "runtime": {
+    "twoNestProcesses": "NOT_RUN",
+    "postgreSQL": "NOT_AVAILABLE",
+    "npmCi": "BLOCKED_NO_GENUINE_LOCKFILE",
+    "fullBuild": "BLOCKED_NO_DEPENDENCIES",
+    "realBrowserTest": "NOT_RUN"
+  },
+  "productionApproved": false,
+  "sourceEvidence": "test-evidence/v42/"
+}

@@ -15,9 +15,15 @@ const sqlBlock=source.slice(source.indexOf('async review('),source.indexOf('asyn
 const decorator=()=>()=>{};
 const stubs={
  '@nestjs/common':{Injectable:decorator,BadRequestException:class extends Error{},ForbiddenException:class extends Error{},NotFoundException:class extends Error{},ConflictException:class extends Error{}},
+ '../../../contexts/tenant-isolation/application/tenant-scope':{setTenantScope:async()=>{}},
  '../../../database':{},'../../../audit':{},'../../../common':{uid:randomUUID,isUuid:x=>x},
  '../domain/parcel-boundary':{canReviewBoundary:()=>true}
 };
+const accessPath=path.resolve(__dirname,'../../apps/api/src/contexts/access/infrastructure/transactional-access.ts');
+const accessJs=ts.transpileModule(fs.readFileSync(accessPath,'utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS}}).outputText;
+const accessContext={module:{exports:{}},exports:{},require:name=>stubs[name]??require(name)};accessContext.exports=accessContext.module.exports;
+vm.runInNewContext(accessJs,accessContext,{filename:accessPath,timeout:5000});
+stubs['../../../contexts/access/infrastructure/transactional-access']=accessContext.module.exports;
 const js=ts.transpileModule(source,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS,experimentalDecorators:true,emitDecoratorMetadata:false}}).outputText;
 function fixture({activeMfa=true,liveAccreditation=true,correctRole=true,correctOrganization=true}={}){
  const queries=[];let writes=0,committed=false;
@@ -34,7 +40,7 @@ function fixture({activeMfa=true,liveAccreditation=true,correctRole=true,correct
     const admissible=activeMfa&&(!accreditationChecked||liveAccreditation)&&(!roleChecked||correctRole)&&(!organizationChecked||correctOrganization);
     return {rows:admissible?[{ok:true}]:[],rowCount:admissible?1:0};
    }
-   if(sql.includes('FROM assets'))return {rows:[{id:'asset-21'}]};
+   if(sql.includes('FROM assets'))return {rows:[{id:'asset-21',asset_type:'LAND',created_by:'surveyor-21',role:'SURVEYOR'}]};
    if(sql.includes('FROM parcel_boundary_claims'))return {rows:[{submitted_by:'other-person',status:'SUBMITTED'}]};
    if(sql.includes('UPDATE parcel_boundary_claims')){writes++;return {rows:[],rowCount:1}};
    throw new Error(`Unexpected SQL in parcel review: ${sql}`);

@@ -1,0 +1,16 @@
+
+> assettrust-platform@0.83.0 lockfile:check:v55
+> node tools/lockfile-bootstrap-v55.cjs --check
+
+{
+  "schema": "ASSETTRUST_V55_LOCKFILE_BOOTSTRAP",
+  "ok": false,
+  "productionApproved": false,
+  "version": "0.83.0",
+  "lockfilePresent": false,
+  "sha256": null,
+  "issues": [
+    "Authentic package-lock.json missing; use an explicitly authorized connected npm bootstrap"
+  ],
+  "next": "Only on connected trusted Kali: authorize --generate if missing, then npm ci, audit, build and supervised release tests."
+}

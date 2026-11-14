@@ -1,0 +1,285 @@
+
+> assettrust-platform@0.83.0 verify:v82
+> node --test --test-concurrency=1 tools/tests-v82/*.test.cjs
+
+TAP version 13
+# Subtest: role ORG_ADMIN flagged false requires MFA: true
+ok 1 - role ORG_ADMIN flagged false requires MFA: true
+  ---
+  duration_ms: 0.896129
+  type: 'test'
+  ...
+# Subtest: role ORG_ADMIN flagged true requires MFA: true
+ok 2 - role ORG_ADMIN flagged true requires MFA: true
+  ---
+  duration_ms: 0.156575
+  type: 'test'
+  ...
+# Subtest: role ORG_ADMIN flagged undefined requires MFA: true
+ok 3 - role ORG_ADMIN flagged undefined requires MFA: true
+  ---
+  duration_ms: 0.067081
+  type: 'test'
+  ...
+# Subtest: role CLIENT flagged false requires MFA: false
+ok 4 - role CLIENT flagged false requires MFA: false
+  ---
+  duration_ms: 0.055293
+  type: 'test'
+  ...
+# Subtest: role REVIEWER flagged false requires MFA: false
+ok 5 - role REVIEWER flagged false requires MFA: false
+  ---
+  duration_ms: 0.055945
+  type: 'test'
+  ...
+# Subtest: role SURVEYOR flagged false requires MFA: false
+ok 6 - role SURVEYOR flagged false requires MFA: false
+  ---
+  duration_ms: 0.061162
+  type: 'test'
+  ...
+# Subtest: role LEGAL_REVIEWER flagged false requires MFA: false
+ok 7 - role LEGAL_REVIEWER flagged false requires MFA: false
+  ---
+  duration_ms: 0.045348
+  type: 'test'
+  ...
+# Subtest: role CLIENT flagged true requires MFA: true
+ok 8 - role CLIENT flagged true requires MFA: true
+  ---
+  duration_ms: 0.043606
+  type: 'test'
+  ...
+# Subtest: session MFA evidence enabled=true proof=Thu Nov 12 2026 12:02:06 GMT+0000 (Coordinated Universal Time) => true
+ok 9 - session MFA evidence enabled=true proof=Thu Nov 12 2026 12:02:06 GMT+0000 (Coordinated Universal Time) => true
+  ---
+  duration_ms: 0.260632
+  type: 'test'
+  ...
+# Subtest: session MFA evidence enabled=true proof=null => false
+ok 10 - session MFA evidence enabled=true proof=null => false
+  ---
+  duration_ms: 0.261935
+  type: 'test'
+  ...
+# Subtest: session MFA evidence enabled=false proof=Thu Nov 12 2026 12:02:06 GMT+0000 (Coordinated Universal Time) => false
+ok 11 - session MFA evidence enabled=false proof=Thu Nov 12 2026 12:02:06 GMT+0000 (Coordinated Universal Time) => false
+  ---
+  duration_ms: 0.097727
+  type: 'test'
+  ...
+# Subtest: session MFA evidence enabled=undefined proof=null => false
+ok 12 - session MFA evidence enabled=undefined proof=null => false
+  ---
+  duration_ms: 0.045418
+  type: 'test'
+  ...
+# Subtest: legacy administrator without MFA denied /api/v1/assets
+ok 13 - legacy administrator without MFA denied /api/v1/assets
+  ---
+  duration_ms: 0.679023
+  type: 'test'
+  ...
+# Subtest: legacy administrator without MFA denied /api/v1/cases
+ok 14 - legacy administrator without MFA denied /api/v1/cases
+  ---
+  duration_ms: 0.15257
+  type: 'test'
+  ...
+# Subtest: legacy administrator without MFA denied /api/v1/admin-control/settings
+ok 15 - legacy administrator without MFA denied /api/v1/admin-control/settings
+  ---
+  duration_ms: 0.098208
+  type: 'test'
+  ...
+# Subtest: legacy administrator without MFA denied /api/v1/documents
+ok 16 - legacy administrator without MFA denied /api/v1/documents
+  ---
+  duration_ms: 0.080451
+  type: 'test'
+  ...
+# Subtest: new founder may only access safe MFA enrollment routes
+ok 17 - new founder may only access safe MFA enrollment routes
+  ---
+  duration_ms: 0.247652
+  type: 'test'
+  ...
+# Subtest: enabled MFA on another session does not prove MFA on the current session
+ok 18 - enabled MFA on another session does not prove MFA on the current session
+  ---
+  duration_ms: 0.15332
+  type: 'test'
+  ...
+# Subtest: verified current session may access admin workspace, and lookup ties it to session/org/user
+ok 19 - verified current session may access admin workspace, and lookup ties it to session/org/user
+  ---
+  duration_ms: 0.263457
+  type: 'test'
+  ...
+# Subtest: admin session missing from DB is rejected
+ok 20 - admin session missing from DB is rejected
+  ---
+  duration_ms: 0.210007
+  type: 'test'
+  ...
+# Subtest: regular client can access without admin MFA
+ok 21 - regular client can access without admin MFA
+  ---
+  duration_ms: 0.113721
+  type: 'test'
+  ...
+# Subtest: specially MFA-required reviewer must also have current session proof
+ok 22 - specially MFA-required reviewer must also have current session proof
+  ---
+  duration_ms: 0.149495
+  type: 'test'
+  ...
+# Subtest: revoked authentication session rejected before MFA lookup
+ok 23 - revoked authentication session rejected before MFA lookup
+  ---
+  duration_ms: 0.186891
+  type: 'test'
+  ...
+# Subtest: new organization registration flags mandatory MFA before returning provisional session
+ok 24 - new organization registration flags mandatory MFA before returning provisional session
+  ---
+  duration_ms: 0.572842
+  type: 'test'
+  ...
+# Subtest: existing admin with false legacy DB flag is still required to enroll MFA
+ok 25 - existing admin with false legacy DB flag is still required to enroll MFA
+  ---
+  duration_ms: 0.391459
+  type: 'test'
+  ...
+# Subtest: non-admin MFA remains optional
+ok 26 - non-admin MFA remains optional
+  ---
+  duration_ms: 0.214002
+  type: 'test'
+  ...
+# Subtest: legacy founder cannot disable MFA even if admin_mfa_required=false in DB
+ok 27 - legacy founder cannot disable MFA even if admin_mfa_required=false in DB
+  ---
+  duration_ms: 0.461425
+  type: 'test'
+  ...
+# Subtest: UI presents pending MFA onboarding before workspace
+ok 28 - UI presents pending MFA onboarding before workspace
+  ---
+  duration_ms: 0.337088
+  type: 'test'
+  ...
+# Subtest: admin refresh rejects old session once MFA was enabled elsewhere
+ok 29 - admin refresh rejects old session once MFA was enabled elsewhere
+  ---
+  duration_ms: 0.331509
+  type: 'test'
+  ...
+# Subtest: admin refresh succeeds if current session contains matching MFA proof
+ok 30 - admin refresh succeeds if current session contains matching MFA proof
+  ---
+  duration_ms: 0.172099
+  type: 'test'
+  ...
+# Subtest: founder still enrolling MFA can retain a restricted provisional session across refresh
+ok 31 - founder still enrolling MFA can retain a restricted provisional session across refresh
+  ---
+  duration_ms: 0.123135
+  type: 'test'
+  ...
+# Subtest: refresh with nonexistent administrator database session fails closed
+ok 32 - refresh with nonexistent administrator database session fails closed
+  ---
+  duration_ms: 0.17249
+  type: 'test'
+  ...
+# Subtest: non-admin refresh is unaffected by the administrator MFA session contract
+ok 33 - non-admin refresh is unaffected by the administrator MFA session contract
+  ---
+  duration_ms: 0.084287
+  type: 'test'
+  ...
+# Subtest: HTTP refresh route checks administrator session MFA after rotating refresh token
+ok 34 - HTTP refresh route checks administrator session MFA after rotating refresh token
+  ---
+  duration_ms: 0.124418
+  type: 'test'
+  ...
+# Subtest: RFC 6238 SHA1 TOTP sample is reproduced in the six-digit domain
+ok 35 - RFC 6238 SHA1 TOTP sample is reproduced in the six-digit domain
+  ---
+  duration_ms: 9.159579
+  type: 'test'
+  ...
+# Subtest: synthetic TOTP refuses malformed base32 and invalid clocks
+ok 36 - synthetic TOTP refuses malformed base32 and invalid clocks
+  ---
+  duration_ms: 0.699043
+  type: 'test'
+  ...
+# Subtest: synthetic administrator enrollment submits a password and TOTP and stores no secrets
+ok 37 - synthetic administrator enrollment submits a password and TOTP and stores no secrets
+  ---
+  duration_ms: 1.005323
+  type: 'test'
+  ...
+# Subtest: synthetic enrollment fails closed if confirmation is missing or invalid
+ok 38 - synthetic enrollment fails closed if confirmation is missing or invalid
+  ---
+  duration_ms: 0.416467
+  type: 'test'
+  ...
+# Subtest: synthetic enrollment rejects empty credentials without a network request
+ok 39 - synthetic enrollment rejects empty credentials without a network request
+  ---
+  duration_ms: 0.852664
+  type: 'test'
+  ...
+# Subtest: e2e-smoke.mjs enrolls synthetic admin before protected actions
+ok 40 - e2e-smoke.mjs enrolls synthetic admin before protected actions
+  ---
+  duration_ms: 0.247863
+  type: 'test'
+  ...
+# Subtest: e2e-geo-v08.mjs enrolls synthetic admin before protected actions
+ok 41 - e2e-geo-v08.mjs enrolls synthetic admin before protected actions
+  ---
+  duration_ms: 0.096365
+  type: 'test'
+  ...
+# Subtest: e2e-overlap-v10.mjs enrolls synthetic admin before protected actions
+ok 42 - e2e-overlap-v10.mjs enrolls synthetic admin before protected actions
+  ---
+  duration_ms: 0.121292
+  type: 'test'
+  ...
+# Subtest: e2e-authenticated-control-v69.mjs enrolls synthetic admin before protected actions
+ok 43 - e2e-authenticated-control-v69.mjs enrolls synthetic admin before protected actions
+  ---
+  duration_ms: 0.369206
+  type: 'test'
+  ...
+# Subtest: e2e-document-revocation-v73.mjs enrolls synthetic admin before protected actions
+ok 44 - e2e-document-revocation-v73.mjs enrolls synthetic admin before protected actions
+  ---
+  duration_ms: 0.378319
+  type: 'test'
+  ...
+# Subtest: synthetic E2E helper never prints, writes or logs credentials
+ok 45 - synthetic E2E helper never prints, writes or logs credentials
+  ---
+  duration_ms: 0.23891
+  type: 'test'
+  ...
+1..45
+# tests 45
+# suites 0
+# pass 45
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 525.842551
+

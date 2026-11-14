@@ -1,0 +1,201 @@
+
+> assettrust-platform@0.83.0 verify:v73
+> node --test tools/tests-v73/*.test.cjs
+
+TAP version 13
+# Subtest: current permission, metadata and encrypted bytes all remain inside one transaction
+ok 1 - current permission, metadata and encrypted bytes all remain inside one transaction
+  ---
+  duration_ms: 2.162946
+  type: 'test'
+  ...
+# Subtest: revoked READ grant cannot get encrypted bytes
+ok 2 - revoked READ grant cannot get encrypted bytes
+  ---
+  duration_ms: 0.57107
+  type: 'test'
+  ...
+# Subtest: suspended or deleted current member cannot get bytes
+ok 3 - suspended or deleted current member cannot get bytes
+  ---
+  duration_ms: 0.19245
+  type: 'test'
+  ...
+# Subtest: current database role takes precedence over stale JWT role snapshot
+ok 4 - current database role takes precedence over stale JWT role snapshot
+  ---
+  duration_ms: 0.328255
+  type: 'test'
+  ...
+# Subtest: asset creator can read with no grant
+ok 5 - asset creator can read with no grant
+  ---
+  duration_ms: 0.197307
+  type: 'test'
+  ...
+# Subtest: a stale administrator role claim cannot override a demoted database role
+ok 6 - a stale administrator role claim cannot override a demoted database role
+  ---
+  duration_ms: 0.199871
+  type: 'test'
+  ...
+# Subtest: asset-only read grant does not grant confidential case access
+ok 7 - asset-only read grant does not grant confidential case access
+  ---
+  duration_ms: 0.340012
+  type: 'test'
+  ...
+# Subtest: case participation on asset permits download with no explicit grant
+ok 8 - case participation on asset permits download with no explicit grant
+  ---
+  duration_ms: 0.273191
+  type: 'test'
+  ...
+# Subtest: case evidence requires current case assignment, not only asset grant
+ok 9 - case evidence requires current case assignment, not only asset grant
+  ---
+  duration_ms: 0.415606
+  type: 'test'
+  ...
+# Subtest: case evidence allows current assigned reviewer with asset visibility
+ok 10 - case evidence allows current assigned reviewer with asset visibility
+  ---
+  duration_ms: 0.534745
+  type: 'test'
+  ...
+# Subtest: case-only document denies user without case participation
+ok 11 - case-only document denies user without case participation
+  ---
+  duration_ms: 0.239801
+  type: 'test'
+  ...
+# Subtest: case-only document allows current case creator
+ok 12 - case-only document allows current case creator
+  ---
+  duration_ms: 0.19951
+  type: 'test'
+  ...
+# Subtest: document without asset or case fails closed
+ok 13 - document without asset or case fails closed
+  ---
+  duration_ms: 0.139931
+  type: 'test'
+  ...
+# Subtest: missing tenant document fails before authorization or decryption
+ok 14 - missing tenant document fails before authorization or decryption
+  ---
+  duration_ms: 0.152249
+  type: 'test'
+  ...
+# Subtest: plaintext legacy object is refused before blob retrieval
+ok 15 - plaintext legacy object is refused before blob retrieval
+  ---
+  duration_ms: 0.236295
+  type: 'test'
+  ...
+# Subtest: digest mismatch fails closed and does not return decrypted bytes
+ok 16 - digest mismatch fails closed and does not return decrypted bytes
+  ---
+  duration_ms: 0.248584
+  type: 'test'
+  ...
+# Subtest: encrypted storage failure is concealed from client and rolled back
+ok 17 - encrypted storage failure is concealed from client and rolled back
+  ---
+  duration_ms: 0.448775
+  type: 'test'
+  ...
+# Subtest: the service never uses a standalone authorization query during a document download
+ok 18 - the service never uses a standalone authorization query during a document download
+  ---
+  duration_ms: 0.190086
+  type: 'test'
+  ...
+# Subtest: SQL stays parameterized, tenant scoped and row locks cover member and grant edges
+ok 19 - SQL stays parameterized, tenant scoped and row locks cover member and grant edges
+  ---
+  duration_ms: 0.220301
+  type: 'test'
+  ...
+# Subtest: milestone manifests and CI record tests without changing 27 SQL migrations
+ok 20 - milestone manifests and CI record tests without changing 27 SQL migrations
+  ---
+  duration_ms: 0.640655
+  type: 'test'
+  ...
+# Subtest: live plan is clearly write-enabled and release-blocked
+ok 21 - live plan is clearly write-enabled and release-blocked
+  ---
+  duration_ms: 12.600509
+  type: 'test'
+  ...
+# Subtest: local successful fake journey includes encrypted bytes and revocation negative
+ok 22 - local successful fake journey includes encrypted bytes and revocation negative
+  ---
+  duration_ms: 23.479779
+  type: 'test'
+  ...
+# Subtest: does not contact API without v73 explicit consent
+ok 23 - does not contact API without v73 explicit consent
+  ---
+  duration_ms: 0.301895
+  type: 'test'
+  ...
+# Subtest: cannot run against a remote or production database
+ok 24 - cannot run against a remote or production database
+  ---
+  duration_ms: 0.455686
+  type: 'test'
+  ...
+# Subtest: identity mismatch aborts before a synthetic registration
+ok 25 - identity mismatch aborts before a synthetic registration
+  ---
+  duration_ms: 0.949249
+  type: 'test'
+  ...
+# Subtest: cross-tenant byte leakage fails acceptance
+ok 26 - cross-tenant byte leakage fails acceptance
+  ---
+  duration_ms: 2.13904
+  type: 'test'
+  ...
+# Subtest: reading revoked document fails acceptance
+ok 27 - reading revoked document fails acceptance
+  ---
+  duration_ms: 2.133522
+  type: 'test'
+  ...
+# Subtest: malformed nonce refuses synthetic user writes
+ok 28 - malformed nonce refuses synthetic user writes
+  ---
+  duration_ms: 1.816675
+  type: 'test'
+  ...
+# Subtest: saved report uses private mode and excludes test identities and document bytes
+ok 29 - saved report uses private mode and excludes test identities and document bytes
+  ---
+  duration_ms: 3.115761
+  type: 'test'
+  ...
+# Subtest: CI runner includes the new guarded HTTP suite after earlier tests
+ok 30 - CI runner includes the new guarded HTTP suite after earlier tests
+  ---
+  duration_ms: 0.475255
+  type: 'test'
+  ...
+# Subtest: v73 scripts are available and do not auto-run mutating suite during offline verification
+ok 31 - v73 scripts are available and do not auto-run mutating suite during offline verification
+  ---
+  duration_ms: 0.391499
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 358.928601
+

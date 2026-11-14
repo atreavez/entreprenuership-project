@@ -5,8 +5,9 @@ import { fileURLToPath } from 'node:url';
 export default defineConfig({
   plugins:[react()],
   envDir:fileURLToPath(new URL('../../',import.meta.url)),
-  server:{port:5173,proxy:{
+  server:{host:'127.0.0.1',port:5173,proxy:{
     '/api':{target:'http://127.0.0.1:4000',changeOrigin:true},
     '/maps':{target:'http://127.0.0.1:8081',changeOrigin:false}
-  }}
+  }},
+  preview:{host:'127.0.0.1'}
 });

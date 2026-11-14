@@ -1,0 +1,5 @@
+build_exit=1
+release_gate_exit=1
+offline_install_exit=1
+pg_syntax_exit=0
+pg_guard_exit=1

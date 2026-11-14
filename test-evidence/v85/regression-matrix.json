@@ -1,0 +1,272 @@
+[
+  {
+    "version": "v41",
+    "exit_code": 0,
+    "passes": 9,
+    "seconds": 0.34
+  },
+  {
+    "version": "v42",
+    "exit_code": 0,
+    "passes": 8,
+    "seconds": 0.26
+  },
+  {
+    "version": "v43",
+    "exit_code": 0,
+    "passes": 8,
+    "seconds": 3.52
+  },
+  {
+    "version": "v44",
+    "exit_code": 0,
+    "passes": 16,
+    "seconds": 6.45
+  },
+  {
+    "version": "v45",
+    "exit_code": 0,
+    "passes": 11,
+    "seconds": 0.79
+  },
+  {
+    "version": "v46",
+    "exit_code": 0,
+    "passes": 13,
+    "seconds": 0.73
+  },
+  {
+    "version": "v47",
+    "exit_code": 0,
+    "passes": 10,
+    "seconds": 0.37
+  },
+  {
+    "version": "v48",
+    "exit_code": 0,
+    "passes": 9,
+    "seconds": 0.32
+  },
+  {
+    "version": "v49",
+    "exit_code": 0,
+    "passes": 9,
+    "seconds": 0.53
+  },
+  {
+    "version": "v50",
+    "exit_code": 0,
+    "passes": 9,
+    "seconds": 0.24
+  },
+  {
+    "version": "v51",
+    "exit_code": 0,
+    "passes": 17,
+    "seconds": 0.24
+  },
+  {
+    "version": "v52",
+    "exit_code": 0,
+    "passes": 13,
+    "seconds": 0.68
+  },
+  {
+    "version": "v53",
+    "exit_code": 0,
+    "passes": 18,
+    "seconds": 1.05
+  },
+  {
+    "version": "v54",
+    "exit_code": 0,
+    "passes": 15,
+    "seconds": 1.09
+  },
+  {
+    "version": "v55",
+    "exit_code": 0,
+    "passes": 16,
+    "seconds": 0.23
+  },
+  {
+    "version": "v56",
+    "exit_code": 0,
+    "passes": 20,
+    "seconds": 0.3
+  },
+  {
+    "version": "v57",
+    "exit_code": 0,
+    "passes": 20,
+    "seconds": 0.31
+  },
+  {
+    "version": "v58",
+    "exit_code": 0,
+    "passes": 15,
+    "seconds": 0.31
+  },
+  {
+    "version": "v59",
+    "exit_code": 0,
+    "passes": 15,
+    "seconds": 0.26
+  },
+  {
+    "version": "v60",
+    "exit_code": 0,
+    "passes": 15,
+    "seconds": 0.27
+  },
+  {
+    "version": "v61",
+    "exit_code": 0,
+    "passes": 16,
+    "seconds": 0.73
+  },
+  {
+    "version": "v62",
+    "exit_code": 0,
+    "passes": 18,
+    "seconds": 0.48
+  },
+  {
+    "version": "v63",
+    "exit_code": 0,
+    "passes": 31,
+    "seconds": 0.54
+  },
+  {
+    "version": "v64",
+    "exit_code": 0,
+    "passes": 15,
+    "seconds": 0.22
+  },
+  {
+    "version": "v65",
+    "exit_code": 0,
+    "passes": 16,
+    "seconds": 0.56
+  },
+  {
+    "version": "v66",
+    "exit_code": 0,
+    "passes": 25,
+    "seconds": 0.8
+  },
+  {
+    "version": "v67",
+    "exit_code": 0,
+    "passes": 19,
+    "seconds": 0.8
+  },
+  {
+    "version": "v68",
+    "exit_code": 0,
+    "passes": 25,
+    "seconds": 0.34
+  },
+  {
+    "version": "v69",
+    "exit_code": 0,
+    "passes": 22,
+    "seconds": 0.22
+  },
+  {
+    "version": "v70",
+    "exit_code": 0,
+    "passes": 29,
+    "seconds": 0.32
+  },
+  {
+    "version": "v71",
+    "exit_code": 0,
+    "passes": 21,
+    "seconds": 0.28
+  },
+  {
+    "version": "v72",
+    "exit_code": 0,
+    "passes": 21,
+    "seconds": 0.65
+  },
+  {
+    "version": "v73",
+    "exit_code": 0,
+    "passes": 31,
+    "seconds": 0.52
+  },
+  {
+    "version": "v74",
+    "exit_code": 0,
+    "passes": 19,
+    "seconds": 0.55
+  },
+  {
+    "version": "v75",
+    "exit_code": 0,
+    "passes": 24,
+    "seconds": 0.5
+  },
+  {
+    "version": "v76",
+    "exit_code": 0,
+    "passes": 33,
+    "seconds": 0.5
+  },
+  {
+    "version": "v77",
+    "exit_code": 0,
+    "passes": 34,
+    "seconds": 0.65
+  },
+  {
+    "version": "v78",
+    "exit_code": 0,
+    "passes": 30,
+    "seconds": 0.52
+  },
+  {
+    "version": "v79",
+    "exit_code": 0,
+    "passes": 23,
+    "seconds": 0.67
+  },
+  {
+    "version": "v80",
+    "exit_code": 0,
+    "passes": 17,
+    "seconds": 0.26
+  },
+  {
+    "version": "v81",
+    "exit_code": 0,
+    "passes": 35,
+    "seconds": 1.37
+  },
+  {
+    "version": "v82",
+    "exit_code": 0,
+    "passes": 45,
+    "seconds": 0.58
+  },
+  {
+    "version": "v83",
+    "exit_code": 0,
+    "passes": 29,
+    "seconds": 0.58
+  },
+  {
+    "version": "v84",
+    "exit_code": 0,
+    "passes": 28,
+    "seconds": 0.53
+  },
+  {
+    "version": "v85",
+    "exit_code": 0,
+    "passes": 43,
+    "seconds": 1.45
+  }
+]

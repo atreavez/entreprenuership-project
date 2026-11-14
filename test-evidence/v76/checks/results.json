@@ -1,0 +1,50 @@
+[
+  {
+    "gate": "syntax",
+    "status": "pass",
+    "exit_code": 0,
+    "log": "test-evidence/v76/checks/syntax.log"
+  },
+  {
+    "gate": "architecture",
+    "status": "pass",
+    "exit_code": 0,
+    "log": "test-evidence/v76/checks/architecture.log"
+  },
+  {
+    "gate": "ci-policy",
+    "status": "pass",
+    "exit_code": 0,
+    "log": "test-evidence/v76/checks/ci-policy.log"
+  },
+  {
+    "gate": "source-entry",
+    "status": "pass",
+    "exit_code": 0,
+    "log": "test-evidence/v76/checks/source-entry.log"
+  },
+  {
+    "gate": "source-secret",
+    "status": "pass",
+    "exit_code": 0,
+    "log": "test-evidence/v76/checks/source-secret.log"
+  },
+  {
+    "gate": "lockfile",
+    "status": "blocked_or_failed",
+    "exit_code": 1,
+    "log": "test-evidence/v76/checks/lockfile.log"
+  },
+  {
+    "gate": "release-preflight",
+    "status": "blocked_or_failed",
+    "exit_code": 1,
+    "log": "test-evidence/v76/checks/release-preflight.log"
+  },
+  {
+    "gate": "full-build",
+    "status": "blocked_or_failed",
+    "exit_code": 1,
+    "log": "test-evidence/v76/checks/full-build.log"
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "schema": "ASSETTRUST_V51_OFFLINE_EVIDENCE",
+  "sourceVersion": "0.51.0",
+  "date": "2026-11-11",
+  "productionApproved": false,
+  "status": "BLOCKED_RELEASE",
+  "offlineVersionSuites": { "passed": 49, "total": 49 },
+  "newV51Tests": { "passed": 17, "total": 17 },
+  "offlineAdditionalChecks": ["verify:ci:v41", "verify:architecture", "verify:syntax", "smoke:offline", "release:plan:v51"],
+  "migrationFingerprints": { "matching": 25, "total": 25, "newMigration": false },
+  "genuineLockfile": false,
+  "npmCi": "FAILED_MISSING_LOCKFILE",
+  "fullBuild": "FAILED_MISSING_DEPENDENCIES",
+  "livePostgres": "NOT_RUN",
+  "gitHistorySecretScan": "NOT_RUN",
+  "readOnlyPrerequisites": { "present": 3, "total": 11 },
+  "note": "All real deployment and live DB evidence must be produced and reviewed on trusted Kali infrastructure."
+}

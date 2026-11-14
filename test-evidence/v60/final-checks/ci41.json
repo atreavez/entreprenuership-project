@@ -1,0 +1,7 @@
+{
+  "schema": "ASSETTRUST_CI_COVERAGE_V41",
+  "ok": true,
+  "versionSuiteCount": 58,
+  "pgContractCount": 28,
+  "issues": []
+}

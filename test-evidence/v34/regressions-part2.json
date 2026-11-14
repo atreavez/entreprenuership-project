@@ -1,0 +1,86 @@
+[
+  {
+    "command": "npm run verify:v19",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run verify:v20",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run verify:v21",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run verify:v22",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run verify:v23",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run verify:v24",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run verify:v25",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run verify:v26",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run verify:v27",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run verify:v28",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run verify:v29",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run verify:v30",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run verify:v31",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run verify:v32",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run verify:v33",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run verify:v34",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run verify:architecture",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run verify:syntax",
+    "status": "PASS"
+  },
+  {
+    "command": "npm run release:gate:v17",
+    "status": "FAIL"
+  },
+  {
+    "command": "npm run build",
+    "status": "FAIL"
+  },
+  {
+    "command": "npm run test:pg:reports:v34",
+    "status": "FAIL"
+  }
+]

@@ -1,0 +1,67 @@
+[
+  {
+    "suite": "verify:v03",
+    "code": 0,
+    "seconds": 0.69
+  },
+  {
+    "suite": "verify:v04",
+    "code": 0,
+    "seconds": 1.4
+  },
+  {
+    "suite": "verify:v05",
+    "code": 0,
+    "seconds": 2.32
+  },
+  {
+    "suite": "verify:v06",
+    "code": 0,
+    "seconds": 1.23
+  },
+  {
+    "suite": "verify:v07",
+    "code": 0,
+    "seconds": 0.73
+  },
+  {
+    "suite": "verify:v08",
+    "code": 0,
+    "seconds": 3.78
+  },
+  {
+    "suite": "verify:v09",
+    "code": 0,
+    "seconds": 2.74
+  },
+  {
+    "suite": "verify:v10",
+    "code": 0,
+    "seconds": 2.03
+  },
+  {
+    "suite": "verify:v11",
+    "code": 0,
+    "seconds": 2.04
+  },
+  {
+    "suite": "verify:v12",
+    "code": 0,
+    "seconds": 2.12
+  },
+  {
+    "suite": "verify:v13",
+    "code": 0,
+    "seconds": 9.6
+  },
+  {
+    "suite": "verify:v14",
+    "code": 0,
+    "seconds": 0.33
+  },
+  {
+    "suite": "verify:v15",
+    "code": 0,
+    "seconds": 2.04
+  }
+]

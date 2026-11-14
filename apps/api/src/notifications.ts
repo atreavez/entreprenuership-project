@@ -5,9 +5,9 @@ import {isUuid,UserAuth} from './common';
 @Injectable()
 class NotificationsService {
  constructor(private db:Database){}
- async list(u:UserAuth){const {rows}=await this.db.query(`SELECT id,category,title,body,resource_type,resource_id,read_at,created_at
+ async list(u:UserAuth){const {rows}=await this.db.tenantRecipientQuery(u.organizationId,u.id,`SELECT id,category,title,body,resource_type,resource_id,read_at,created_at
  FROM notifications WHERE organization_id=$1 AND recipient_id=$2 ORDER BY created_at DESC LIMIT 100`,[u.organizationId,u.id]);return rows;}
- async markRead(u:UserAuth,id:string){const r=await this.db.query('UPDATE notifications SET read_at=COALESCE(read_at,now()) WHERE id=$1 AND organization_id=$2 AND recipient_id=$3 RETURNING id,read_at',[isUuid(id),u.organizationId,u.id]);if(!r.rows.length)throw new NotFoundException('Notification not found');return r.rows[0];}
+ async markRead(u:UserAuth,id:string){const r=await this.db.tenantRecipientQuery(u.organizationId,u.id,'UPDATE notifications SET read_at=COALESCE(read_at,now()) WHERE id=$1 AND organization_id=$2 AND recipient_id=$3 RETURNING id,read_at',[isUuid(id),u.organizationId,u.id]);if(!r.rows.length)throw new NotFoundException('Notification not found');return r.rows[0];}
 }
 @Controller('notifications')@UseGuards(AuthGuard)
 class NotificationsController {

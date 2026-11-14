@@ -4,12 +4,15 @@ import {mkdtempSync,openSync,closeSync,readFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {prepareIsolatedRunEnvironment,waitForOwnedApiReady} from './ci-runner-policy.mjs';
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url);
+const {runtimeDatabaseUrl}=require('./runtime-role-policy-v57.cjs');
 const {origin,env:runEnvironment}=prepareIsolatedRunEnvironment(process.env);
 const dir=mkdtempSync(join(tmpdir(),'assettrust-v13-integration-'));
 const logfile=join(dir,'api.log');
 const output=openSync(logfile,'w');
 const server=spawn('npm',['run','start','--workspace','apps/api'],{
- stdio:['ignore',output,output],detached:process.platform!=='win32',env:runEnvironment
+ stdio:['ignore',output,output],detached:process.platform!=='win32',env:{...runEnvironment,DATABASE_URL:runtimeDatabaseUrl(runEnvironment)}
 });
 closeSync(output);
 let startFailure=null;
@@ -24,23 +27,25 @@ process.once('SIGINT',()=>{stop();process.exitCode=130});
 process.once('SIGTERM',()=>{stop();process.exitCode=143});
 try{
  await waitForOwnedApiReady(origin,runEnvironment,{isChildAlive:()=>!startFailure&&server.exitCode===null&&server.signalCode===null&&!server.killed});
- const suites=['test:e2e:local','test:e2e:identity','test:e2e:geo','test:e2e:overlaps'];
+ const suites=['test:e2e:auth-control:v69','test:e2e:local','test:e2e:identity','test:e2e:geo','test:e2e:overlaps','test:e2e:documents:v73'];
  for(const [index,suite] of suites.entries()){
-  if(index>0){
-   console.log('Waiting 65 seconds for the previous rate-limit window to expire...');
-   await new Promise(resolve=>setTimeout(resolve,65000));
-  }
+  // Global authentication throttles must expire between independent synthetic test suites.
+  // A paused test is NOT a bypass of rate limits; keep enforcement enabled in the API.
+  if(index>0)await new Promise(resolve=>setTimeout(resolve,65000));
   console.log(`Running ${suite} against validated disposable test API`);
-  const child=spawnSync('npm',['run',suite],{stdio:'inherit',env:runEnvironment,timeout:240000});
+  const childEnv=suite==='test:e2e:auth-control:v69'
+   ? {...runEnvironment,ASSETTRUST_V69_AUTH_CONFIRM:'YES'}
+   : suite==='test:e2e:documents:v73' ? {...runEnvironment,ASSETTRUST_V69_AUTH_CONFIRM:'YES',ASSETTRUST_V73_DOCUMENT_CONFIRM:'YES'} : runEnvironment;
+  const child=spawnSync('npm',['run',suite],{stdio:'inherit',env:childEnv,timeout:240000});
   if(child.status!==0)throw Error(`${suite} failed (exit ${child.status??'signal'}).`);
  }
- console.log('PASS: four HTTP/PostgreSQL integration suites completed.');
+ console.log('PASS: six HTTP/PostgreSQL integration suites completed, including authenticated admin control boundaries.');
 }catch(error){
  console.error('FAIL: '+error.message);
  // Only emit bounded logs with credentials redacted, never a raw configuration dump.
  try{
   let excerpt=readFileSync(logfile,'utf8').split('\n').slice(-75).join('\n');
-  for(const secret of [process.env.JWT_SECRET,process.env.MFA_ENCRYPTION_KEY,...Object.values(JSON.parse(runEnvironment.DOCUMENT_ENCRYPTION_KEYS||'{}'))]){
+  for(const secret of [process.env.JWT_SECRET,process.env.MFA_ENCRYPTION_KEY,process.env.ASSETTRUST_RUNTIME_DATABASE_URL,...Object.values(JSON.parse(runEnvironment.DOCUMENT_ENCRYPTION_KEYS||'{}'))]){
    if(typeof secret==='string'&&secret.length>8)excerpt=excerpt.split(secret).join('[REDACTED]');
   }
   console.error('Recent API log (redacted):\n'+excerpt.slice(-5500));

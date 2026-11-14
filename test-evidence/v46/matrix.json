@@ -1,0 +1,237 @@
+[
+  {
+    "command": "verify:v03",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v04",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v05",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v06",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v07",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v08",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v09",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v10",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v11",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v12",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v13",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v14",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v15",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v16",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v17",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v18",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v19",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v20",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v21",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v22",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v23",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v24",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v25",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v26",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v27",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v28",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v29",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v30",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v31",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v32",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v33",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v34",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v35",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v36",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v37",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v38",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v39",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v40",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v41",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v42",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v43",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v44",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v45",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:v46",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:architecture",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:syntax",
+    "passed": true,
+    "logged": true
+  },
+  {
+    "command": "verify:ci:v41",
+    "passed": true,
+    "logged": true
+  }
+]

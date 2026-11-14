@@ -1,0 +1,1 @@
+npm run build failed: missing installed @types/node / @nestjs/common / pg / other package dependencies. Original diagnostics preserved in analyst working evidence. No full compile pass claimed.

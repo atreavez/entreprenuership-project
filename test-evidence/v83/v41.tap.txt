@@ -1,0 +1,69 @@
+
+> assettrust-platform@0.83.0 verify:v41
+> node --test tools/tests-v41/*.test.cjs
+
+TAP version 13
+# Subtest: CI now includes every declared offline version suite and disposable PostgreSQL contract
+ok 1 - CI now includes every declared offline version suite and disposable PostgreSQL contract
+  ---
+  duration_ms: 2.83648
+  type: 'test'
+  ...
+# Subtest: CI contract fails closed if a future version check is omitted
+ok 2 - CI contract fails closed if a future version check is omitted
+  ---
+  duration_ms: 2.554636
+  type: 'test'
+  ...
+# Subtest: CI contract rejects omission of a live SQL gate
+ok 3 - CI contract rejects omission of a live SQL gate
+  ---
+  duration_ms: 0.375535
+  type: 'test'
+  ...
+# Subtest: CI contract rejects ignored failures, fallback installers, and missing npm ci
+ok 4 - CI contract rejects ignored failures, fallback installers, and missing npm ci
+  ---
+  duration_ms: 0.742778
+  type: 'test'
+  ...
+# Subtest: two-session PostgreSQL contract refuses missing consent or production/nonlocal DB
+ok 5 - two-session PostgreSQL contract refuses missing consent or production/nonlocal DB
+  ---
+  duration_ms: 0.678912
+  type: 'test'
+  ...
+# Subtest: untrusted schema identifiers cannot be interpolated into DDL
+ok 6 - untrusted schema identifiers cannot be interpolated into DDL
+  ---
+  duration_ms: 0.285951
+  type: 'test'
+  ...
+# Subtest: read-only release inspection reports incomplete local gates but never production approval
+ok 7 - read-only release inspection reports incomplete local gates but never production approval
+  ---
+  duration_ms: 11.2492
+  type: 'test'
+  ...
+# Subtest: preflight has no mutation side effects on an empty directory
+ok 8 - preflight has no mutation side effects on an empty directory
+  ---
+  duration_ms: 2.433163
+  type: 'test'
+  ...
+# Subtest: two-session runner uses exact SQL migration, never touches production tables and fails before importing pg
+ok 9 - two-session runner uses exact SQL migration, never touches production tables and fails before importing pg
+  ---
+  duration_ms: 0.70383
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 103.145008
+

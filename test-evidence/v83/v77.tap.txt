@@ -1,0 +1,219 @@
+
+> assettrust-platform@0.83.0 verify:v77
+> node --test --test-concurrency=1 tools/tests-v77/*.test.cjs
+
+TAP version 13
+# Subtest: dispute creation locks the shared asset before locking its case and inserting
+ok 1 - dispute creation locks the shared asset before locking its case and inserting
+  ---
+  duration_ms: 1.985038
+  type: 'test'
+  ...
+# Subtest: dispute resolution locks shared asset before case and dispute row
+ok 2 - dispute resolution locks shared asset before case and dispute row
+  ---
+  duration_ms: 0.693484
+  type: 'test'
+  ...
+# Subtest: resolving last case dispute does not unflag asset with another unresolved case
+ok 3 - resolving last case dispute does not unflag asset with another unresolved case
+  ---
+  duration_ms: 0.322546
+  type: 'test'
+  ...
+# Subtest: asset clears flag only when no remaining disputes across its cases
+ok 4 - asset clears flag only when no remaining disputes across its cases
+  ---
+  duration_ms: 0.256406
+  type: 'test'
+  ...
+# Subtest: pending disputes in the same case retain blocked case and flagged asset
+ok 5 - pending disputes in the same case retain blocked case and flagged asset
+  ---
+  duration_ms: 0.337117
+  type: 'test'
+  ...
+# Subtest: asset-level pending query joins tenant-scoped verification cases
+ok 6 - asset-level pending query joins tenant-scoped verification cases
+  ---
+  duration_ms: 0.815408
+  type: 'test'
+  ...
+# Subtest: asset state update is additionally scoped to asset and organization
+ok 7 - asset state update is additionally scoped to asset and organization
+  ---
+  duration_ms: 0.405941
+  type: 'test'
+  ...
+# Subtest: creation rejects case reassignment after asset was locked
+ok 8 - creation rejects case reassignment after asset was locked
+  ---
+  duration_ms: 0.500604
+  type: 'test'
+  ...
+# Subtest: resolution rejects case reassignment after asset was locked
+ok 9 - resolution rejects case reassignment after asset was locked
+  ---
+  duration_ms: 0.494624
+  type: 'test'
+  ...
+# Subtest: revoked case participation cannot take asset lock or write dispute
+ok 10 - revoked case participation cannot take asset lock or write dispute
+  ---
+  duration_ms: 0.448676
+  type: 'test'
+  ...
+# Subtest: suspended user cannot take asset lock or raise dispute
+ok 11 - suspended user cannot take asset lock or raise dispute
+  ---
+  duration_ms: 0.217428
+  type: 'test'
+  ...
+# Subtest: missing asset fails closed before a dispute mutation
+ok 12 - missing asset fails closed before a dispute mutation
+  ---
+  duration_ms: 0.273592
+  type: 'test'
+  ...
+# Subtest: dispute resolution rejects suspended admin before any asset lock
+ok 13 - dispute resolution rejects suspended admin before any asset lock
+  ---
+  duration_ms: 0.160261
+  type: 'test'
+  ...
+# Subtest: dispute resolution rejects downgraded admin before any asset lock
+ok 14 - dispute resolution rejects downgraded admin before any asset lock
+  ---
+  duration_ms: 0.281955
+  type: 'test'
+  ...
+# Subtest: closed cases never create new disputes even after asset is locked
+ok 15 - closed cases never create new disputes even after asset is locked
+  ---
+  duration_ms: 0.182064
+  type: 'test'
+  ...
+# Subtest: first authorization query includes active user and current case relationship
+ok 16 - first authorization query includes active user and current case relationship
+  ---
+  duration_ms: 0.231558
+  type: 'test'
+  ...
+# Subtest: case authorization is checked again after obtaining the asset lock
+ok 17 - case authorization is checked again after obtaining the asset lock
+  ---
+  duration_ms: 0.173661
+  type: 'test'
+  ...
+# Subtest: an already resolved dispute is not written twice
+ok 18 - an already resolved dispute is not written twice
+  ---
+  duration_ms: 0.328324
+  type: 'test'
+  ...
+# Subtest: a missing dispute is rejected before asset locking
+ok 19 - a missing dispute is rejected before asset locking
+  ---
+  duration_ms: 0.152079
+  type: 'test'
+  ...
+# Subtest: database failure during asset lock rolls back without writes
+ok 20 - database failure during asset lock rolls back without writes
+  ---
+  duration_ms: 0.146621
+  type: 'test'
+  ...
+# Subtest: all mutations retain audit after status updates
+ok 21 - all mutations retain audit after status updates
+  ---
+  duration_ms: 0.194142
+  type: 'test'
+  ...
+# Subtest: creation only notifies and flags after permission checks
+ok 22 - creation only notifies and flags after permission checks
+  ---
+  duration_ms: 0.254884
+  type: 'test'
+  ...
+# Subtest: plan is read-only and does not claim database acceptance
+ok 23 - plan is read-only and does not claim database acceptance
+  ---
+  duration_ms: 0.858602
+  type: 'test'
+  ...
+# Subtest: missing ASSETTRUST_V77_PG_CONFIRM blocks before any private load
+ok 24 - missing ASSETTRUST_V77_PG_CONFIRM blocks before any private load
+  ---
+  duration_ms: 0.324568
+  type: 'test'
+  ...
+# Subtest: missing ASSETTRUST_V70_LOCAL_CONFIRM blocks before any private load
+ok 25 - missing ASSETTRUST_V70_LOCAL_CONFIRM blocks before any private load
+  ---
+  duration_ms: 0.085209
+  type: 'test'
+  ...
+# Subtest: production setting blocks private database load
+ok 26 - production setting blocks private database load
+  ---
+  duration_ms: 0.122064
+  type: 'test'
+  ...
+# Subtest: untrusted loaded NODE_ENV refuses invocation
+ok 27 - untrusted loaded NODE_ENV refuses invocation
+  ---
+  duration_ms: 0.21916
+  type: 'test'
+  ...
+# Subtest: untrusted loaded CI refuses invocation
+ok 28 - untrusted loaded CI refuses invocation
+  ---
+  duration_ms: 0.070977
+  type: 'test'
+  ...
+# Subtest: untrusted loaded ASSETTRUST_E2E_ALLOW_MUTATION refuses invocation
+ok 29 - untrusted loaded ASSETTRUST_E2E_ALLOW_MUTATION refuses invocation
+  ---
+  duration_ms: 0.120081
+  type: 'test'
+  ...
+# Subtest: supervisor passes only private config to a non-shell child and checks provenance
+ok 30 - supervisor passes only private config to a non-shell child and checks provenance
+  ---
+  duration_ms: 0.72381
+  type: 'test'
+  ...
+# Subtest: incorrect source schema cannot be accepted even with exit 0
+ok 31 - incorrect source schema cannot be accepted even with exit 0
+  ---
+  duration_ms: 0.295495
+  type: 'test'
+  ...
+# Subtest: signal, timeout, and missing report all fail closed
+ok 32 - signal, timeout, and missing report all fail closed
+  ---
+  duration_ms: 0.421996
+  type: 'test'
+  ...
+# Subtest: plan command works without PostgreSQL or secrets
+ok 33 - plan command works without PostgreSQL or secrets
+  ---
+  duration_ms: 29.985432
+  type: 'test'
+  ...
+# Subtest: direct run cannot connect without explicit disposable authorization
+ok 34 - direct run cannot connect without explicit disposable authorization
+  ---
+  duration_ms: 30.630093
+  type: 'test'
+  ...
+1..34
+# tests 34
+# suites 0
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 434.932577
+

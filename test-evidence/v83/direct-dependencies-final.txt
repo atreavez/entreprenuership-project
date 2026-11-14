@@ -1,0 +1,32 @@
+
+> assettrust-platform@0.83.0 build:imports:v80
+> node tools/direct-dependency-policy-v80.cjs
+
+{
+  "schema": "ASSETTRUST_V80_DIRECT_DEPENDENCY_POLICY",
+  "ok": true,
+  "productionApproved": false,
+  "sourceImportsInspected": 113,
+  "directPackages": [
+    "api:@nestjs/common",
+    "api:@nestjs/core",
+    "api:@nestjs/jwt",
+    "api:@nestjs/platform-express",
+    "api:@nestjs/throttler",
+    "api:argon2",
+    "api:express",
+    "api:helmet",
+    "api:multer",
+    "api:pg",
+    "api:reflect-metadata",
+    "web:@vitejs/plugin-react",
+    "web:lucide-react",
+    "web:maplibre-gl",
+    "web:qrcode.react",
+    "web:react",
+    "web:react-dom",
+    "web:vite"
+  ],
+  "issues": [],
+  "note": "Source import declarations only; genuine npm registry resolution, audited lockfile, npm ci and compiled tests remain required."
+}

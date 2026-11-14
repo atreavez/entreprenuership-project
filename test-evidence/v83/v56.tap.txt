@@ -1,0 +1,135 @@
+
+> assettrust-platform@0.83.0 verify:v56
+> node --test --test-concurrency=1 tools/tests-v56/*.test.cjs
+
+TAP version 13
+# Subtest: v0.56 includes the previously missing real Vite index.html build entry
+ok 1 - v0.56 includes the previously missing real Vite index.html build entry
+  ---
+  duration_ms: 15.999696
+  type: 'test'
+  ...
+# Subtest: source and compiled artifact fixtures pass, but never approve production
+ok 2 - source and compiled artifact fixtures pass, but never approve production
+  ---
+  duration_ms: 4.140283
+  type: 'test'
+  ...
+# Subtest: source entry rejects missing Vite index.html and mount div
+ok 3 - source entry rejects missing Vite index.html and mount div
+  ---
+  duration_ms: 1.570074
+  type: 'test'
+  ...
+# Subtest: source entry rejects missing root element
+ok 4 - source entry rejects missing root element
+  ---
+  duration_ms: 1.503624
+  type: 'test'
+  ...
+# Subtest: source entry rejects remote scripts and inline scripts
+ok 5 - source entry rejects remote scripts and inline scripts
+  ---
+  duration_ms: 1.697645
+  type: 'test'
+  ...
+# Subtest: source validator catches missing relative imports in backend
+ok 6 - source validator catches missing relative imports in backend
+  ---
+  duration_ms: 1.872479
+  type: 'test'
+  ...
+# Subtest: source validator catches non-VITE_ browser environment references
+ok 7 - source validator catches non-VITE_ browser environment references
+  ---
+  duration_ms: 1.957727
+  type: 'test'
+  ...
+# Subtest: source validator catches process.env in browser code
+ok 8 - source validator catches process.env in browser code
+  ---
+  duration_ms: 1.820741
+  type: 'test'
+  ...
+# Subtest: source validator allows safe public VITE_ names
+ok 9 - source validator allows safe public VITE_ names
+  ---
+  duration_ms: 1.892309
+  type: 'test'
+  ...
+# Subtest: compiled web gate rejects a missing compiled backend
+ok 10 - compiled web gate rejects a missing compiled backend
+  ---
+  duration_ms: 1.835723
+  type: 'test'
+  ...
+# Subtest: compiled web gate rejects broken asset references
+ok 11 - compiled web gate rejects broken asset references
+  ---
+  duration_ms: 1.883376
+  type: 'test'
+  ...
+# Subtest: compiled web gate rejects accidentally bundled server-side secret variable names
+ok 12 - compiled web gate rejects accidentally bundled server-side secret variable names
+  ---
+  duration_ms: 1.486027
+  type: 'test'
+  ...
+# Subtest: compiled web gate rejects database connection strings
+ok 13 - compiled web gate rejects database connection strings
+  ---
+  duration_ms: 1.708832
+  type: 'test'
+  ...
+# Subtest: compiled frontend rejects sourcemaps and private key files
+ok 14 - compiled frontend rejects sourcemaps and private key files
+  ---
+  duration_ms: 1.308881
+  type: 'test'
+  ...
+# Subtest: compiled frontend rejects symlink-based output redirection
+ok 15 - compiled frontend rejects symlink-based output redirection
+  ---
+  duration_ms: 1.149911
+  type: 'test'
+  ...
+# Subtest: compiled html rejects external scripts regardless of source entry safety
+ok 16 - compiled html rejects external scripts regardless of source entry safety
+  ---
+  duration_ms: 1.405846
+  type: 'test'
+  ...
+# Subtest: post-build check fails closed on source-only checkpoint
+ok 17 - post-build check fails closed on source-only checkpoint
+  ---
+  duration_ms: 9.574764
+  type: 'test'
+  ...
+# Subtest: workflow must run source gate before npm ci and built gate after npm run build
+ok 18 - workflow must run source gate before npm ci and built gate after npm run build
+  ---
+  duration_ms: 0.189165
+  type: 'test'
+  ...
+# Subtest: supervised validation requires the artifact gate after the real full build
+ok 19 - supervised validation requires the artifact gate after the real full build
+  ---
+  duration_ms: 2.110477
+  type: 'test'
+  ...
+# Subtest: version and schema are correctly labelled for v0.56 without release approval
+ok 20 - version and schema are correctly labelled for v0.56 without release approval
+  ---
+  duration_ms: 8.921801
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 121.252537
+

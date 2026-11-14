@@ -1,0 +1,7 @@
+
+> assettrust-platform@0.25.0 release:gate:v17
+> node tools/release-gate-v17.cjs
+
+BLOCKER: Missing reviewed package-lock.json: use npm install once in a connected environment, review and commit it, then npm ci.
+BLOCKER: Cannot read package-lock.json: ENOENT
+FAIL: release remains blocked. Do not publish or deploy.

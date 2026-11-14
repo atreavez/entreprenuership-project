@@ -1,0 +1,153 @@
+
+> assettrust-platform@0.83.0 verify:v79
+> node --test --test-concurrency=1 tools/tests-v79/*.test.cjs
+
+TAP version 13
+# Subtest: current read helper uses active DB role, not stale JWT role
+ok 1 - current read helper uses active DB role, not stale JWT role
+  ---
+  duration_ms: 1.602342
+  type: 'test'
+  ...
+# Subtest: suspended account denied before any overview read
+ok 2 - suspended account denied before any overview read
+  ---
+  duration_ms: 0.852604
+  type: 'test'
+  ...
+# Subtest: role revoked from ORG_ADMIN limits all dashboard queries to participant scope
+ok 3 - role revoked from ORG_ADMIN limits all dashboard queries to participant scope
+  ---
+  duration_ms: 0.304118
+  type: 'test'
+  ...
+# Subtest: live administrator role is authoritative even when token claims reviewer
+ok 4 - live administrator role is authoritative even when token claims reviewer
+  ---
+  duration_ms: 0.368004
+  type: 'test'
+  ...
+# Subtest: dashboard identity check and all four reads use one transaction
+ok 5 - dashboard identity check and all four reads use one transaction
+  ---
+  duration_ms: 0.209325
+  type: 'test'
+  ...
+# Subtest: case report denies revoked participation before metadata/evidence
+ok 6 - case report denies revoked participation before metadata/evidence
+  ---
+  duration_ms: 0.378139
+  type: 'test'
+  ...
+# Subtest: case report cannot be read after suspension
+ok 7 - case report cannot be read after suspension
+  ---
+  duration_ms: 0.538811
+  type: 'test'
+  ...
+# Subtest: case report holds case permission through evidence and template read
+ok 8 - case report holds case permission through evidence and template read
+  ---
+  duration_ms: 0.339061
+  type: 'test'
+  ...
+# Subtest: audit verify denies demoted token administrator before ledger read
+ok 9 - audit verify denies demoted token administrator before ledger read
+  ---
+  duration_ms: 0.71055
+  type: 'test'
+  ...
+# Subtest: audit verify denies suspended administrator before ledger read
+ok 10 - audit verify denies suspended administrator before ledger read
+  ---
+  duration_ms: 0.554805
+  type: 'test'
+  ...
+# Subtest: audit verify scopes permission and rows in one transaction
+ok 11 - audit verify scopes permission and rows in one transaction
+  ---
+  duration_ms: 2.842629
+  type: 'test'
+  ...
+# Subtest: audit list denies demoted token administrator before ledger read
+ok 12 - audit list denies demoted token administrator before ledger read
+  ---
+  duration_ms: 0.262756
+  type: 'test'
+  ...
+# Subtest: audit list denies suspended administrator before ledger read
+ok 13 - audit list denies suspended administrator before ledger read
+  ---
+  duration_ms: 0.103025
+  type: 'test'
+  ...
+# Subtest: audit list scopes permission and rows in one transaction
+ok 14 - audit list scopes permission and rows in one transaction
+  ---
+  duration_ms: 0.813165
+  type: 'test'
+  ...
+# Subtest: tampered audit chain still fails integrity check
+ok 15 - tampered audit chain still fails integrity check
+  ---
+  duration_ms: 1.111023
+  type: 'test'
+  ...
+# Subtest: integrations localProof denies stale elevated role
+ok 16 - integrations localProof denies stale elevated role
+  ---
+  duration_ms: 0.270317
+  type: 'test'
+  ...
+# Subtest: integrations localProof denies suspended administrator
+ok 17 - integrations localProof denies suspended administrator
+  ---
+  duration_ms: 0.230517
+  type: 'test'
+  ...
+# Subtest: integrations localProof uses current transaction-scoped DB authority
+ok 18 - integrations localProof uses current transaction-scoped DB authority
+  ---
+  duration_ms: 0.23846
+  type: 'test'
+  ...
+# Subtest: integrations status denies stale elevated role
+ok 19 - integrations status denies stale elevated role
+  ---
+  duration_ms: 0.261574
+  type: 'test'
+  ...
+# Subtest: integrations status denies suspended administrator
+ok 20 - integrations status denies suspended administrator
+  ---
+  duration_ms: 0.152509
+  type: 'test'
+  ...
+# Subtest: integrations status uses current transaction-scoped DB authority
+ok 21 - integrations status uses current transaction-scoped DB authority
+  ---
+  duration_ms: 0.12644
+  type: 'test'
+  ...
+# Subtest: new protected controllers do not use JWT administrator bypass for these read paths
+ok 22 - new protected controllers do not use JWT administrator bypass for these read paths
+  ---
+  duration_ms: 0.349636
+  type: 'test'
+  ...
+# Subtest: all three workspace manifests identify current v0.79 milestone
+ok 23 - all three workspace manifests identify current v0.79 milestone
+  ---
+  duration_ms: 0.721887
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 413.932653
+

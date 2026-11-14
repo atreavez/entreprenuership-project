@@ -1,0 +1,44 @@
+
+> assettrust-platform@0.83.0 verify:v18
+> node --test tools/tests-v18/*.test.cjs
+
+TAP version 13
+# Subtest: recovery-code format is a pure, framework-independent domain rule
+ok 1 - recovery-code format is a pure, framework-independent domain rule
+  ---
+  duration_ms: 1.043682
+  type: 'test'
+  ...
+# Subtest: login and MFA-disable use the same domain-level recovery code policy
+ok 2 - login and MFA-disable use the same domain-level recovery code policy
+  ---
+  duration_ms: 0.249336
+  type: 'test'
+  ...
+# Subtest: RED/GREEN: a backup code consumed at login must not disable MFA later
+ok 3 - RED/GREEN: a backup code consumed at login must not disable MFA later
+  ---
+  duration_ms: 1.942835
+  type: 'test'
+  ...
+# Subtest: an unused correctly formatted backup code can disable MFA and revoke other sessions
+ok 4 - an unused correctly formatted backup code can disable MFA and revoke other sessions
+  ---
+  duration_ms: 0.309756
+  type: 'test'
+  ...
+# Subtest: arbitrary/malformed recovery code must not be accepted by MFA disable
+ok 5 - arbitrary/malformed recovery code must not be accepted by MFA disable
+  ---
+  duration_ms: 0.222505
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 352.964401

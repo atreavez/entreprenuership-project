@@ -1,0 +1,18 @@
+
+> assettrust-platform@0.70.0 kali:integration:doctor:v70
+> node tools/local-kali-integration-v70.cjs --doctor
+
+{
+  "schema": "ASSETTRUST_V70_LOCAL_DOCTOR",
+  "productionApproved": false,
+  "sourceRecognized": true,
+  "preparedConfigurationValid": false,
+  "restrictedRuntimeConfigured": false,
+  "genuineLockfilePresent": false,
+  "apiBuildPresent": false,
+  "webBuildPresent": false,
+  "configurationIssue": "LOCAL_SETUP_NOT_PREPARED",
+  "liveDatabaseTested": false,
+  "actualHttpAcceptancePassed": false,
+  "releaseStatus": "NO_GO"
+}

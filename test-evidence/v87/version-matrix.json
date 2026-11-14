@@ -1,0 +1,437 @@
+{
+  "schema": "ASSETTRUST_V87_REGRESSION_MATRIX",
+  "version": "0.87.0",
+  "environment": "offline execution on authoring host; no npm dependency install or PostgreSQL",
+  "summary": {
+    "suites": 47,
+    "passingSuites": 47,
+    "testCasesPassed": 979,
+    "testCasesFailed": 0
+  },
+  "suites": [
+    {
+      "suite": "verify:v41",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 9,
+      "passed": 9,
+      "failed": 0,
+      "seconds": 0.23
+    },
+    {
+      "suite": "verify:v42",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 8,
+      "passed": 8,
+      "failed": 0,
+      "seconds": 0.27
+    },
+    {
+      "suite": "verify:v43",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 8,
+      "passed": 8,
+      "failed": 0,
+      "seconds": 4.05
+    },
+    {
+      "suite": "verify:v44",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 16,
+      "passed": 16,
+      "failed": 0,
+      "seconds": 7.19
+    },
+    {
+      "suite": "verify:v45",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 11,
+      "passed": 11,
+      "failed": 0,
+      "seconds": 0.75
+    },
+    {
+      "suite": "verify:v46",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 13,
+      "passed": 13,
+      "failed": 0,
+      "seconds": 0.8
+    },
+    {
+      "suite": "verify:v47",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 10,
+      "passed": 10,
+      "failed": 0,
+      "seconds": 0.22
+    },
+    {
+      "suite": "verify:v48",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 9,
+      "passed": 9,
+      "failed": 0,
+      "seconds": 0.21
+    },
+    {
+      "suite": "verify:v49",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 9,
+      "passed": 9,
+      "failed": 0,
+      "seconds": 0.43
+    },
+    {
+      "suite": "verify:v50",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 9,
+      "passed": 9,
+      "failed": 0,
+      "seconds": 0.19
+    },
+    {
+      "suite": "verify:v51",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 17,
+      "passed": 17,
+      "failed": 0,
+      "seconds": 0.26
+    },
+    {
+      "suite": "verify:v52",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 13,
+      "passed": 13,
+      "failed": 0,
+      "seconds": 0.68
+    },
+    {
+      "suite": "verify:v53",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 18,
+      "passed": 18,
+      "failed": 0,
+      "seconds": 1.13
+    },
+    {
+      "suite": "verify:v54",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 15,
+      "passed": 15,
+      "failed": 0,
+      "seconds": 1.18
+    },
+    {
+      "suite": "verify:v55",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 16,
+      "passed": 16,
+      "failed": 0,
+      "seconds": 0.25
+    },
+    {
+      "suite": "verify:v56",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 20,
+      "passed": 20,
+      "failed": 0,
+      "seconds": 0.39
+    },
+    {
+      "suite": "verify:v57",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 20,
+      "passed": 20,
+      "failed": 0,
+      "seconds": 0.31
+    },
+    {
+      "suite": "verify:v58",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 15,
+      "passed": 15,
+      "failed": 0,
+      "seconds": 0.26
+    },
+    {
+      "suite": "verify:v59",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 15,
+      "passed": 15,
+      "failed": 0,
+      "seconds": 0.37
+    },
+    {
+      "suite": "verify:v60",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 15,
+      "passed": 15,
+      "failed": 0,
+      "seconds": 0.28
+    },
+    {
+      "suite": "verify:v61",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 16,
+      "passed": 16,
+      "failed": 0,
+      "seconds": 0.53
+    },
+    {
+      "suite": "verify:v62",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 18,
+      "passed": 18,
+      "failed": 0,
+      "seconds": 0.65
+    },
+    {
+      "suite": "verify:v63",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 31,
+      "passed": 31,
+      "failed": 0,
+      "seconds": 0.68
+    },
+    {
+      "suite": "verify:v64",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 15,
+      "passed": 15,
+      "failed": 0,
+      "seconds": 0.23
+    },
+    {
+      "suite": "verify:v65",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 16,
+      "passed": 16,
+      "failed": 0,
+      "seconds": 0.53
+    },
+    {
+      "suite": "verify:v66",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 25,
+      "passed": 25,
+      "failed": 0,
+      "seconds": 0.92
+    },
+    {
+      "suite": "verify:v67",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 19,
+      "passed": 19,
+      "failed": 0,
+      "seconds": 0.68
+    },
+    {
+      "suite": "verify:v68",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 25,
+      "passed": 25,
+      "failed": 0,
+      "seconds": 0.44
+    },
+    {
+      "suite": "verify:v69",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 22,
+      "passed": 22,
+      "failed": 0,
+      "seconds": 0.25
+    },
+    {
+      "suite": "verify:v70",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 29,
+      "passed": 29,
+      "failed": 0,
+      "seconds": 0.34
+    },
+    {
+      "suite": "verify:v71",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 21,
+      "passed": 21,
+      "failed": 0,
+      "seconds": 0.36
+    },
+    {
+      "suite": "verify:v72",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 21,
+      "passed": 21,
+      "failed": 0,
+      "seconds": 0.8
+    },
+    {
+      "suite": "verify:v73",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 31,
+      "passed": 31,
+      "failed": 0,
+      "seconds": 0.5
+    },
+    {
+      "suite": "verify:v74",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 19,
+      "passed": 19,
+      "failed": 0,
+      "seconds": 0.49
+    },
+    {
+      "suite": "verify:v75",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 24,
+      "passed": 24,
+      "failed": 0,
+      "seconds": 0.61
+    },
+    {
+      "suite": "verify:v76",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 33,
+      "passed": 33,
+      "failed": 0,
+      "seconds": 0.53
+    },
+    {
+      "suite": "verify:v77",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 34,
+      "passed": 34,
+      "failed": 0,
+      "seconds": 0.65
+    },
+    {
+      "suite": "verify:v78",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 30,
+      "passed": 30,
+      "failed": 0,
+      "seconds": 0.53
+    },
+    {
+      "suite": "verify:v79",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 23,
+      "passed": 23,
+      "failed": 0,
+      "seconds": 0.6
+    },
+    {
+      "suite": "verify:v80",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 17,
+      "passed": 17,
+      "failed": 0,
+      "seconds": 0.3
+    },
+    {
+      "suite": "verify:v81",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 35,
+      "passed": 35,
+      "failed": 0,
+      "seconds": 1.54
+    },
+    {
+      "suite": "verify:v82",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 45,
+      "passed": 45,
+      "failed": 0,
+      "seconds": 0.59
+    },
+    {
+      "suite": "verify:v83",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 29,
+      "passed": 29,
+      "failed": 0,
+      "seconds": 0.52
+    },
+    {
+      "suite": "verify:v84",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 28,
+      "passed": 28,
+      "failed": 0,
+      "seconds": 0.55
+    },
+    {
+      "suite": "verify:v85",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 43,
+      "passed": 43,
+      "failed": 0,
+      "seconds": 1.71
+    },
+    {
+      "suite": "verify:v86",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 34,
+      "passed": 34,
+      "failed": 0,
+      "seconds": 0.41
+    },
+    {
+      "suite": "verify:v87",
+      "ok": true,
+      "exitCode": 0,
+      "tests": 30,
+      "passed": 30,
+      "failed": 0,
+      "seconds": 0.59
+    }
+  ],
+  "productionApproved": false
+}

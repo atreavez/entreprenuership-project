@@ -3,7 +3,7 @@ import {randomBytes, createHmac} from 'node:crypto';import assert from 'node:ass
 import {assertSafeE2eTarget} from './e2e-safety.mjs';
 const base=await assertSafeE2eTarget(process.env.ASSETTRUST_E2E_URL||'http://127.0.0.1:4000');const key=randomBytes(5).toString('hex');const email=`identity-${key}@test.invalid`;const pwd='IdentityTest-'+randomBytes(12).toString('hex');
 let refreshCookie='';
-async function req(path,body,auth='',expected=201,useCookie=true){const headers={};if(body!==undefined)headers['Content-Type']='application/json';if(auth)headers.Authorization='Bearer '+auth;if(refreshCookie&&useCookie)headers.Cookie=refreshCookie;
+async function req(path,body,auth='',expected=201,useCookie=true){const headers={};if(body!==undefined){headers['Content-Type']='application/json';headers.Origin=(process.env.WEB_ORIGIN||'http://localhost:5173').split(',')[0].trim();}if(auth)headers.Authorization='Bearer '+auth;if(refreshCookie&&useCookie)headers.Cookie=refreshCookie;
  const res=await fetch(base+path,{method:body===undefined?'GET':'POST',headers,body:body===undefined?undefined:JSON.stringify(body)});
  const setCookie=res.headers.get('set-cookie');if(setCookie&&setCookie.startsWith('assettrust_refresh='))refreshCookie=setCookie.split(';')[0];
  let data={};try{data=await res.json()}catch{}assert.equal(res.status,expected,`${path}: ${JSON.stringify(data)}`);return data;

@@ -1,0 +1,26 @@
+{
+  "artifact": "AssetTrust v0.50 documents RLS offline checkpoint",
+  "status": "NO-GO: production security approval blocked",
+  "date": "2026-11-11",
+  "offline_version_suites": {
+    "passed": 48,
+    "total": 48
+  },
+  "new_targeted_unit_static_tests": {
+    "passed": 9,
+    "total": 9
+  },
+  "migration_fingerprint_matches": {
+    "passed": 25,
+    "total": 25
+  },
+  "rls_tables_in_source": 7,
+  "live_postgresql_test": "NOT RUN",
+  "full_build": "FAILED: missing installed dependencies",
+  "clean_dependency_install": "FAILED: package-lock.json missing",
+  "release_preflight": {
+    "met": 3,
+    "total": 11
+  },
+  "production_approved": false
+}
