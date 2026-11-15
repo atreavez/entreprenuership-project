@@ -1,0 +1,18 @@
+{
+  "schema": "ASSETTRUST_V68_BUILD_PRECONDITIONS",
+  "version": "0.68.0",
+  "ok": false,
+  "productionApproved": false,
+  "checks": {
+    "versionConsistent": true,
+    "nodeSupported": true,
+    "sqlMigrationsVerified": true,
+    "sourceImportPreflightPassed": true,
+    "reviewedLockfileValid": false,
+    "originalGitHistoryAvailable": false
+  },
+  "issues": [
+    "AUTHENTIC_REVIEWED_LOCKFILE_REQUIRED"
+  ],
+  "notes": "Original repository history and separate live PostgreSQL/HTTP/security testing remain mandatory for release."
+}

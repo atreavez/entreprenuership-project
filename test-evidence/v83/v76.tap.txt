@@ -1,0 +1,213 @@
+
+> assettrust-platform@0.83.0 verify:v76
+> node --test --test-concurrency=1 tools/tests-v76/*.test.cjs
+
+TAP version 13
+# Subtest: quote list checks active current role and case membership in one SQL statement
+ok 1 - quote list checks active current role and case membership in one SQL statement
+  ---
+  duration_ms: 2.164699
+  type: 'test'
+  ...
+# Subtest: quote list refuses suspended user
+ok 2 - quote list refuses suspended user
+  ---
+  duration_ms: 0.290357
+  type: 'test'
+  ...
+# Subtest: createQuote rejects downgraded token-privileged administrator before mutations
+ok 3 - createQuote rejects downgraded token-privileged administrator before mutations
+  ---
+  duration_ms: 0.809579
+  type: 'test'
+  ...
+# Subtest: createQuote rejects suspended token-privileged administrator before mutations
+ok 4 - createQuote rejects suspended token-privileged administrator before mutations
+  ---
+  duration_ms: 0.152911
+  type: 'test'
+  ...
+# Subtest: updateQuote rejects downgraded token-privileged administrator before mutations
+ok 5 - updateQuote rejects downgraded token-privileged administrator before mutations
+  ---
+  duration_ms: 0.386853
+  type: 'test'
+  ...
+# Subtest: updateQuote rejects suspended token-privileged administrator before mutations
+ok 6 - updateQuote rejects suspended token-privileged administrator before mutations
+  ---
+  duration_ms: 0.127322
+  type: 'test'
+  ...
+# Subtest: resolveDispute rejects downgraded token-privileged administrator before mutations
+ok 7 - resolveDispute rejects downgraded token-privileged administrator before mutations
+  ---
+  duration_ms: 0.4847
+  type: 'test'
+  ...
+# Subtest: resolveDispute rejects suspended token-privileged administrator before mutations
+ok 8 - resolveDispute rejects suspended token-privileged administrator before mutations
+  ---
+  duration_ms: 0.128052
+  type: 'test'
+  ...
+# Subtest: quote create locks current admin then case before insertion and audit
+ok 9 - quote create locks current admin then case before insertion and audit
+  ---
+  duration_ms: 0.718221
+  type: 'test'
+  ...
+# Subtest: quote create refuses current case access failure without writes
+ok 10 - quote create refuses current case access failure without writes
+  ---
+  duration_ms: 0.527494
+  type: 'test'
+  ...
+# Subtest: quote update permits one valid transition only after current-role lock
+ok 11 - quote update permits one valid transition only after current-role lock
+  ---
+  duration_ms: 0.316086
+  type: 'test'
+  ...
+# Subtest: quote update refuses invalid transition even for live admin
+ok 12 - quote update refuses invalid transition even for live admin
+  ---
+  duration_ms: 0.179731
+  type: 'test'
+  ...
+# Subtest: dispute resolution locks parent case before dispute row, prior to any writes
+ok 13 - dispute resolution locks parent case before dispute row, prior to any writes
+  ---
+  duration_ms: 0.649098
+  type: 'test'
+  ...
+# Subtest: dispute finalization maintains BLOCKED when unresolved disputes remain
+ok 14 - dispute finalization maintains BLOCKED when unresolved disputes remain
+  ---
+  duration_ms: 0.21956
+  type: 'test'
+  ...
+# Subtest: dispute finalization reopens once the parent case has no unresolved disputes
+ok 15 - dispute finalization reopens once the parent case has no unresolved disputes
+  ---
+  duration_ms: 0.27282
+  type: 'test'
+  ...
+# Subtest: raising dispute rejects closed case before inserting or flagging the asset
+ok 16 - raising dispute rejects closed case before inserting or flagging the asset
+  ---
+  duration_ms: 0.525832
+  type: 'test'
+  ...
+# Subtest: raising dispute revalidates case participation before locking and writing
+ok 17 - raising dispute revalidates case participation before locking and writing
+  ---
+  duration_ms: 0.156566
+  type: 'test'
+  ...
+# Subtest: raising dispute writes only after participant and case-status locks
+ok 18 - raising dispute writes only after participant and case-status locks
+  ---
+  duration_ms: 0.191018
+  type: 'test'
+  ...
+# Subtest: task create checks current role and case before insert
+ok 19 - task create checks current role and case before insert
+  ---
+  duration_ms: 0.620103
+  type: 'test'
+  ...
+# Subtest: task create rejects revoked privilege {"role":"CLIENT"}
+ok 20 - task create rejects revoked privilege {"role":"CLIENT"}
+  ---
+  duration_ms: 0.151318
+  type: 'test'
+  ...
+# Subtest: task create rejects revoked privilege {"suspended":true}
+ok 21 - task create rejects revoked privilege {"suspended":true}
+  ---
+  duration_ms: 0.095203
+  type: 'test'
+  ...
+# Subtest: task create rejects revoked privilege {"noCaseAccess":true}
+ok 22 - task create rejects revoked privilege {"noCaseAccess":true}
+  ---
+  duration_ms: 0.093801
+  type: 'test'
+  ...
+# Subtest: task create refuses inactive assignee before notification or task insert
+ok 23 - task create refuses inactive assignee before notification or task insert
+  ---
+  duration_ms: 0.403378
+  type: 'test'
+  ...
+# Subtest: task update rechecks live user and task ownership under row lock
+ok 24 - task update rechecks live user and task ownership under row lock
+  ---
+  duration_ms: 0.304499
+  type: 'test'
+  ...
+# Subtest: demoted task administrator without assignment cannot update somebody else task
+ok 25 - demoted task administrator without assignment cannot update somebody else task
+  ---
+  duration_ms: 0.16659
+  type: 'test'
+  ...
+# Subtest: suspended task member cannot update assigned task
+ok 26 - suspended task member cannot update assigned task
+  ---
+  duration_ms: 0.133441
+  type: 'test'
+  ...
+# Subtest: assigned non-admin with current membership retains own task update access
+ok 27 - assigned non-admin with current membership retains own task update access
+  ---
+  duration_ms: 0.124698
+  type: 'test'
+  ...
+# Subtest: reminder create holds current asset read authorization until insertion
+ok 28 - reminder create holds current asset read authorization until insertion
+  ---
+  duration_ms: 0.755868
+  type: 'test'
+  ...
+# Subtest: reminder create denies suspended member with stale granted asset access
+ok 29 - reminder create denies suspended member with stale granted asset access
+  ---
+  duration_ms: 0.155254
+  type: 'test'
+  ...
+# Subtest: task list is tenant-scoped and uses current active role
+ok 30 - task list is tenant-scoped and uses current active role
+  ---
+  duration_ms: 0.376076
+  type: 'test'
+  ...
+# Subtest: case-scoped task list uses same-transaction current case permission
+ok 31 - case-scoped task list uses same-transaction current case permission
+  ---
+  duration_ms: 2.163046
+  type: 'test'
+  ...
+# Subtest: disputes list uses current active actor rather than stale token admin boolean
+ok 32 - disputes list uses current active actor rather than stale token admin boolean
+  ---
+  duration_ms: 0.165029
+  type: 'test'
+  ...
+# Subtest: reminders list uses current active actor rather than stale token admin boolean
+ok 33 - reminders list uses current active actor rather than stale token admin boolean
+  ---
+  duration_ms: 0.098408
+  type: 'test'
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 33
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 384.964021
+

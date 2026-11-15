@@ -12,7 +12,13 @@ test('ordinary reviewer cannot approve legal evidence',()=>{
  assert.throws(()=>authorizeStage(regular,'LEGAL_REVIEW'));
  assert.doesNotThrow(()=>authorizeStage(regular,'DOCUMENT_REVIEW'));
 });
-test('even an organization admin needs independent professional approval for final review',()=>{
- assert.throws(()=>authorizeStage({...regular,role:'ORG_ADMIN'},'FINAL_REVIEW'));
- assert.doesNotThrow(()=>authorizeStage({...regular,role:'ORG_ADMIN',professionalApproved:true},'FINAL_REVIEW'));
+test('final-review stage permission requires an organization administrator',()=>{
+ assert.doesNotThrow(()=>authorizeStage({...regular,role:'ORG_ADMIN'},'FINAL_REVIEW'));
+ assert.throws(()=>authorizeStage(regular,'FINAL_REVIEW'));
+ assert.throws(()=>authorizeStage({...regular,role:'LEGAL_REVIEWER',professionalApproved:true},'FINAL_REVIEW'));
+});
+test('legal-review stage permission still requires an accredited legal reviewer',()=>{
+ assert.throws(()=>authorizeStage({...regular,role:'ORG_ADMIN'},'LEGAL_REVIEW'));
+ assert.throws(()=>authorizeStage({...regular,role:'LEGAL_REVIEWER'},'LEGAL_REVIEW'));
+ assert.doesNotThrow(()=>authorizeStage({...regular,role:'LEGAL_REVIEWER',professionalApproved:true},'LEGAL_REVIEW'));
 });

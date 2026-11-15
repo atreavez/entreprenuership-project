@@ -1,0 +1,42 @@
+'use strict';
+const {test}=require('node:test');const assert=require('node:assert/strict');
+const fs=require('node:fs');const path=require('node:path');const os=require('node:os');
+const {inspectSource,inspectBuild,run}=require('../build-artifact-gate-v56.cjs');
+const ROOT=path.resolve(__dirname,'../..');
+function fixture(){
+ const root=fs.mkdtempSync(path.join(os.tmpdir(),'assettrust-v56-'));
+ const folders=['apps/api/src','apps/api/dist','apps/web/src','apps/web/dist/assets'];for(const f of folders)fs.mkdirSync(path.join(root,f),{recursive:true});
+ const pkg={name:'assettrust-platform',version:'0.56.0'};
+ for(const [p,obj] of [['package.json',pkg],['apps/api/package.json',{name:'@assettrust/api',version:'0.56.0'}],['apps/web/package.json',{name:'@assettrust/web',version:'0.56.0'}]])fs.writeFileSync(path.join(root,p),JSON.stringify(obj));
+ const html='<!doctype html><html><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/></head><body><div id="root"></div><script type="module" src="/src/main.tsx"></script></body></html>';
+ fs.writeFileSync(path.join(root,'apps/web/index.html'),html);
+ fs.writeFileSync(path.join(root,'apps/web/src/main.tsx'),"import './app';\n");
+ fs.writeFileSync(path.join(root,'apps/web/src/app.tsx'),'export const a = 1;');
+ fs.writeFileSync(path.join(root,'apps/api/src/main.ts'),"import './api';\n");
+ fs.writeFileSync(path.join(root,'apps/api/src/api.ts'),'export const x = true;');
+ fs.writeFileSync(path.join(root,'apps/api/dist/main.js'),'console.log("api")');
+ fs.writeFileSync(path.join(root,'apps/web/dist/index.html'),html.replace('/src/main.tsx','/assets/index-123.js'));
+ fs.writeFileSync(path.join(root,'apps/web/dist/assets/index-123.js'),'console.log("web")');
+ return {root,put:(p,x)=>{const f=path.join(root,p);fs.mkdirSync(path.dirname(f),{recursive:true});fs.writeFileSync(f,x)},del:(p)=>fs.rmSync(path.join(root,p),{force:true}),cleanup:()=>fs.rmSync(root,{recursive:true,force:true})};
+}
+function inFixture(fn){const f=fixture();try{return fn(f)}finally{f.cleanup()}}
+test('v0.56 includes the previously missing real Vite index.html build entry',()=>{const report=inspectSource(ROOT);assert.equal(report.ok,true,JSON.stringify(report.issues));assert(report.relativeImportCount>=250);assert(report.filesChecked>=90)});
+test('source and compiled artifact fixtures pass, but never approve production',()=>inFixture(({root})=>{const x=run(root,'--build');assert(x.ok,JSON.stringify(x));assert.equal(x.productionApproved,false);assert.equal(x.build.compiledJsCount,1)}));
+test('source entry rejects missing Vite index.html and mount div',()=>inFixture(f=>{f.del('apps/web/index.html');assert(inspectSource(f.root).issues.some(s=>/index.html/.test(s)))}));
+test('source entry rejects missing root element',()=>inFixture(f=>{f.put('apps/web/index.html','<!doctype html><meta charset="utf-8"/><meta name="viewport" content="width=device-width"/><script type="module" src="/src/main.tsx"></script>');assert(inspectSource(f.root).issues.some(s=>/#root/.test(s)))}));
+test('source entry rejects remote scripts and inline scripts',()=>inFixture(f=>{f.put('apps/web/index.html','<!doctype html><meta charset="utf-8"/><meta name="viewport" content="width=device-width"/><div id="root"></div><script type="module" src="https://evil.example/script.js">alert(1)</script>');const x=inspectSource(f.root);assert(!x.ok);assert(x.issues.some(s=>/Unexpected script|external/.test(s)));assert(x.issues.some(s=>/Inline/.test(s)))}));
+test('source validator catches missing relative imports in backend',()=>inFixture(f=>{f.put('apps/api/src/api.ts','import {missing} from "./never-there";');assert(inspectSource(f.root).issues.some(s=>/Unresolved relative import/.test(s)))}));
+test('source validator catches non-VITE_ browser environment references',()=>inFixture(f=>{f.put('apps/web/src/app.tsx','const a=import.meta.env.JWT_SECRET;');assert(inspectSource(f.root).issues.some(s=>/non-public env/.test(s)))}));
+test('source validator catches process.env in browser code',()=>inFixture(f=>{f.put('apps/web/src/app.tsx','console.log(process.env.DATABASE_URL);');assert(inspectSource(f.root).issues.some(s=>/process.env/.test(s)))}));
+test('source validator allows safe public VITE_ names',()=>inFixture(f=>{f.put('apps/web/src/app.tsx','const a=import.meta.env.VITE_DESIGN_PREVIEW;');assert(inspectSource(f.root).ok)}));
+test('compiled web gate rejects a missing compiled backend',()=>inFixture(f=>{f.del('apps/api/dist/main.js');assert(inspectBuild(f.root).issues.some(s=>/Compiled API entry/.test(s)))}));
+test('compiled web gate rejects broken asset references',()=>inFixture(f=>{f.del('apps/web/dist/assets/index-123.js');const x=inspectBuild(f.root);assert(x.issues.some(s=>/Broken built asset/.test(s)))}));
+test('compiled web gate rejects accidentally bundled server-side secret variable names',()=>inFixture(f=>{f.put('apps/web/dist/assets/index-123.js','const JWT_SECRET="redacted-test-value";');const x=inspectBuild(f.root);assert(x.issues.some(s=>/Potential server secret marker/.test(s)));assert(!JSON.stringify(x).includes('redacted-test-value'))}));
+test('compiled web gate rejects database connection strings',()=>inFixture(f=>{f.put('apps/web/dist/assets/index-123.js','const x="postgres://redacted.invalid/assettrust"');const x=inspectBuild(f.root);assert(x.issues.some(s=>/postgres:\/\//.test(s)));assert(!JSON.stringify(x).includes('redacted.invalid'))}));
+test('compiled frontend rejects sourcemaps and private key files',()=>inFixture(f=>{f.put('apps/web/dist/assets/index-123.js.map','{}');f.put('apps/web/dist/.env','FORBIDDEN');assert(inspectBuild(f.root).issues.filter(s=>/Forbidden deployment artifact/.test(s)).length>=2)}));
+test('compiled frontend rejects symlink-based output redirection',()=>inFixture(f=>{const p=path.join(f.root,'apps/web/dist/assets/out.js');fs.symlinkSync('index-123.js',p);assert(inspectBuild(f.root).issues.some(s=>/symlinks/.test(s)))}));
+test('compiled html rejects external scripts regardless of source entry safety',()=>inFixture(f=>{f.put('apps/web/dist/index.html','<!doctype html><meta charset="utf-8"/><meta name="viewport" content="width=device-width"/><div id="root"></div><script type="module" src="https://evil.example/ship.js"></script>');assert(inspectBuild(f.root).issues.some(s=>/external|Unexpected script/.test(s)))}));
+test('post-build check fails closed on source-only checkpoint',()=>{const result=run(ROOT,'--build');assert.equal(result.ok,false);assert(result.build.issues.some(s=>/compiled|Built web|No compiled/.test(s)))});
+test('workflow must run source gate before npm ci and built gate after npm run build',()=>{const c=fs.readFileSync(path.join(ROOT,'.github/workflows/ci.yml'),'utf8');const before=c.indexOf('npm run build:source:v56'),ci=c.indexOf('run: npm ci'),build=c.indexOf('run: npm run build'),after=c.indexOf('npm run build:artifacts:v56');assert(before>=0&&ci>=0&&build>=0&&after>=0&&before<ci&&build<after)});
+test('supervised validation requires the artifact gate after the real full build',()=>{const {buildSteps}=require('../release-validation-v51.cjs');const root=JSON.parse(fs.readFileSync(path.join(ROOT,'package.json')));const steps=buildSteps(root,{}).map(s=>s.name);const compiled=steps.indexOf('api-and-web-build'),gate=steps.indexOf('post-build-artifact-gate');assert(compiled>=0&&gate===compiled+1)});
+test('version and schema are correctly labelled for v0.56 without release approval',()=>{const result=run(ROOT,'--source');assert(result.ok);assert.equal(result.schema,'ASSETTRUST_V56_BUILD_ARTIFACT_GATE');assert.equal(result.productionApproved,false);const v=JSON.parse(fs.readFileSync(path.join(ROOT,'package.json'))).version;assert.match(v,/^0\.(?:5[6-9]|[6-9][0-9])\.0$/)});

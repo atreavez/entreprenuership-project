@@ -1,0 +1,41 @@
+{
+  "schema": "ASSETTRUST_V53_EXECUTION_SUMMARY",
+  "version": "0.53.0",
+  "date": "2026-11-11",
+  "productionApproved": false,
+  "releaseDecision": "NO_GO",
+  "offline": {
+    "newTests": {
+      "passed": 18,
+      "total": 18
+    },
+    "versionSuites": {
+      "passed": 51,
+      "total": 51,
+      "range": "v03..v53"
+    },
+    "migrationsSourceSha256": {
+      "matched": 25,
+      "total": 25
+    },
+    "syntaxFiles": 104,
+    "snapshotSecretScan": {
+      "files": 2158,
+      "highConfidenceMatches": 0
+    },
+    "ciYamlParse": "PASS"
+  },
+  "live": {
+    "npmCleanInstall": "BLOCKED_MISSING_LOCKFILE",
+    "fullBuild": "FAILED_MISSING_DEPENDENCIES",
+    "clamav": "FAILED_NO_DAEMON",
+    "postgresContracts": "NOT_RUN",
+    "twoAPIHttp": "NOT_RUN",
+    "browser": "NOT_RUN",
+    "gitHistoryScan": "NOT_RUN",
+    "deploymentSecurity": "NOT_RUN"
+  },
+  "supervisedPlanStages": 88,
+  "supervisedCompleteStages": 0,
+  "notes": "No fabricated success. Local static tests cannot substitute for live deployment proofs."
+}

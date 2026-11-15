@@ -1,0 +1,4 @@
+{
+ "compilerOptions":{"target":"ES2022","module":"CommonJS","moduleResolution":"Node","strict":true,"noEmit":true,"skipLibCheck":true,"types":[]},
+ "include":["typecheck-v24/nest.d.ts","../apps/api/src/contexts/verification/domain/evidence-policy.ts","../apps/api/src/contexts/verification/application/evidence-workflow.ts","../apps/api/src/contexts/verification/infrastructure/current-workflow-authorizer.ts","../apps/api/src/contexts/verification/infrastructure/current-case-assignment.ts"]
+}

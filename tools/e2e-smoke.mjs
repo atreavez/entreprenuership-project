@@ -8,6 +8,7 @@ import {readFile} from 'node:fs/promises';
 import {resolve,isAbsolute} from 'node:path';
 import assert from 'node:assert/strict';
 import {assertSafeE2eTarget} from './e2e-safety.mjs';
+import {enrollSyntheticAdminMfa} from './e2e-mfa-onboarding-v82.mjs';
 const base=await assertSafeE2eTarget(process.env.ASSETTRUST_E2E_URL||'http://127.0.0.1:4000');
 const key=randomBytes(7).toString('hex');const password='LocalOnly!'+randomBytes(18).toString('base64url');
 async function request(path,method='GET',body,token,expected=200){const opts={method,headers:{}};if(token)opts.headers.Authorization='Bearer '+token;if(body!==undefined){opts.headers['Content-Type']='application/json';opts.body=JSON.stringify(body)}
@@ -15,6 +16,8 @@ async function request(path,method='GET',body,token,expected=200){const opts={me
 let passes=0;function log(x){console.log('✓ '+x);passes++}
 const a=await request('/auth/register','POST',{fullName:'E2E Admin A',organization:'E2E-A-'+key,email:'admin-a-'+key+'@test.invalid',password},undefined,201);log('Registered tenant A');
 const b=await request('/auth/register','POST',{fullName:'E2E Admin B',organization:'E2E-B-'+key,email:'admin-b-'+key+'@test.invalid',password},undefined,201);log('Registered tenant B');
+await enrollSyntheticAdminMfa({token:a.accessToken,password,send:(route,token,body)=>request(route,'POST',body,token,201)});
+await enrollSyntheticAdminMfa({token:b.accessToken,password,send:(route,token,body)=>request(route,'POST',body,token,201)});
 const asset=await request('/assets','POST',{assetType:'LAND',district:'Wakiso',declaredOwner:'Simulated owner - NOT VERIFIED',parcelReference:'TEST-'+key,description:'Disposable integration test, not a land registry record'},a.accessToken,201);log('Tenant A created asset');
 await request('/assets/'+asset.id,'GET',undefined,b.accessToken,404);log('Tenant B cannot read tenant A asset');
 const c=await request('/cases','POST',{assetId:asset.id,notes:'E2E fictional case'},a.accessToken,201);log('Created case');

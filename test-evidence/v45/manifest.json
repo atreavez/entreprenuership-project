@@ -1,0 +1,331 @@
+[
+  {
+    "command": "verify:v03",
+    "exit": 0,
+    "seconds": 0.57,
+    "log": "/mnt/data/v45-verification/verify_v03.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v04",
+    "exit": 0,
+    "seconds": 1.95,
+    "log": "/mnt/data/v45-verification/verify_v04.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v05",
+    "exit": 0,
+    "seconds": 2.45,
+    "log": "/mnt/data/v45-verification/verify_v05.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v06",
+    "exit": 0,
+    "seconds": 1.97,
+    "log": "/mnt/data/v45-verification/verify_v06.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v07",
+    "exit": 0,
+    "seconds": 0.78,
+    "log": "/mnt/data/v45-verification/verify_v07.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v08",
+    "exit": 0,
+    "seconds": 1.92,
+    "log": "/mnt/data/v45-verification/verify_v08.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v09",
+    "exit": 0,
+    "seconds": 2.7,
+    "log": "/mnt/data/v45-verification/verify_v09.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v10",
+    "exit": 0,
+    "seconds": 1.69,
+    "log": "/mnt/data/v45-verification/verify_v10.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v11",
+    "exit": 0,
+    "seconds": 1.6,
+    "log": "/mnt/data/v45-verification/verify_v11.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v12",
+    "exit": 0,
+    "seconds": 1.45,
+    "log": "/mnt/data/v45-verification/verify_v12.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v13",
+    "exit": 0,
+    "seconds": 8.24,
+    "log": "/mnt/data/v45-verification/verify_v13.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v14",
+    "exit": 0,
+    "seconds": 0.28,
+    "log": "/mnt/data/v45-verification/verify_v14.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v15",
+    "exit": 0,
+    "seconds": 1.75,
+    "log": "/mnt/data/v45-verification/verify_v15.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v16",
+    "exit": 0,
+    "seconds": 0.29,
+    "log": "/mnt/data/v45-verification/verify_v16.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v17",
+    "exit": 0,
+    "seconds": 0.43,
+    "log": "/mnt/data/v45-verification/verify_v17.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v18",
+    "exit": 0,
+    "seconds": 0.69,
+    "log": "/mnt/data/v45-verification/verify_v18.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v19",
+    "exit": 0,
+    "seconds": 0.78,
+    "log": "/mnt/data/v45-verification/verify_v19.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v20",
+    "exit": 0,
+    "seconds": 0.75,
+    "log": "/mnt/data/v45-verification/verify_v20.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v21",
+    "exit": 0,
+    "seconds": 0.51,
+    "log": "/mnt/data/v45-verification/verify_v21.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v22",
+    "exit": 0,
+    "seconds": 0.48,
+    "log": "/mnt/data/v45-verification/verify_v22.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v23",
+    "exit": 0,
+    "seconds": 1.34,
+    "log": "/mnt/data/v45-verification/verify_v23.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v24",
+    "exit": 0,
+    "seconds": 1.32,
+    "log": "/mnt/data/v45-verification/verify_v24.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v25",
+    "exit": 0,
+    "seconds": 1.97,
+    "log": "/mnt/data/v45-verification/verify_v25.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v26",
+    "exit": 0,
+    "seconds": 2.27,
+    "log": "/mnt/data/v45-verification/verify_v26.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v27",
+    "exit": 0,
+    "seconds": 2.57,
+    "log": "/mnt/data/v45-verification/verify_v27.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v28",
+    "exit": 0,
+    "seconds": 2.5,
+    "log": "/mnt/data/v45-verification/verify_v28.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v29",
+    "exit": 0,
+    "seconds": 2.63,
+    "log": "/mnt/data/v45-verification/verify_v29.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v30",
+    "exit": 0,
+    "seconds": 2.67,
+    "log": "/mnt/data/v45-verification/verify_v30.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v31",
+    "exit": 0,
+    "seconds": 2.52,
+    "log": "/mnt/data/v45-verification/verify_v31.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v32",
+    "exit": 0,
+    "seconds": 3.69,
+    "log": "/mnt/data/v45-verification/verify_v32.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v33",
+    "exit": 0,
+    "seconds": 2.48,
+    "log": "/mnt/data/v45-verification/verify_v33.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v34",
+    "exit": 0,
+    "seconds": 2.71,
+    "log": "/mnt/data/v45-verification/verify_v34.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v35",
+    "exit": 0,
+    "seconds": 2.22,
+    "log": "/mnt/data/v45-verification/verify_v35.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v36",
+    "exit": 0,
+    "seconds": 1.17,
+    "log": "/mnt/data/v45-verification/verify_v36.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v37",
+    "exit": 0,
+    "seconds": 1.33,
+    "log": "/mnt/data/v45-verification/verify_v37.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v38",
+    "exit": 0,
+    "seconds": 0.93,
+    "log": "/mnt/data/v45-verification/verify_v38.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v39",
+    "exit": 0,
+    "seconds": 0.71,
+    "log": "/mnt/data/v45-verification/verify_v39.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v40",
+    "exit": 0,
+    "seconds": 0.68,
+    "log": "/mnt/data/v45-verification/verify_v40.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v41",
+    "exit": 0,
+    "seconds": 0.28,
+    "log": "/mnt/data/v45-verification/verify_v41.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v42",
+    "exit": 0,
+    "seconds": 0.27,
+    "log": "/mnt/data/v45-verification/verify_v42.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v43",
+    "exit": 0,
+    "seconds": 3.58,
+    "log": "/mnt/data/v45-verification/verify_v43.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v44",
+    "exit": 0,
+    "seconds": 7.58,
+    "log": "/mnt/data/v45-verification/verify_v44.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:v45",
+    "exit": 0,
+    "seconds": 1.45,
+    "log": "/mnt/data/v45-verification/verify_v45.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:architecture",
+    "exit": 0,
+    "seconds": 0.38,
+    "log": "/mnt/data/v45-verification/verify_architecture.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:syntax",
+    "exit": 0,
+    "seconds": 1.99,
+    "log": "/mnt/data/v45-verification/verify_syntax.log",
+    "tail": ""
+  },
+  {
+    "command": "verify:ci:v41",
+    "exit": 0,
+    "seconds": 0.18,
+    "log": "/mnt/data/v45-verification/verify_ci_v41.log",
+    "tail": ""
+  },
+  {
+    "command": "security:scan:v43",
+    "exit": 0,
+    "seconds": 0.3,
+    "log": "/mnt/data/v45-verification/security_scan_v43.log",
+    "tail": ""
+  }
+]

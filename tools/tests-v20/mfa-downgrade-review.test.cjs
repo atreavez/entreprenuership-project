@@ -16,7 +16,9 @@ const commonNest={Body:fakeDecorator,Controller:fakeDecorator,Delete:fakeDecorat
 function load(relative,additional){
  const src=fs.readFileSync(path.join(root,relative),'utf8');
  const output=ts.transpileModule(src,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS,experimentalDecorators:true,emitDecoratorMetadata:false,esModuleInterop:true}}).outputText;
- const dependencies={'@nestjs/common':commonNest,'@nestjs/jwt':{JwtModule:{register:()=>({})},JwtService:class{}},'@nestjs/throttler':{Throttle:fakeDecorator},'argon2':{verify:async()=>true,hash:async()=>''},'./database':{},'./audit-service':{},'./common':{uid:crypto.randomUUID,text:v=>v,UserAuth:class{}},'./contexts/identity/application/session-usecases':{},'./contexts/identity/infrastructure/pg-session.repository':{},'./contexts/identity/domain/identity-policy':{CHALLENGE_TTL_MS:300000,hashOpaque:s=>crypto.createHash('sha256').update(s).digest('hex'),verifyTotp:()=>null,decodeBase32:()=>Buffer.alloc(20),openSecret:()=>'',isValidRecoveryCode:code=>typeof code==='string'&&/^[A-Za-z0-9_-]{14}$/.test(code)},...additional};
+ const dependencies={'@nestjs/common':commonNest,'@nestjs/jwt':{JwtModule:{register:()=>({})},JwtService:class{}},'@nestjs/throttler':{Throttle:fakeDecorator},'argon2':{verify:async()=>true,hash:async()=>''},'./database':{},'./audit':{},'./common':{uid:crypto.randomUUID,text:v=>v,UserAuth:class{}},'./contexts/identity/application/session-usecases':{},'./contexts/identity/infrastructure/pg-session.repository':{},'./contexts/identity/infrastructure/login-abuse.service':{LoginAbuseService:class{}},'./contexts/identity/domain/coadmin-policy':{isCoAdminEnrollmentRoute:()=>false,requiresAdminMfa:(role,flag)=>role==='ORG_ADMIN'||flag===true,hasAdminSessionMfaProof:(enabled,verifiedAt)=>enabled===true&&verifiedAt!=null},
+ './contexts/identity/domain/request-origin-policy':{isAllowedRequestOrigin:()=>true},
+ './contexts/identity/domain/identity-policy':{CHALLENGE_TTL_MS:300000,hashOpaque:s=>crypto.createHash('sha256').update(s).digest('hex'),verifyTotp:()=>null,decodeBase32:()=>Buffer.alloc(20),openSecret:()=>'',isValidRecoveryCode:code=>typeof code==='string'&&/^[A-Za-z0-9_-]{14}$/.test(code)},...additional};
  const context={module:{exports:{}},exports:{},Buffer,Date,console,process:{env:{MFA_ENCRYPTION_KEY:'cc'.repeat(32)}},require:id=>Object.hasOwn(dependencies,id)?dependencies[id]:require(id)};
  context.exports=context.module.exports;
  vm.runInNewContext(output,context,{filename:relative,timeout:4000});
@@ -29,7 +31,9 @@ function disabledMfaFixture(){
  const userId='user-v20';
  const query=async(sql,params=[])=>{
    recorded.push({sql,params});
+   if(sql.includes('SELECT admin_mfa_required,role FROM users'))return {rows:[{admin_mfa_required:false,role:'CLIENT'}]};
    if(sql.includes('SELECT password_hash FROM users'))return {rows:[{password_hash:'hashed'}]};
+   if(sql.includes('SELECT id FROM auth_sessions WHERE id=$1'))return {rows:[{id:params?.[0] || 'session-current'}]};
    if(sql.includes('SELECT secret_ciphertext,enabled,last_used_step'))return {rows:[{secret_ciphertext:'encrypted',enabled:mfaEnabled,last_used_step:0}]};
    if(sql.includes('DELETE FROM auth_recovery_codes')&&sql.includes('code_hash'))return {rowCount:1,rows:[{id:'valid-code'}]};
    if(sql.includes('DELETE FROM auth_mfa_credentials')){mfaEnabled=false;return {rows:[],rowCount:1}};
@@ -84,13 +88,15 @@ function parcelReviewFixture(mfaEnabled){
    const demandsEnabled=sql.includes('auth_mfa_credentials')&&/m\.enabled\s*=\s*true/.test(sql);
    return {rows:(!demandsEnabled||mfaEnabled)?[{present:1}]:[]};
   }
-  if(sql.includes('FROM assets'))return {rows:[{id:'asset-20'}]};
+  if(sql.includes('FROM assets'))return {rows:[{id:'asset-20',asset_type:'LAND',created_by:'reviewer-20',role:'SURVEYOR'}]};
   if(sql.includes('FROM parcel_boundary_claims'))return {rows:[{submitted_by:'another-user',status:'SUBMITTED'}]};
   if(sql.includes('UPDATE parcel_boundary_claims')){reviews++;return {rows:[],rowCount:1}};
   throw Error('Unexpected SQL during parcel review '+sql);
  }})};
+ const accessAdapter=load('apps/api/src/contexts/access/infrastructure/transactional-access.ts');
  const {PgParcelRepository}=load('apps/api/src/contexts/geospatial/infrastructure/pg-parcel.repository.ts',{
-  '../../../database':{},'../../../audit':{},'../../../common':{uid:()=> 'audit-id',isUuid:s=>s},'../domain/parcel-boundary':{canReviewBoundary:()=>true}
+  '../../../contexts/access/infrastructure/transactional-access':accessAdapter,
+  '../../../contexts/tenant-isolation/application/tenant-scope':{setTenantScope:async()=>{}},'../../../database':{},'../../../audit':{},'../../../common':{uid:()=> 'audit-id',isUuid:s=>s},'../domain/parcel-boundary':{canReviewBoundary:()=>true}
  });
  const svc=new PgParcelRepository(db,{write:async()=>{}});
  const actor={id:'reviewer-20',organizationId:'org-20',role:'SURVEYOR',professionalApproved:true};

@@ -1,0 +1,262 @@
+{
+  "schema": "ASSETTRUST_V41_OFFLINE_EVIDENCE",
+  "results": {
+    "versionCommands": {
+      "passed": 39,
+      "total": 39
+    },
+    "v41Tests": {
+      "passed": 9,
+      "total": 9
+    },
+    "migrationFilesUnchanged": 18,
+    "architecture": "PASS",
+    "typescriptTranspile": "PASS",
+    "ciCompleteness": "PASS",
+    "workflowYaml": "PASS"
+  },
+  "negativeGates": {
+    "npmCiWithoutLock": "BLOCKED_CORRECTLY",
+    "fullBuild": "FAILED_MISSING_DEPENDENCIES",
+    "npmTest": "FAILED_MISSING_NESTJS_PG_DEPENDENCIES",
+    "livePg": "NOT_RUN",
+    "browserE2E": "NOT_RUN"
+  },
+  "releaseDecision": "NOT_PRODUCTION_READY",
+  "commands": [
+    {
+      "script": "verify:v03",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.48
+    },
+    {
+      "script": "verify:v04",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.01
+    },
+    {
+      "script": "verify:v05",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.42
+    },
+    {
+      "script": "verify:v06",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.69
+    },
+    {
+      "script": "verify:v07",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.47
+    },
+    {
+      "script": "verify:v08",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.58
+    },
+    {
+      "script": "verify:v09",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 2.18
+    },
+    {
+      "script": "verify:v10",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.33
+    },
+    {
+      "script": "verify:v11",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.09
+    },
+    {
+      "script": "verify:v12",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.1
+    },
+    {
+      "script": "verify:v13",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 4.98
+    },
+    {
+      "script": "verify:v14",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.18
+    },
+    {
+      "script": "verify:v15",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.28
+    },
+    {
+      "script": "verify:v16",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.21
+    },
+    {
+      "script": "verify:v17",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.2
+    },
+    {
+      "script": "verify:v18",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.52
+    },
+    {
+      "script": "verify:v19",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.42
+    },
+    {
+      "script": "verify:v20",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.53
+    },
+    {
+      "script": "verify:v21",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.42
+    },
+    {
+      "script": "verify:v22",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.5
+    },
+    {
+      "script": "verify:v23",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.93
+    },
+    {
+      "script": "verify:v24",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.89
+    },
+    {
+      "script": "verify:v25",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.01
+    },
+    {
+      "script": "verify:v26",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.4
+    },
+    {
+      "script": "verify:v27",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.43
+    },
+    {
+      "script": "verify:v28",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.39
+    },
+    {
+      "script": "verify:v29",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.56
+    },
+    {
+      "script": "verify:v30",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.5
+    },
+    {
+      "script": "verify:v31",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.44
+    },
+    {
+      "script": "verify:v32",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.99
+    },
+    {
+      "script": "verify:v33",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.51
+    },
+    {
+      "script": "verify:v34",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.52
+    },
+    {
+      "script": "verify:v35",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.47
+    },
+    {
+      "script": "verify:v36",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.6
+    },
+    {
+      "script": "verify:v37",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.76
+    },
+    {
+      "script": "verify:v38",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.54
+    },
+    {
+      "script": "verify:v39",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.48
+    },
+    {
+      "script": "verify:v40",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.46
+    },
+    {
+      "script": "verify:v41",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.2
+    }
+  ]
+}

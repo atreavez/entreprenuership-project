@@ -1,0 +1,220 @@
+
+> assettrust-platform@0.25.0 verify:v25
+> node --test tools/tests-v25/*.test.cjs && tsc -p tools/tsconfig-v25.json
+
+TAP version 13
+# Subtest: RED: current account absence fails closed before a stale legal reviewer can review
+ok 1 - RED: current account absence fails closed before a stale legal reviewer can review
+  ---
+  duration_ms: 51.269848
+  type: 'test'
+  ...
+# Subtest: current role downgrade supersedes the authenticated snapshot
+ok 2 - current role downgrade supersedes the authenticated snapshot
+  ---
+  duration_ms: 8.67048
+  type: 'test'
+  ...
+# Subtest: revoked professional credential cannot be treated as approved
+ok 3 - revoked professional credential cannot be treated as approved
+  ---
+  duration_ms: 6.591753
+  type: 'test'
+  ...
+# Subtest: approved professional may review with verified current credentials
+ok 4 - approved professional may review with verified current credentials
+  ---
+  duration_ms: 7.307386
+  type: 'test'
+  ...
+# Subtest: organization administrator never inherits stale professional approval
+ok 5 - organization administrator never inherits stale professional approval
+  ---
+  duration_ms: 7.462729
+  type: 'test'
+  ...
+# Subtest: RED: a downgraded admin cannot reassign a case using stale token
+ok 6 - RED: a downgraded admin cannot reassign a case using stale token
+  ---
+  duration_ms: 23.060689
+  type: 'test'
+  ...
+# Subtest: deleted or cross-organization assignee cannot be assigned
+ok 7 - deleted or cross-organization assignee cannot be assigned
+  ---
+  duration_ms: 26.758608
+  type: 'test'
+  ...
+# Subtest: closed case cannot be reassigned
+ok 8 - closed case cannot be reassigned
+  ---
+  duration_ms: 16.933948
+  type: 'test'
+  ...
+# Subtest: unaccredited surveyor cannot be appointed to active field stage
+ok 9 - unaccredited surveyor cannot be appointed to active field stage
+  ---
+  duration_ms: 17.369943
+  type: 'test'
+  ...
+# Subtest: field assignment requires stage-qualified role
+ok 10 - field assignment requires stage-qualified role
+  ---
+  duration_ms: 16.415301
+  type: 'test'
+  ...
+# Subtest: current accredited surveyor can be assigned while case and users are locked
+ok 11 - current accredited surveyor can be assigned while case and users are locked
+  ---
+  duration_ms: 14.302694
+  type: 'test'
+  ...
+# Subtest: workflow requests a fresh actor inside the same transaction before evidence review and advancement
+not ok 12 - workflow requests a fresh actor inside the same transaction before evidence review and advancement
+  ---
+  duration_ms: 1.456194
+  type: 'test'
+  location: '/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:87:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /getCurrentActor:async/. Input:
+    
+    '/** INFRASTRUCTURE: the only layer in this vertical slice that knows PostgreSQL and NestJS. */\n' +
+      "import {Injectable} from '@nestjs/common';\n" +
+      "import {PoolClient} from 'pg';\n" +
+      "import {Database} from '../../../database';\n" +
+      "import {AuditService} from '../../../audit';\n" +
+      "import {WorkflowRepository,WorkflowTransaction} from '../application/evidence-workflow';\n" +
+      "import {CaseRecord,ReviewDecision,ReviewActor} from '../domain/evidence-policy';\n" +
+      "import {loadCurrentWorkflowActor} from './current-workflow-authorizer';\n" +
+      '@Injectable()\n' +
+      'export class PostgresWorkflowRepository implements WorkflowRepository{\n' +
+      ' constructor(private readonly db:Database,private readonly auditService:AuditService){}\n' +
+      ' transaction<T>(work:(tx:WorkflowTransaction)=>Promise<T>):Promise<T>{\n' +
+      '  return this.db.transaction(async (connection:PoolClient)=>{\n' +
+      '   const tx:WorkflowTransaction={\n' +
+      '    getCurrentActor:(actor,stage)=>loadCurrentWorkflowActor(connection,actor,stage),\n' +
+      '    getCase:async(id,orgId)=>{\n' +
+      '     const {rows}=await connection.query(`SELECT id,organization_id,asset_id,stage,status,assigned_to,created_by\n' +
+      '       FROM verification_cases WHERE id=$1 AND organization_id=$2 FOR UPDATE`,[id,orgId]);\n' +
+      '     const c=rows[0];return c?{id:c.id,organizationId:c.organization_id,assetId:c.asset_id,\n' +
+      '      stage:c.stage,status:c.status,assignedTo:c.assigned_to,createdBy:c.created_by} as CaseRecord:null;\n' +
+      '    },\n' +
+      '    getEvidence:async(evidenceId,caseId,orgId)=>{\n' +
+      '     const {rows}=await connection.query(`SELECT id,stage,evidence_type,recorded_by,review_status,reviewed_by\n' +
+      '      FROM case_evidence WHERE id=$1 AND case_id=$2 AND organization_id=$3 FOR UPDATE`,[evidenceId,caseId,orgId]);\n' +
+      '     return rows[0]||null;\n' +
+      '    },\n' +
+      '    getEvidenceForStage:async(caseId,orgId,stage)=>{\n' +
+      '     const {rows}=await connection.query(`SELECT id,stage,evidence_type,recorded_by,review_status,reviewed_by\n' +
+      '      FROM case_evidence WHERE case_id=$1 AND organization_id=$2 AND stage=$3`,[caseId,orgId,stage]);return rows;\n' +
+      '    },\n' +
+      '    hasUnresolvedDispute:async(caseId,orgId)=>{\n' +
+      '     const {rowCount}=await connection.query(`SELECT 1 FROM disputes WHERE case_id=$1 AND organization_id=$2\n' +
+      "       AND status IN ('OPEN','INVESTIGATING') LIMIT 1`,[caseId,orgId]);return !!rowCount;\n" +
+      '    },\n' +
+      '    recordDecision:async(evidenceId,actorId,decision:ReviewDecision,notes)=>{\n' +
+      '     const r=await connection.query(`UPDATE case_evidence SET review_status=$1,reviewed_by=$2,reviewed_at=now(),review_notes=$3\n' +
+      "       WHERE id=$4 AND review_status='SUBMITTED' RETURNING id`,[decision,actorId,notes,evidenceId]);\n" +
+      "     if(r.rowCount!==1)throw new Error('Concurrent evidence review prevented');\n" +
+      '    },\n' +
+      '    changeStage:async(caseId,orgId,stage,status)=>{\n' +
+      '     const r=await connection.query(`UPDATE verification_cases SET stage=$1,status=$2,updated_at=now()\n' +
+      '      WHERE id=$3 AND organization_id=$4 RETURNING id`,[stage,status,caseId,orgId]);\n' +
+      "     if(r.rowCount!==1)throw new Error('Cannot update missing case');\n" +
+      '    },\n' +
+      '    completeAsset:async(assetId,orgId)=>{\n' +
+      "     const r=await connection.query(`UPDATE assets SET status='REVIEW_COMPLETED',updated_at=now()\n" +
+      '       WHERE id=$1 AND organization_id=$2 RETURNING id`,[assetId,orgId]);\n' +
+      "     if(r.rowCount!==1)throw new Error('Cannot update missing asset');\n" +
+      '    },\n' +
+      '    audit:async(actor:ReviewActor,action:string,caseId:string,details:Record<string,unknown>)=>{\n' +
+      "     await this.auditService.write(connection,{...actor,email:'',fullName:''},action,'case',caseId,details);\n" +
+      '    }\n' +
+      '   };\n' +
+      '   return work(tx);\n' +
+      '  });\n' +
+      ' }\n' +
+      '}\n'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    /** INFRASTRUCTURE: the only layer in this vertical slice that knows PostgreSQL and NestJS. */
+    import {Injectable} from '@nestjs/common';
+    import {PoolClient} from 'pg';
+    import {Database} from '../../../database';
+    import {AuditService} from '../../../audit';
+    import {WorkflowRepository,WorkflowTransaction} from '../application/evidence-workflow';
+    import {CaseRecord,ReviewDecision,ReviewActor} from '../domain/evidence-policy';
+    import {loadCurrentWorkflowActor} from './current-workflow-authorizer';
+    @Injectable()
+    export class PostgresWorkflowRepository implements WorkflowRepository{
+     constructor(private readonly db:Database,private readonly auditService:AuditService){}
+     transaction<T>(work:(tx:WorkflowTransaction)=>Promise<T>):Promise<T>{
+      return this.db.transaction(async (connection:PoolClient)=>{
+       const tx:WorkflowTransaction={
+        getCurrentActor:(actor,stage)=>loadCurrentWorkflowActor(connection,actor,stage),
+        getCase:async(id,orgId)=>{
+         const {rows}=await connection.query(`SELECT id,organization_id,asset_id,stage,status,assigned_to,created_by
+           FROM verification_cases WHERE id=$1 AND organization_id=$2 FOR UPDATE`,[id,orgId]);
+         const c=rows[0];return c?{id:c.id,organizationId:c.organization_id,assetId:c.asset_id,
+          stage:c.stage,status:c.status,assignedTo:c.assigned_to,createdBy:c.created_by} as CaseRecord:null;
+        },
+        getEvidence:async(evidenceId,caseId,orgId)=>{
+         const {rows}=await connection.query(`SELECT id,stage,evidence_type,recorded_by,review_status,reviewed_by
+          FROM case_evidence WHERE id=$1 AND case_id=$2 AND organization_id=$3 FOR UPDATE`,[evidenceId,caseId,orgId]);
+         return rows[0]||null;
+        },
+        getEvidenceForStage:async(caseId,orgId,stage)=>{
+         const {rows}=await connection.query(`SELECT id,stage,evidence_type,recorded_by,review_status,reviewed_by
+          FROM case_evidence WHERE case_id=$1 AND organization_id=$2 AND stage=$3`,[caseId,orgId,stage]);return rows;
+        },
+        hasUnresolvedDispute:async(caseId,orgId)=>{
+         const {rowCount}=await connection.query(`SELECT 1 FROM disputes WHERE case_id=$1 AND organization_id=$2
+           AND status IN ('OPEN','INVESTIGATING') LIMIT 1`,[caseId,orgId]);return !!rowCount;
+        },
+        recordDecision:async(evidenceId,actorId,decision:ReviewDecision,notes)=>{
+         const r=await connection.query(`UPDATE case_evidence SET review_status=$1,reviewed_by=$2,reviewed_at=now(),review_notes=$3
+           WHERE id=$4 AND review_status='SUBMITTED' RETURNING id`,[decision,actorId,notes,evidenceId]);
+         if(r.rowCount!==1)throw new Error('Concurrent evidence review prevented');
+        },
+        changeStage:async(caseId,orgId,stage,status)=>{
+         const r=await connection.query(`UPDATE verification_cases SET stage=$1,status=$2,updated_at=now()
+          WHERE id=$3 AND organization_id=$4 RETURNING id`,[stage,status,caseId,orgId]);
+         if(r.rowCount!==1)throw new Error('Cannot update missing case');
+        },
+        completeAsset:async(assetId,orgId)=>{
+         const r=await connection.query(`UPDATE assets SET status='REVIEW_COMPLETED',updated_at=now()
+           WHERE id=$1 AND organization_id=$2 RETURNING id`,[assetId,orgId]);
+         if(r.rowCount!==1)throw new Error('Cannot update missing asset');
+        },
+        audit:async(actor:ReviewActor,action:string,caseId:string,details:Record<string,unknown>)=>{
+         await this.auditService.write(connection,{...actor,email:'',fullName:''},action,'case',caseId,details);
+        }
+       };
+       return work(tx);
+      });
+     }
+    }
+    
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (/mnt/data/assettrust-v25-work/assettrust-v25/tools/tests-v25/current-workflow-authorization.test.cjs:92:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 11
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 426.741893

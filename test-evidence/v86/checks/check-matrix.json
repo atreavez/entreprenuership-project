@@ -1,0 +1,47 @@
+[
+  {
+    "check": "architecture",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "check": "syntax",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "check": "source-imports",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "check": "ci-security-policy",
+    "exit": 1,
+    "passed": false
+  },
+  {
+    "check": "build-plan",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "check": "provenance-plan",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "check": "provenance-inspect",
+    "exit": 1,
+    "passed": false
+  },
+  {
+    "check": "release-preflight",
+    "exit": 1,
+    "passed": false
+  },
+  {
+    "check": "actual-build",
+    "exit": 1,
+    "passed": false
+  }
+]

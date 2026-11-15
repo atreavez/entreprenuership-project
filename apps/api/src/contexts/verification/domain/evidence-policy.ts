@@ -26,7 +26,10 @@ export const DISCLAIMER='Internal evidence workflow only. Neither approval nor a
 export function isStageReviewer(actor:ReviewActor,stage:string):boolean{
  if(stage==='FIELD_INSPECTION')return actor.professionalApproved && actor.role==='SURVEYOR';
  if(stage==='LEGAL_REVIEW')return actor.professionalApproved && actor.role==='LEGAL_REVIEWER';
- if(stage==='FINAL_REVIEW')return actor.professionalApproved && actor.role==='LEGAL_REVIEWER';
+ // The final decision is authored by an administrator and independently
+ // accepted by a DIFFERENT current organization administrator. Legal review
+ // already required an accredited LEGAL_REVIEWER at the preceding stage.
+ if(stage==='FINAL_REVIEW')return actor.role==='ORG_ADMIN';
  return actor.role==='ORG_ADMIN'||actor.role==='REVIEWER';
 }
 export function mayReviewEvidence(actor:ReviewActor,evidence:EvidenceRecord,currentStage:string):boolean{
@@ -42,8 +45,19 @@ export function mayAdvanceStage(actor:ReviewActor,caseRecord:CaseRecord):boolean
  if(actor.role!=='ORG_ADMIN' && caseRecord.assignedTo!==actor.id)return false;
  if(caseRecord.stage==='FIELD_INSPECTION')return actor.professionalApproved && actor.role==='SURVEYOR';
  if(caseRecord.stage==='LEGAL_REVIEW')return actor.professionalApproved && actor.role==='LEGAL_REVIEWER';
- if(caseRecord.stage==='FINAL_REVIEW')return actor.professionalApproved && actor.role==='ORG_ADMIN';
+ // Administrators intentionally do not carry professional accreditation;
+ // requiring professionalApproved here made successful closure impossible.
+ if(caseRecord.stage==='FINAL_REVIEW')return actor.role==='ORG_ADMIN';
  return actor.role==='ORG_ADMIN'||actor.role==='REVIEWER';
+}
+/** Stage-specific assignee eligibility is a pure domain rule. Assignment alone
+ * does not confer accreditation, which the infrastructure checks separately. */
+export function canAssignCaseStage(stage:string,role:string):boolean{
+ if(stage==='FIELD_INSPECTION')return role==='SURVEYOR';
+ if(stage==='LEGAL_REVIEW')return role==='LEGAL_REVIEWER';
+ if(stage==='FINAL_REVIEW')return role==='ORG_ADMIN';
+ if(stage==='CLOSED')return false;
+ return role==='ORG_ADMIN'||role==='REVIEWER';
 }
 export function nextStage(stage:string):string|null{
  const i=STAGES.findIndex(s=>s===stage);

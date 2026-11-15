@@ -1,0 +1,189 @@
+
+> assettrust-platform@0.83.0 verify:v70
+> node --test --test-concurrency=1 tools/tests-v70/*.test.cjs
+
+TAP version 13
+# Subtest: v70 scripts, package versions and CI registered
+ok 1 - v70 scripts, package versions and CI registered
+  ---
+  duration_ms: 1.932659
+  type: 'test'
+  ...
+# Subtest: dedicated Compose is loopback only and contains no built-in password
+ok 2 - dedicated Compose is loopback only and contains no built-in password
+  ---
+  duration_ms: 0.472571
+  type: 'test'
+  ...
+# Subtest: plan has no side effects and never claims approval
+ok 3 - plan has no side effects and never claims approval
+  ---
+  duration_ms: 1.533739
+  type: 'test'
+  ...
+# Subtest: rejects unreviewed Compose changes before generating credentials or starting containers
+ok 4 - rejects unreviewed Compose changes before generating credentials or starting containers
+  ---
+  duration_ms: 1.78715
+  type: 'test'
+  ...
+# Subtest: prepares cryptographically distinct private files and test-only URL
+ok 5 - prepares cryptographically distinct private files and test-only URL
+  ---
+  duration_ms: 5.073576
+  type: 'test'
+  ...
+# Subtest: refuses to overwrite existing generated credentials
+ok 6 - refuses to overwrite existing generated credentials
+  ---
+  duration_ms: 2.712853
+  type: 'test'
+  ...
+# Subtest: rejects symlinked local credential directory
+ok 7 - rejects symlinked local credential directory
+  ---
+  duration_ms: 0.771952
+  type: 'test'
+  ...
+# Subtest: rejects a forged or mismatched runtime credential even in doctor mode
+ok 8 - rejects a forged or mismatched runtime credential even in doctor mode
+  ---
+  duration_ms: 3.820841
+  type: 'test'
+  ...
+# Subtest: rejects read-permissive secret files
+ok 9 - rejects read-permissive secret files
+  ---
+  duration_ms: 2.696318
+  type: 'test'
+  ...
+# Subtest: rejects symlinked credential file
+ok 10 - rejects symlinked credential file
+  ---
+  duration_ms: 2.862278
+  type: 'test'
+  ...
+# Subtest: rejects tampered disposable database identity
+ok 11 - rejects tampered disposable database identity
+  ---
+  duration_ms: 2.521455
+  type: 'test'
+  ...
+# Subtest: doctor reports only non-secret readiness, not raw URLs
+ok 12 - doctor reports only non-secret readiness, not raw URLs
+  ---
+  duration_ms: 2.495246
+  type: 'test'
+  ...
+# Subtest: doctor correctly reports missing configuration
+ok 13 - doctor correctly reports missing configuration
+  ---
+  duration_ms: 1.171824
+  type: 'test'
+  ...
+# Subtest: rejects live operations without explicit authorization or in production
+ok 14 - rejects live operations without explicit authorization or in production
+  ---
+  duration_ms: 2.975849
+  type: 'test'
+  ...
+# Subtest: start invokes only isolated Docker Compose with no operator secret in environment
+ok 15 - start invokes only isolated Docker Compose with no operator secret in environment
+  ---
+  duration_ms: 3.13649
+  type: 'test'
+  ...
+# Subtest: scanner starts through local Docker socket without credentials in environment
+ok 16 - scanner starts through local Docker socket without credentials in environment
+  ---
+  duration_ms: 2.39882
+  type: 'test'
+  ...
+# Subtest: migration step runs two commands in order with test-only DB URL
+ok 17 - migration step runs two commands in order with test-only DB URL
+  ---
+  duration_ms: 2.796529
+  type: 'test'
+  ...
+# Subtest: provisions runtime role only through guarded existing script and private output
+ok 18 - provisions runtime role only through guarded existing script and private output
+  ---
+  duration_ms: 2.716348
+  type: 'test'
+  ...
+# Subtest: refuses to re-provision restricted role after credential is recorded
+ok 19 - refuses to re-provision restricted role after credential is recorded
+  ---
+  duration_ms: 2.832943
+  type: 'test'
+  ...
+# Subtest: verify requires a separate nonowner runtime role
+ok 20 - verify requires a separate nonowner runtime role
+  ---
+  duration_ms: 2.368535
+  type: 'test'
+  ...
+# Subtest: verify checks ledger, runtime login, exact policies and privileges in order
+ok 21 - verify checks ledger, runtime login, exact policies and privileges in order
+  ---
+  duration_ms: 2.775017
+  type: 'test'
+  ...
+# Subtest: failures stop subsequent steps and never print raw child output
+ok 22 - failures stop subsequent steps and never print raw child output
+  ---
+  duration_ms: 2.726293
+  type: 'test'
+  ...
+# Subtest: HTTP acceptance refuses missing real build artifacts before invoking any child
+ok 23 - HTTP acceptance refuses missing real build artifacts before invoking any child
+  ---
+  duration_ms: 3.367699
+  type: 'test'
+  ...
+# Subtest: HTTP acceptance rejects a failing provenance gate
+ok 24 - HTTP acceptance rejects a failing provenance gate
+  ---
+  duration_ms: 3.172525
+  type: 'test'
+  ...
+# Subtest: authorized HTTP step passes private run marker to supervised API, never logs it
+ok 25 - authorized HTTP step passes private run marker to supervised API, never logs it
+  ---
+  duration_ms: 3.212505
+  type: 'test'
+  ...
+# Subtest: local secret output sanitizer redacts URLs, keys and auth header
+ok 26 - local secret output sanitizer redacts URLs, keys and auth header
+  ---
+  duration_ms: 0.422115
+  type: 'test'
+  ...
+# Subtest: no-op authorization is rejected without running commands
+ok 27 - no-op authorization is rejected without running commands
+  ---
+  duration_ms: 0.123006
+  type: 'test'
+  ...
+# Subtest: prepare requires recognized repository; does not create side effects otherwise
+ok 28 - prepare requires recognized repository; does not create side effects otherwise
+  ---
+  duration_ms: 0.660164
+  type: 'test'
+  ...
+# Subtest: command plan and doctor work without network or PostgreSQL
+ok 29 - command plan and doctor work without network or PostgreSQL
+  ---
+  duration_ms: 29.098334
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 157.141736
+

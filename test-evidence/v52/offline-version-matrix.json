@@ -1,0 +1,306 @@
+{
+  "schema": "ASSETTRUST_V52_OFFLINE_MATRIX",
+  "summary": "Offline version suites only; not production validation",
+  "versions": [
+    {
+      "version": "v03",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_03.log",
+      "byte_count": 991
+    },
+    {
+      "version": "v04",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_04.log",
+      "byte_count": 3007
+    },
+    {
+      "version": "v05",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_05.log",
+      "byte_count": 4498
+    },
+    {
+      "version": "v06",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_06.log",
+      "byte_count": 4437
+    },
+    {
+      "version": "v07",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_07.log",
+      "byte_count": 3243
+    },
+    {
+      "version": "v08",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_08.log",
+      "byte_count": 2508
+    },
+    {
+      "version": "v09",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_09.log",
+      "byte_count": 2952
+    },
+    {
+      "version": "v10",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_10.log",
+      "byte_count": 3560
+    },
+    {
+      "version": "v11",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_11.log",
+      "byte_count": 3244
+    },
+    {
+      "version": "v12",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_12.log",
+      "byte_count": 3264
+    },
+    {
+      "version": "v13",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_13.log",
+      "byte_count": 3357
+    },
+    {
+      "version": "v14",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_14.log",
+      "byte_count": 2071
+    },
+    {
+      "version": "v15",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_15.log",
+      "byte_count": 2307
+    },
+    {
+      "version": "v16",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_16.log",
+      "byte_count": 1028
+    },
+    {
+      "version": "v17",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_17.log",
+      "byte_count": 2629
+    },
+    {
+      "version": "v18",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_18.log",
+      "byte_count": 1182
+    },
+    {
+      "version": "v19",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_19.log",
+      "byte_count": 792
+    },
+    {
+      "version": "v20",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_20.log",
+      "byte_count": 1768
+    },
+    {
+      "version": "v21",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_21.log",
+      "byte_count": 3282
+    },
+    {
+      "version": "v22",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_22.log",
+      "byte_count": 1894
+    },
+    {
+      "version": "v23",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_23.log",
+      "byte_count": 3135
+    },
+    {
+      "version": "v24",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_24.log",
+      "byte_count": 3616
+    },
+    {
+      "version": "v25",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_25.log",
+      "byte_count": 4357
+    },
+    {
+      "version": "v26",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_26.log",
+      "byte_count": 3823
+    },
+    {
+      "version": "v27",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_27.log",
+      "byte_count": 4146
+    },
+    {
+      "version": "v28",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_28.log",
+      "byte_count": 5916
+    },
+    {
+      "version": "v29",
+      "status": "PASS",
+      "source_log": "/tmp/assettrustv52_verify_29.log",
+      "byte_count": 5354
+    },
+    {
+      "version": "v30",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-30.log",
+      "byte_count": 5043
+    },
+    {
+      "version": "v31",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-31.log",
+      "byte_count": 5642
+    },
+    {
+      "version": "v32",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-32.log",
+      "byte_count": 3743
+    },
+    {
+      "version": "v33",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-33.log",
+      "byte_count": 5428
+    },
+    {
+      "version": "v34",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-34.log",
+      "byte_count": 5972
+    },
+    {
+      "version": "v35",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-35.log",
+      "byte_count": 3643
+    },
+    {
+      "version": "v36",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-36.log",
+      "byte_count": 2672
+    },
+    {
+      "version": "v37",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-37.log",
+      "byte_count": 2210
+    },
+    {
+      "version": "v38",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-38.log",
+      "byte_count": 2330
+    },
+    {
+      "version": "v39",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-39.log",
+      "byte_count": 2309
+    },
+    {
+      "version": "v40",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-40.log",
+      "byte_count": 2892
+    },
+    {
+      "version": "v41",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-41.log",
+      "byte_count": 2091
+    },
+    {
+      "version": "v42",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-42.log",
+      "byte_count": 1915
+    },
+    {
+      "version": "v43",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-43.log",
+      "byte_count": 1812
+    },
+    {
+      "version": "v44",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-44.log",
+      "byte_count": 3938
+    },
+    {
+      "version": "v45",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-45.log",
+      "byte_count": 2478
+    },
+    {
+      "version": "v46",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-46.log",
+      "byte_count": 3213
+    },
+    {
+      "version": "v47",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-47.log",
+      "byte_count": 2227
+    },
+    {
+      "version": "v48",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-48.log",
+      "byte_count": 2177
+    },
+    {
+      "version": "v49",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-49.log",
+      "byte_count": 2096
+    },
+    {
+      "version": "v50",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-50.log",
+      "byte_count": 2347
+    },
+    {
+      "version": "v51",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-final-v51.log",
+      "byte_count": 4071
+    },
+    {
+      "version": "v52",
+      "status": "PASS",
+      "source_log": "/mnt/data/v52-final-v52.log",
+      "byte_count": 2761
+    }
+  ]
+}

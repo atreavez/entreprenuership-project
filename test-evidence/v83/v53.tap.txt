@@ -1,0 +1,123 @@
+
+> assettrust-platform@0.83.0 verify:v53
+> node --test --test-concurrency=1 tools/tests-v53/*.test.cjs
+
+TAP version 13
+# Subtest: current snapshot remains an explicit NO-GO and never claims production readiness
+ok 1 - current snapshot remains an explicit NO-GO and never claims production readiness
+  ---
+  duration_ms: 2.701477
+  type: 'test'
+  ...
+# Subtest: synthetic full report with exact ordered stages is accepted for completeness ONLY
+ok 2 - synthetic full report with exact ordered stages is accepted for completeness ONLY
+  ---
+  duration_ms: 1.643163
+  type: 'test'
+  ...
+# Subtest: missing one stage is rejected even with a misleading success label
+ok 3 - missing one stage is rejected even with a misleading success label
+  ---
+  duration_ms: 1.378465
+  type: 'test'
+  ...
+# Subtest: reordered stages, duplicate stages and fabricated exit status are rejected
+ok 4 - reordered stages, duplicate stages and fabricated exit status are rejected
+  ---
+  duration_ms: 1.318725
+  type: 'test'
+  ...
+# Subtest: a build-only or database-only report cannot be presented as full validation
+ok 5 - a build-only or database-only report cannot be presented as full validation
+  ---
+  duration_ms: 1.120767
+  type: 'test'
+  ...
+# Subtest: version mismatch, nonzero exit, and invalid durations are rejected
+ok 6 - version mismatch, nonzero exit, and invalid durations are rejected
+  ---
+  duration_ms: 1.380809
+  type: 'test'
+  ...
+# Subtest: evidence owned by the current user must be private and not a symlink
+ok 7 - evidence owned by the current user must be private and not a symlink
+  ---
+  duration_ms: 1.214779
+  type: 'test'
+  ...
+# Subtest: evidence checker is read-only: no artifacts are created by review
+ok 8 - evidence checker is read-only: no artifacts are created by review
+  ---
+  duration_ms: 1.105073
+  type: 'test'
+  ...
+# Subtest: actual GitHub workflow parses and meets release-security contract
+ok 9 - actual GitHub workflow parses and meets release-security contract
+  ---
+  duration_ms: 75.504131
+  type: 'test'
+  ...
+# Subtest: a syntactically invalid workflow fails even if required command strings remain
+ok 10 - a syntactically invalid workflow fails even if required command strings remain
+  ---
+  duration_ms: 65.359198
+  type: 'test'
+  ...
+# Subtest: duplicate env key is explicitly rejected, even when YAML parser would accept it
+ok 11 - duplicate env key is explicitly rejected, even when YAML parser would accept it
+  ---
+  duration_ms: 72.302565
+  type: 'test'
+  ...
+# Subtest: omitting any declared live PostgreSQL test causes a workflow failure
+ok 12 - omitting any declared live PostgreSQL test causes a workflow failure
+  ---
+  duration_ms: 70.2461
+  type: 'test'
+  ...
+# Subtest: scanner service or live scanner check cannot be silently removed
+ok 13 - scanner service or live scanner check cannot be silently removed
+  ---
+  duration_ms: 141.668185
+  type: 'test'
+  ...
+# Subtest: Git-history checkout depth and high-severity npm audit remain mandatory
+ok 14 - Git-history checkout depth and high-severity npm audit remain mandatory
+  ---
+  duration_ms: 139.869132
+  type: 'test'
+  ...
+# Subtest: mutating live database test without explicit authorization fails contract
+ok 15 - mutating live database test without explicit authorization fails contract
+  ---
+  duration_ms: 81.208588
+  type: 'test'
+  ...
+# Subtest: workflow must parse and pass before running npm ci
+ok 16 - workflow must parse and pass before running npm ci
+  ---
+  duration_ms: 69.239795
+  type: 'test'
+  ...
+# Subtest: all root and workspace versions stay in sync, with no modified SQL migrations
+ok 17 - all root and workspace versions stay in sync, with no modified SQL migrations
+  ---
+  duration_ms: 0.961617
+  type: 'test'
+  ...
+# Subtest: legacy static CI check and real Ruby parsing both agree on valid pipeline
+ok 18 - legacy static CI check and real Ruby parsing both agree on valid pipeline
+  ---
+  duration_ms: 66.43327
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 900.647463
+

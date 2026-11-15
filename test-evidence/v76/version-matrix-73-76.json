@@ -1,0 +1,30 @@
+[
+  {
+    "suite": "verify:v73",
+    "status": "pass",
+    "exit_code": 0,
+    "reported_tap_pass": 31,
+    "elapsed_s": 0.93
+  },
+  {
+    "suite": "verify:v74",
+    "status": "pass",
+    "exit_code": 0,
+    "reported_tap_pass": 19,
+    "elapsed_s": 0.77
+  },
+  {
+    "suite": "verify:v75",
+    "status": "pass",
+    "exit_code": 0,
+    "reported_tap_pass": 24,
+    "elapsed_s": 0.84
+  },
+  {
+    "suite": "verify:v76",
+    "status": "pass",
+    "exit_code": 0,
+    "reported_tap_pass": 33,
+    "elapsed_s": 0.72
+  }
+]

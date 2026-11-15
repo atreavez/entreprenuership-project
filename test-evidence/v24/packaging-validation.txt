@@ -1,0 +1,1 @@
+Both output ZIP files passed zipfile.testzip() integrity checks; SHA256SUMS in /mnt/data.

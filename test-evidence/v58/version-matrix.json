@@ -1,0 +1,402 @@
+{
+  "schema": "ASSETTRUST_V58_OFFLINE_VERSION_MATRIX",
+  "createdAtUtc": "2026-11-11T17:53:08.927350+00:00",
+  "total": 56,
+  "passed": 56,
+  "checks": [
+    {
+      "suite": "verify:v03",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.522,
+      "log": "test-evidence/v58/logs/v03.log"
+    },
+    {
+      "suite": "verify:v04",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.938,
+      "log": "test-evidence/v58/logs/v04.log"
+    },
+    {
+      "suite": "verify:v05",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.438,
+      "log": "test-evidence/v58/logs/v05.log"
+    },
+    {
+      "suite": "verify:v06",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.703,
+      "log": "test-evidence/v58/logs/v06.log"
+    },
+    {
+      "suite": "verify:v07",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.517,
+      "log": "test-evidence/v58/logs/v07.log"
+    },
+    {
+      "suite": "verify:v08",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.661,
+      "log": "test-evidence/v58/logs/v08.log"
+    },
+    {
+      "suite": "verify:v09",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 2.22,
+      "log": "test-evidence/v58/logs/v09.log"
+    },
+    {
+      "suite": "verify:v10",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.357,
+      "log": "test-evidence/v58/logs/v10.log"
+    },
+    {
+      "suite": "verify:v11",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.14,
+      "log": "test-evidence/v58/logs/v11.log"
+    },
+    {
+      "suite": "verify:v12",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.158,
+      "log": "test-evidence/v58/logs/v12.log"
+    },
+    {
+      "suite": "verify:v13",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.617,
+      "log": "test-evidence/v58/logs/v13.log"
+    },
+    {
+      "suite": "verify:v14",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.209,
+      "log": "test-evidence/v58/logs/v14.log"
+    },
+    {
+      "suite": "verify:v15",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.303,
+      "log": "test-evidence/v58/logs/v15.log"
+    },
+    {
+      "suite": "verify:v16",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.223,
+      "log": "test-evidence/v58/logs/v16.log"
+    },
+    {
+      "suite": "verify:v17",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.242,
+      "log": "test-evidence/v58/logs/v17.log"
+    },
+    {
+      "suite": "verify:v18",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.586,
+      "log": "test-evidence/v58/logs/v18.log"
+    },
+    {
+      "suite": "verify:v19",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.52,
+      "log": "test-evidence/v58/logs/v19.log"
+    },
+    {
+      "suite": "verify:v20",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.701,
+      "log": "test-evidence/v58/logs/v20.log"
+    },
+    {
+      "suite": "verify:v21",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.559,
+      "log": "test-evidence/v58/logs/v21.log"
+    },
+    {
+      "suite": "verify:v22",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.471,
+      "log": "test-evidence/v58/logs/v22.log"
+    },
+    {
+      "suite": "verify:v23",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.0,
+      "log": "test-evidence/v58/logs/v23.log"
+    },
+    {
+      "suite": "verify:v24",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.016,
+      "log": "test-evidence/v58/logs/v24.log"
+    },
+    {
+      "suite": "verify:v25",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.145,
+      "log": "test-evidence/v58/logs/v25.log"
+    },
+    {
+      "suite": "verify:v26",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.533,
+      "log": "test-evidence/v58/logs/v26.log"
+    },
+    {
+      "suite": "verify:v27",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.483,
+      "log": "test-evidence/v58/logs/v27.log"
+    },
+    {
+      "suite": "verify:v28",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.47,
+      "log": "test-evidence/v58/logs/v28.log"
+    },
+    {
+      "suite": "verify:v29",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.488,
+      "log": "test-evidence/v58/logs/v29.log"
+    },
+    {
+      "suite": "verify:v30",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.521,
+      "log": "test-evidence/v58/logs/v30.log"
+    },
+    {
+      "suite": "verify:v31",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.447,
+      "log": "test-evidence/v58/logs/v31.log"
+    },
+    {
+      "suite": "verify:v32",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 2.718,
+      "log": "test-evidence/v58/logs/v32.log"
+    },
+    {
+      "suite": "verify:v33",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.742,
+      "log": "test-evidence/v58/logs/v33.log"
+    },
+    {
+      "suite": "verify:v34",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.692,
+      "log": "test-evidence/v58/logs/v34.log"
+    },
+    {
+      "suite": "verify:v35",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.65,
+      "log": "test-evidence/v58/logs/v35.log"
+    },
+    {
+      "suite": "verify:v36",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.612,
+      "log": "test-evidence/v58/logs/v36.log"
+    },
+    {
+      "suite": "verify:v37",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.711,
+      "log": "test-evidence/v58/logs/v37.log"
+    },
+    {
+      "suite": "verify:v38",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.556,
+      "log": "test-evidence/v58/logs/v38.log"
+    },
+    {
+      "suite": "verify:v39",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.495,
+      "log": "test-evidence/v58/logs/v39.log"
+    },
+    {
+      "suite": "verify:v40",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.489,
+      "log": "test-evidence/v58/logs/v40.log"
+    },
+    {
+      "suite": "verify:v41",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.185,
+      "log": "test-evidence/v58/logs/v41.log"
+    },
+    {
+      "suite": "verify:v42",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.214,
+      "log": "test-evidence/v58/logs/v42.log"
+    },
+    {
+      "suite": "verify:v43",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 2.417,
+      "log": "test-evidence/v58/logs/v43.log"
+    },
+    {
+      "suite": "verify:v44",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.609,
+      "log": "test-evidence/v58/logs/v44.log"
+    },
+    {
+      "suite": "verify:v45",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.68,
+      "log": "test-evidence/v58/logs/v45.log"
+    },
+    {
+      "suite": "verify:v46",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.701,
+      "log": "test-evidence/v58/logs/v46.log"
+    },
+    {
+      "suite": "verify:v47",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.198,
+      "log": "test-evidence/v58/logs/v47.log"
+    },
+    {
+      "suite": "verify:v48",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.208,
+      "log": "test-evidence/v58/logs/v48.log"
+    },
+    {
+      "suite": "verify:v49",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.509,
+      "log": "test-evidence/v58/logs/v49.log"
+    },
+    {
+      "suite": "verify:v50",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.231,
+      "log": "test-evidence/v58/logs/v50.log"
+    },
+    {
+      "suite": "verify:v51",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.4,
+      "log": "test-evidence/v58/logs/v51.log"
+    },
+    {
+      "suite": "verify:v52",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.681,
+      "log": "test-evidence/v58/logs/v52.log"
+    },
+    {
+      "suite": "verify:v53",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.143,
+      "log": "test-evidence/v58/logs/v53.log"
+    },
+    {
+      "suite": "verify:v54",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.073,
+      "log": "test-evidence/v58/logs/v54.log"
+    },
+    {
+      "suite": "verify:v55",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.231,
+      "log": "test-evidence/v58/logs/v55.log"
+    },
+    {
+      "suite": "verify:v56",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.341,
+      "log": "test-evidence/v58/logs/v56.log"
+    },
+    {
+      "suite": "verify:v57",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.326,
+      "log": "test-evidence/v58/logs/v57.log"
+    },
+    {
+      "suite": "verify:v58",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.297,
+      "log": "test-evidence/v58/logs/v58.log"
+    }
+  ],
+  "livePostgresTestExecuted": false,
+  "productionApproved": false
+}

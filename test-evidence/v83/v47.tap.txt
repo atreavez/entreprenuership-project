@@ -1,0 +1,75 @@
+
+> assettrust-platform@0.83.0 verify:v47
+> node --test tools/tests-v47/*.test.cjs
+
+TAP version 13
+# Subtest: migration is atomic and never weakens existing RLS or skips validation
+ok 1 - migration is atomic and never weakens existing RLS or skips validation
+  ---
+  duration_ms: 1.982444
+  type: 'test'
+  ...
+# Subtest: all 10 cross-tenant references require the composite tenant key
+ok 2 - all 10 cross-tenant references require the composite tenant key
+  ---
+  duration_ms: 0.529066
+  type: 'test'
+  ...
+# Subtest: document asset and case must be consistent when both are specified
+ok 3 - document asset and case must be consistent when both are specified
+  ---
+  duration_ms: 0.182154
+  type: 'test'
+  ...
+# Subtest: all referenced parents have explicit composite UNIQUE keys
+ok 4 - all referenced parents have explicit composite UNIQUE keys
+  ---
+  duration_ms: 0.151267
+  type: 'test'
+  ...
+# Subtest: new migration is appended to immutable checksum plan, with exact bytes
+ok 5 - new migration is appended to immutable checksum plan, with exact bytes
+  ---
+  duration_ms: 4.5368
+  type: 'test'
+  ...
+# Subtest: existing migration 021 RLS controls remain intact and no RLS is overstated
+ok 6 - existing migration 021 RLS controls remain intact and no RLS is overstated
+  ---
+  duration_ms: 0.29262
+  type: 'test'
+  ...
+# Subtest: version check and disposable PostgreSQL contract are mandatory in CI
+ok 7 - version check and disposable PostgreSQL contract are mandatory in CI
+  ---
+  duration_ms: 0.420633
+  type: 'test'
+  ...
+# Subtest: live PostgreSQL test refuses non-disposable targets before import or connection
+ok 8 - live PostgreSQL test refuses non-disposable targets before import or connection
+  ---
+  duration_ms: 0.261644
+  type: 'test'
+  ...
+# Subtest: operator preflight checks every relation without mutating customer data
+ok 9 - operator preflight checks every relation without mutating customer data
+  ---
+  duration_ms: 0.444299
+  type: 'test'
+  ...
+# Subtest: code contains no cross-tenant bypass such as deleting corrupt rows in migration
+ok 10 - code contains no cross-tenant bypass such as deleting corrupt rows in migration
+  ---
+  duration_ms: 0.543398
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 72.129285
+

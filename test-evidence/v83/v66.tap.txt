@@ -1,0 +1,165 @@
+
+> assettrust-platform@0.83.0 verify:v66
+> node --test --test-concurrency=1 tools/tests-v66/*.test.cjs
+
+TAP version 13
+# Subtest: actual Database validates 16 policies, 13 tables, runtime role on EVERY inspect
+ok 1 - actual Database validates 16 policies, 13 tables, runtime role on EVERY inspect
+  ---
+  duration_ms: 30.127111
+  type: 'test'
+  ...
+# Subtest: in insecure dev mode onModuleInit can skip but readiness NEVER skips policy inspection
+ok 2 - in insecure dev mode onModuleInit can skip but readiness NEVER skips policy inspection
+  ---
+  duration_ms: 21.5447
+  type: 'test'
+  ...
+# Subtest: policy added AFTER first readiness causes next readiness to fail closed
+ok 3 - policy added AFTER first readiness causes next readiness to fail closed
+  ---
+  duration_ms: 16.804271
+  type: 'test'
+  ...
+# Subtest: recipient rule altered after first readiness is detected
+ok 4 - recipient rule altered after first readiness is detected
+  ---
+  duration_ms: 23.731896
+  type: 'test'
+  ...
+# Subtest: runtime FORCE RLS altered after successful readiness is detected
+ok 5 - runtime FORCE RLS altered after successful readiness is detected
+  ---
+  duration_ms: 20.235895
+  type: 'test'
+  ...
+# Subtest: elevated runtime database privilege introduced after startup blocks readiness
+ok 6 - elevated runtime database privilege introduced after startup blocks readiness
+  ---
+  duration_ms: 18.540344
+  type: 'test'
+  ...
+# Subtest: runtime role owning protected table blocks readiness
+ok 7 - runtime role owning protected table blocks readiness
+  ---
+  duration_ms: 14.122795
+  type: 'test'
+  ...
+# Subtest: PostGIS/migration failure prevents policy approval
+ok 8 - PostGIS/migration failure prevents policy approval
+  ---
+  duration_ms: 17.346136
+  type: 'test'
+  ...
+# Subtest: raw PostgreSQL error strings never reach readiness result
+ok 9 - raw PostgreSQL error strings never reach readiness result
+  ---
+  duration_ms: 19.00341
+  type: 'test'
+  ...
+# Subtest: HTTP readiness publishes runtime policy counters only on verified result
+ok 10 - HTTP readiness publishes runtime policy counters only on verified result
+  ---
+  duration_ms: 0.737049
+  type: 'test'
+  ...
+# Subtest: admin UI shows policy verification and rejects older ambiguous ready payloads
+ok 11 - admin UI shows policy verification and rejects older ambiguous ready payloads
+  ---
+  duration_ms: 0.346382
+  type: 'test'
+  ...
+# Subtest: the two-API gate rejects default/missing permissions without issuing requests
+ok 12 - the two-API gate rejects default/missing permissions without issuing requests
+  ---
+  duration_ms: 1.292585
+  type: 'test'
+  ...
+# Subtest: exactly two distinct safe loopback ports required
+ok 13 - exactly two distinct safe loopback ports required
+  ---
+  duration_ms: 0.695366
+  type: 'test'
+  ...
+# Subtest: unguessable distinct markers are required before network calls
+ok 14 - unguessable distinct markers are required before network calls
+  ---
+  duration_ms: 0.253561
+  type: 'test'
+  ...
+# Subtest: proxy environment is explicitly rejected for deterministic loopback test
+ok 15 - proxy environment is explicitly rejected for deterministic loopback test
+  ---
+  duration_ms: 0.157838
+  type: 'test'
+  ...
+# Subtest: local source versions and migration/policy inventory are derived, not invented
+ok 16 - local source versions and migration/policy inventory are derived, not invented
+  ---
+  duration_ms: 0.625822
+  type: 'test'
+  ...
+# Subtest: two distinct local actual HTTP servers with matching markers are accepted as LOCAL-only
+ok 17 - two distinct local actual HTTP servers with matching markers are accepted as LOCAL-only
+  ---
+  duration_ms: 52.084553
+  type: 'test'
+  ...
+# Subtest: single server security drift blocks both-server acceptance
+ok 18 - single server security drift blocks both-server acceptance
+  ---
+  duration_ms: 14.449137
+  type: 'test'
+  ...
+# Subtest: wrong target marker fails BEFORE calling readiness
+ok 19 - wrong target marker fails BEFORE calling readiness
+  ---
+  duration_ms: 12.212891
+  type: 'test'
+  ...
+# Subtest: old-version API is rejected during rolling deployment acceptance
+ok 20 - old-version API is rejected during rolling deployment acceptance
+  ---
+  duration_ms: 7.071352
+  type: 'test'
+  ...
+# Subtest: redirect attempts cannot cause HTTP probe to follow outside loopback
+ok 21 - redirect attempts cannot cause HTTP probe to follow outside loopback
+  ---
+  duration_ms: 8.476057
+  type: 'test'
+  ...
+# Subtest: only static codes appear for unavailable HTTP ports
+ok 22 - only static codes appear for unavailable HTTP ports
+  ---
+  duration_ms: 3.177212
+  type: 'test'
+  ...
+# Subtest: CLI plan does not contact network and does not mention approval
+ok 23 - CLI plan does not contact network and does not mention approval
+  ---
+  duration_ms: 0.236616
+  type: 'test'
+  ...
+# Subtest: CLI check rejects missing confirmation with safe error message
+ok 24 - CLI check rejects missing confirmation with safe error message
+  ---
+  duration_ms: 28.632132
+  type: 'test'
+  ...
+# Subtest: CI definition places installed-dependency v66 suite after npm ci
+ok 25 - CI definition places installed-dependency v66 suite after npm ci
+  ---
+  duration_ms: 0.48549
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 730.869991
+

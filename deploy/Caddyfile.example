@@ -1,6 +1,11 @@
 # Example only. Configure real HTTPS hostname, certificates, security headers and API service separately.
 assettrust.example.org {
     encode zstd gzip
+    # HSTS only on live HTTPS hosts after validating certificate and all subdomains.
+    header Strict-Transport-Security "max-age=31536000"
+    header X-Content-Type-Options "nosniff"
+    header Referrer-Policy "no-referrer"
+    header -Server
     # Basemap tiles are public and licensed. DO NOT route private parcel data here.
     handle /maps/* {
         reverse_proxy 127.0.0.1:8081

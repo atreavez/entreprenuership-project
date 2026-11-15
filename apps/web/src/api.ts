@@ -1,5 +1,5 @@
 export const DEMO = import.meta.env.VITE_DESIGN_PREVIEW === 'true';
-export type Principal={id:string;organizationId:string;email:string;fullName:string;role:string;professionalApproved:boolean};
+export type Principal={id:string;organizationId:string;email:string;fullName:string;role:string;professionalApproved:boolean;adminMfaRequired?:boolean;adminMfaEnrolled?:boolean};
 export type Asset={id:string;asset_code:string;asset_type:string;district:string;description:string;declared_owner:string;tenure?:string;parcel_reference?:string;area_acres?:number|string;status:string;created_at:string};
 export type Case={id:string;case_code:string;asset_id:string;asset_code:string;district:string;declared_owner:string;asset_type:string;stage:string;status:string;created_at:string};
 export type Readiness={stage:string;requiredEvidence:string|null;nextStage:string|null;canAdvance:boolean;blockers:string[];evidenceSummary:{submitted:number;accepted:number;rejected:number};notice:string};
@@ -17,13 +17,13 @@ export async function refreshSession(){
  return refreshInFlight;
 }
 export async function api<T>(path:string,token:string,options:RequestInit={}):Promise<T>{
- const publicAuth=/^\/auth\/(register|login|mfa\/complete|refresh)$/.test(path);
+ const publicAuth=/^\/auth\/(register|login|mfa\/complete|refresh|password\/reset\/request|password\/reset\/confirm)$/.test(path);
  const make=async(auth:string)=>{const headers=new Headers(options.headers);if(auth)headers.set('Authorization',`Bearer ${auth}`);if(options.body && !(options.body instanceof FormData))headers.set('Content-Type','application/json');try{return await fetch(`/api/v1${path}`,{...options,credentials:'same-origin',headers})}catch{throw new ApiError(0,'Cannot connect to AssetTrust API. Check backend and network.')}};
  let res=await make(publicAuth?'':liveAccessToken||token);
  if(res.status===401&&!publicAuth&&!DEMO){try{const renewed=await refreshSession();res=await make(renewed.accessToken)}catch{setAccessToken('');window.dispatchEvent(new Event('assettrust:session-expired'));throw new ApiError(401,'Session expired or revoked. Sign in again.')}}
  return responseOrError<T>(res);
 }
-export const post=<T = any>(path:string,token:string,data?:any):Promise<T>=>api<T>(path,token,{method:'POST',body:JSON.stringify(data||{})});
+export const post=<T=any>(path:string,token:string,data?:any):Promise<T>=>api<T>(path,token,{method:'POST',body:JSON.stringify(data||{})});
 export const fmt=(v:number|undefined|null)=>new Intl.NumberFormat('en-UG').format(v||0);
 export const date=(iso:string)=>new Date(iso).toLocaleDateString('en-UG',{month:'short',day:'numeric',year:'numeric'});
 export const statusTone=(s:string)=> s==='ENCRYPTED'||s==='CLOSED'||s==='REVIEW_COMPLETED'||s==='ACCEPTED'?'success':s==='FLAGGED'||s==='BLOCKED'||s==='REJECTED'?'danger':s==='MIGRATION_REQUIRED'||s==='SUBMITTED'||s==='OPEN'||s==='IN_REVIEW'||s==='REGISTRY_SEARCH'||s==='DOCUMENT_REVIEW'?'warning':'neutral';

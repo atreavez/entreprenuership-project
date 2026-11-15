@@ -1,0 +1,111 @@
+
+> assettrust-platform@0.83.0 verify:v65
+> node --test --test-concurrency=1 tools/tests-v65/*.test.cjs
+
+TAP version 13
+# Subtest: genuine schema readiness exposes 27 verified migrations, only after hash checks pass
+ok 1 - genuine schema readiness exposes 27 verified migrations, only after hash checks pass
+  ---
+  duration_ms: 1.412285
+  type: 'test'
+  ...
+# Subtest: missing/altered PostgreSQL migration does NOT expose a verified count
+ok 2 - missing/altered PostgreSQL migration does NOT expose a verified count
+  ---
+  duration_ms: 0.326912
+  type: 'test'
+  ...
+# Subtest: missing required table or PostGIS rejects readiness
+ok 3 - missing required table or PostGIS rejects readiness
+  ---
+  duration_ms: 0.322395
+  type: 'test'
+  ...
+# Subtest: database failures are fail-closed and do not disclose raw errors
+ok 4 - database failures are fail-closed and do not disclose raw errors
+  ---
+  duration_ms: 0.629908
+  type: 'test'
+  ...
+# Subtest: readyz contract publishes backend version and migration count only after SchemaProbe.assertReady
+ok 5 - readyz contract publishes backend version and migration count only after SchemaProbe.assertReady
+  ---
+  duration_ms: 0.260271
+  type: 'test'
+  ...
+# Subtest: readiness UI removes stale v0.11 and hard-coded seven-migration assurance
+ok 6 - readiness UI removes stale v0.11 and hard-coded seven-migration assurance
+  ---
+  duration_ms: 0.218038
+  type: 'test'
+  ...
+# Subtest: readiness UI treats integrations as independent so a 403 does not reset ready state
+ok 7 - readiness UI treats integrations as independent so a 403 does not reset ready state
+  ---
+  duration_ms: 0.247473
+  type: 'test'
+  ...
+# Subtest: three workspace versions agree and migration source SHA-256 matches reviewed manifest
+ok 8 - three workspace versions agree and migration source SHA-256 matches reviewed manifest
+  ---
+  duration_ms: 2.703118
+  type: 'test'
+  ...
+# Subtest: read-only diagnostic reports facts without claiming live test or production approval
+ok 9 - read-only diagnostic reports facts without claiming live test or production approval
+  ---
+  duration_ms: 1.509432
+  type: 'test'
+  ...
+# Subtest: runtime diagnosis uses no child processes, network or dynamic database connections
+ok 10 - runtime diagnosis uses no child processes, network or dynamic database connections
+  ---
+  duration_ms: 0.500383
+  type: 'test'
+  ...
+# Subtest: diagnosis inspect never writes files
+ok 11 - diagnosis inspect never writes files
+  ---
+  duration_ms: 1.258855
+  type: 'test'
+  ...
+# Subtest: diagnostic reports modified migration hash mismatch without executing SQL
+ok 12 - diagnostic reports modified migration hash mismatch without executing SQL
+  ---
+  duration_ms: 1.277103
+  type: 'test'
+  ...
+# Subtest: diagnostic writer creates a 0600 evidence artifact without exposing environment credentials
+ok 13 - diagnostic writer creates a 0600 evidence artifact without exposing environment credentials
+  ---
+  duration_ms: 2.683058
+  type: 'test'
+  ...
+# Subtest: diagnostic writer refuses linked directory and linked output file
+ok 14 - diagnostic writer refuses linked directory and linked output file
+  ---
+  duration_ms: 0.949849
+  type: 'test'
+  ...
+# Subtest: unsafe mode arguments are rejected before inspection
+ok 15 - unsafe mode arguments are rejected before inspection
+  ---
+  duration_ms: 28.259501
+  type: 'test'
+  ...
+# Subtest: CI runs v65 tests only after authentic npm install and contains scripts
+ok 16 - CI runs v65 tests only after authentic npm install and contains scripts
+  ---
+  duration_ms: 0.462365
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 325.976119
+

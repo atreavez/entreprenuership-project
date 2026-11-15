@@ -1,0 +1,218 @@
+[
+  {
+    "name": "verify:v03",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v03.log",
+    "tail": "n explicitly records reviewed_by and review status\n\nPASS: 17 offline policy and structural checks.\n\n"
+  },
+  {
+    "name": "verify:v04",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v04.log",
+    "tail": "\n# tests 3\n# suites 0\n# pass 3\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 10.576769\n\n"
+  },
+  {
+    "name": "verify:v05",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v05.log",
+    "tail": "ests 21\n# suites 0\n# pass 21\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1157.313503\n\n"
+  },
+  {
+    "name": "verify:v06",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v06.log",
+    "tail": "56.218784\nv0.6 offline checks passed; live database/HTTP tests require the configured environment.\n\n"
+  },
+  {
+    "name": "verify:v07",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v07.log",
+    "tail": "ent encryption offline checks passed. HTTP/PostgreSQL integration remains a separate release gate.\n\n"
+  },
+  {
+    "name": "verify:v08",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v08.log",
+    "tail": "tests 15\n# suites 0\n# pass 15\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 513.010485\n\n"
+  },
+  {
+    "name": "verify:v09",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v09.log",
+    "tail": "\n\n----------------------------------------------------------------------\nRan 10 tests in 1.070s\n\nOK\n"
+  },
+  {
+    "name": "verify:v10",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v10.log",
+    "tail": "\n\n----------------------------------------------------------------------\nRan 11 tests in 0.078s\n\nOK\n"
+  },
+  {
+    "name": "verify:v11",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v11.log",
+    "tail": "tests 18\n# suites 0\n# pass 18\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1217.971404\n"
+  },
+  {
+    "name": "verify:v12",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v12.log",
+    "tail": "tests 22\n# suites 0\n# pass 22\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1095.55819\n\n"
+  },
+  {
+    "name": "verify:v13",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v13.log",
+    "tail": "ests 20\n# suites 0\n# pass 20\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 4990.423869\n\n"
+  },
+  {
+    "name": "verify:v14",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v14.log",
+    "tail": " tests 10\n# suites 0\n# pass 10\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 58.012696\n\n"
+  },
+  {
+    "name": "verify:v15",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v15.log",
+    "tail": "ests 10\n# suites 0\n# pass 10\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1041.143567\n\n"
+  },
+  {
+    "name": "verify:v16",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v16.log",
+    "tail": "\n# tests 6\n# suites 0\n# pass 6\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 66.355011\n\n"
+  },
+  {
+    "name": "verify:v17",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v17.log",
+    "tail": "tests 14\n# suites 0\n# pass 14\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 104.746815\n\n"
+  },
+  {
+    "name": "verify:v18",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v18.log",
+    "tail": "# tests 5\n# suites 0\n# pass 5\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 361.178775\n\n"
+  },
+  {
+    "name": "verify:v19",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v19.log",
+    "tail": "\n# tests 3\n# suites 0\n# pass 3\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 362.35515\n\n"
+  },
+  {
+    "name": "verify:v20",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v20.log",
+    "tail": "# tests 7\n# suites 0\n# pass 7\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 456.040088\n\n"
+  },
+  {
+    "name": "verify:v21",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v21.log",
+    "tail": "tests 16\n# suites 0\n# pass 16\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 291.753996\n\n"
+  },
+  {
+    "name": "verify:v22",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v22.log",
+    "tail": "# tests 8\n# suites 0\n# pass 8\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 344.183666\n\n"
+  },
+  {
+    "name": "verify:v23",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v23.log",
+    "tail": "tests 14\n# suites 0\n# pass 14\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 370.962486\n\n"
+  },
+  {
+    "name": "verify:v24",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v24.log",
+    "tail": "tests 16\n# suites 0\n# pass 16\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 338.845119\n\n"
+  },
+  {
+    "name": "verify:v25",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v25.log",
+    "tail": "tests 21\n# suites 0\n# pass 21\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 491.311034\n\n"
+  },
+  {
+    "name": "verify:v26",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v26.log",
+    "tail": "tests 16\n# suites 0\n# pass 16\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 331.642328\n\n"
+  },
+  {
+    "name": "verify:v27",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v27.log",
+    "tail": "tests 19\n# suites 0\n# pass 19\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 388.244969\n\n"
+  },
+  {
+    "name": "verify:v28",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v28.log",
+    "tail": "tests 29\n# suites 0\n# pass 29\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 388.457228\n\n"
+  },
+  {
+    "name": "verify:v29",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v29.log",
+    "tail": "tests 27\n# suites 0\n# pass 27\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 335.397185\n\n"
+  },
+  {
+    "name": "verify:v30",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v30.log",
+    "tail": "tests 24\n# suites 0\n# pass 24\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 436.927383\n\n"
+  },
+  {
+    "name": "verify:v31",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v31.log",
+    "tail": "tests 29\n# suites 0\n# pass 29\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 403.938844\n\n"
+  },
+  {
+    "name": "verify:v32",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v32.log",
+    "tail": "js\n\n87 TS/TSX source files transpile, 0 syntax diagnostics. This is NOT a full npm typecheck/build.\n"
+  },
+  {
+    "name": "verify:v33",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v33.log",
+    "tail": " tests 27\n# suites 0\n# pass 27\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 554.533169\n"
+  },
+  {
+    "name": "verify:v34",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v34.log",
+    "tail": " tests 28\n# suites 0\n# pass 28\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 439.256105\n"
+  },
+  {
+    "name": "verify:v35",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v35.log",
+    "tail": " tests 16\n# suites 0\n# pass 16\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 446.539712\n"
+  },
+  {
+    "name": "verify:v36",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v36.log",
+    "tail": " tests 10\n# suites 0\n# pass 10\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 489.203587\n"
+  },
+  {
+    "name": "verify:v37",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v37.log",
+    "tail": "8\n# tests 8\n# suites 0\n# pass 8\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 597.61206\n"
+  },
+  {
+    "name": "verify:v38",
+    "status": "PASS",
+    "file": "test-evidence/v38/verify-v38.log",
+    "tail": "\n# tests 9\n# suites 0\n# pass 9\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 471.578758\n"
+  }
+]

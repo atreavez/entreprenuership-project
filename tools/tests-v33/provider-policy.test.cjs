@@ -1,0 +1,15 @@
+'use strict';
+const {test}=require('node:test'),assert=require('node:assert/strict'),path=require('node:path'),fs=require('node:fs'),vm=require('node:vm');
+const ts=require('../test-typescript-loader.cjs');
+const file=path.resolve(__dirname,'../../apps/api/src/contexts/provider-admin/domain/provider-policy.ts');
+function load(){const m={exports:{}};vm.runInNewContext(ts.transpileModule(fs.readFileSync(file,'utf8'),{fileName:file,compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,{module:m,exports:m.exports,Error,Object,Number,String,Array,Set}, {filename:file});return m.exports;}
+const accept=(p)=>load().validateProviderConfiguration(p);
+const good={channel:'EMAIL',provider:'SMTP_RELAY',status:'STAGED',senderLabel:'AssetTrust Notices',credentialRef:'vault://assettrust/email-primary'};
+test('allowed provider configuration is staged only, not delivery-enabled',()=>{const x=accept(good);assert.equal(x.status,'STAGED');assert.equal(x.provider,'SMTP_RELAY');assert.equal(load().providerDeliveryState(x),'NOT_CONNECTED');});
+test('SMS supports HTTPS relay but not SMTP',()=>{assert.equal(accept({channel:'SMS',provider:'HTTPS_RELAY',status:'STAGED',senderLabel:'AssetTrust',credentialRef:'vault://sms/main'}).provider,'HTTPS_RELAY');assert.throws(()=>accept({...good,channel:'SMS'}));});
+test('disabling providers wipes credential alias',()=>{const v=accept({channel:'EMAIL',provider:'NONE',status:'DISABLED',senderLabel:'AssetTrust',credentialRef:''});assert.equal(v.credentialRef,null);assert.equal(load().providerDeliveryState(v),'DISABLED');});
+test('cannot assert delivery enabled without a vetted runtime adapter',()=>{assert.throws(()=>accept({...good,status:'LIVE'}));assert.throws(()=>accept({...good,enabled:true}));assert.throws(()=>accept({...good,transportSecret:'password'}));});
+test('no raw keys, URLs or arbitrary environment variables can be stored',()=>{for(const ref of ['key-is-a-secret','https://example.com/api','vault://../../secrets','vault://sms/../private','vault://','env://AWS_SECRET_KEY','vault://sms/primary?token=abc'])assert.throws(()=>accept({...good,credentialRef:ref}),ref);});
+test('staged config requires a stable credential reference; no literal secret',()=>{assert.throws(()=>accept({...good,credentialRef:''}));assert.throws(()=>accept({...good,senderLabel:'<script>alert(1)</script>'}));});
+test('strict identifiers, reasons and revisions',()=>{const p=load();assert.throws(()=>p.validateVersion(-1));assert.throws(()=>p.validateVersion(1.2));assert.throws(()=>p.validateChangeReason('short'));assert.equal(p.validateVersion(0),0);assert.equal(p.validateChangeDecision('APPROVE'),'APPROVE');assert.throws(()=>p.validateChangeDecision('PUBLISH'));});
+test('external-delivery result does not claim sending for staged configurations',()=>{const p=load();assert.deepEqual(JSON.parse(JSON.stringify(p.evaluateDelivery(good,false))),{sent:false,status:'NOT_CONFIGURED',channel:'EMAIL',reason:'Provider staged; external transport not deployed or verified'});});

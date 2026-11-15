@@ -1,0 +1,165 @@
+
+> assettrust-platform@0.83.0 verify:v68
+> node --test --test-concurrency=1 tools/tests-v68/*.test.cjs
+
+TAP version 13
+# Subtest: v0.68 version is consistent across all workspaces
+ok 1 - v0.68 version is consistent across all workspaces
+  ---
+  duration_ms: 1.252595
+  type: 'test'
+  ...
+# Subtest: modern supported Node recognized; older minor and majors fail
+ok 2 - modern supported Node recognized; older minor and majors fail
+  ---
+  duration_ms: 0.850901
+  type: 'test'
+  ...
+# Subtest: read-only inspection fails closed on missing genuine lockfile
+ok 3 - read-only inspection fails closed on missing genuine lockfile
+  ---
+  duration_ms: 15.555411
+  type: 'test'
+  ...
+# Subtest: independent fixtures with verified sources and lockfile can pass prerequisites
+ok 4 - independent fixtures with verified sources and lockfile can pass prerequisites
+  ---
+  duration_ms: 1.931247
+  type: 'test'
+  ...
+# Subtest: workspace version mismatch blocks build
+ok 5 - workspace version mismatch blocks build
+  ---
+  duration_ms: 1.410153
+  type: 'test'
+  ...
+# Subtest: mismatched migration count blocks acceptance even if hashes otherwise match
+ok 6 - mismatched migration count blocks acceptance even if hashes otherwise match
+  ---
+  duration_ms: 1.020727
+  type: 'test'
+  ...
+# Subtest: bad import source check blocks acceptance
+ok 7 - bad import source check blocks acceptance
+  ---
+  duration_ms: 1.095218
+  type: 'test'
+  ...
+# Subtest: built artifacts are checked and cryptographic hashes recorded
+ok 8 - built artifacts are checked and cryptographic hashes recorded
+  ---
+  duration_ms: 1.112084
+  type: 'test'
+  ...
+# Subtest: missing or linked artifacts are rejected
+ok 9 - missing or linked artifacts are rejected
+  ---
+  duration_ms: 1.230612
+  type: 'test'
+  ...
+# Subtest: artifact inspection does not certify release or fresh build
+ok 10 - artifact inspection does not certify release or fresh build
+  ---
+  duration_ms: 3.439767
+  type: 'test'
+  ...
+# Subtest: running without explicit opt-in is forbidden
+ok 11 - running without explicit opt-in is forbidden
+  ---
+  duration_ms: 0.552171
+  type: 'test'
+  ...
+# Subtest: production-mode build acceptance is forbidden even with opt-in
+ok 12 - production-mode build acceptance is forbidden even with opt-in
+  ---
+  duration_ms: 0.131387
+  type: 'test'
+  ...
+# Subtest: missing prerequisites short-circuit before launching npm
+ok 13 - missing prerequisites short-circuit before launching npm
+  ---
+  duration_ms: 1.332716
+  type: 'test'
+  ...
+# Subtest: a failed npm command stops execution immediately and identifies first failure
+ok 14 - a failed npm command stops execution immediately and identifies first failure
+  ---
+  duration_ms: 2.424558
+  type: 'test'
+  ...
+# Subtest: npm lifecycle mutation of the reviewed lockfile aborts acceptance
+ok 15 - npm lifecycle mutation of the reviewed lockfile aborts acceptance
+  ---
+  duration_ms: 1.165694
+  type: 'test'
+  ...
+# Subtest: stderr/credentials never emerge in console report and are masked in private evidence
+ok 16 - stderr/credentials never emerge in console report and are masked in private evidence
+  ---
+  duration_ms: 1.325384
+  type: 'test'
+  ...
+# Subtest: npm install and build children do not inherit database URLs or authentication credentials
+ok 17 - npm install and build children do not inherit database URLs or authentication credentials
+  ---
+  duration_ms: 0.128563
+  type: 'test'
+  ...
+# Subtest: reported success requires successful install, audit, build and milestone regression
+ok 18 - reported success requires successful install, audit, build and milestone regression
+  ---
+  duration_ms: 1.842413
+  type: 'test'
+  ...
+# Subtest: stale API/web build files cannot satisfy a successful-looking compile
+ok 19 - stale API/web build files cannot satisfy a successful-looking compile
+  ---
+  duration_ms: 1.252876
+  type: 'test'
+  ...
+# Subtest: a failed postcompile artifact policy is a hard failure
+ok 20 - a failed postcompile artifact policy is a hard failure
+  ---
+  duration_ms: 1.653218
+  type: 'test'
+  ...
+# Subtest: evidence uses private 0600 file with non-approving status
+ok 21 - evidence uses private 0600 file with non-approving status
+  ---
+  duration_ms: 3.055709
+  type: 'test'
+  ...
+# Subtest: evidence refuses symlinked output files
+ok 22 - evidence refuses symlinked output files
+  ---
+  duration_ms: 1.086365
+  type: 'test'
+  ...
+# Subtest: plan discloses ordered commands but never triggers npm
+ok 23 - plan discloses ordered commands but never triggers npm
+  ---
+  duration_ms: 0.15226
+  type: 'test'
+  ...
+# Subtest: CI executes v0.68 suite and checks compiled artifacts after npm run build
+ok 24 - CI executes v0.68 suite and checks compiled artifacts after npm run build
+  ---
+  duration_ms: 0.168995
+  type: 'test'
+  ...
+# Subtest: CLI inspection does not run npm or claim acceptance
+ok 25 - CLI inspection does not run npm or claim acceptance
+  ---
+  duration_ms: 50.028223
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 168.822516
+

@@ -1,0 +1,484 @@
+{
+  "schema": "ASSETTRUST_V69_OFFLINE_VERSION_MATRIX",
+  "date": "2026-11-12",
+  "productionApproved": false,
+  "verifiedScriptCount": 67,
+  "explicitTapTestCasesPassed": 1015,
+  "notCountedAsLiveIntegration": true,
+  "notes": [
+    "v03 uses a non-TAP format; its script exited 0 but is not in the TAP-case count.",
+    "v23 was rerun separately after an interrupted long historical batch.",
+    "Every final captured version-script log exited 0; v69 was rerun after its final test updates."
+  ],
+  "versions": [
+    {
+      "script": "verify:v03",
+      "exitCode": 0,
+      "explicitTapTests": null,
+      "sourceLog": "test-evidence/v69/version-suites/v03.log",
+      "sha256": "4a25823bfe4f84faee9e6783e12778908e6c8cd35a36ded0a4663a7aec9a406c"
+    },
+    {
+      "script": "verify:v04",
+      "exitCode": 0,
+      "explicitTapTests": 12,
+      "sourceLog": "test-evidence/v69/version-suites/v04.log",
+      "sha256": "db6813819e00b464ad0ace899d3cf7c92c787934657600ac750d427e21446e7d"
+    },
+    {
+      "script": "verify:v05",
+      "exitCode": 0,
+      "explicitTapTests": 21,
+      "sourceLog": "test-evidence/v69/version-suites/v05.log",
+      "sha256": "21093c838bd88e8bc7a48eafec9e43a7f99d8d7a02636a39ad6ca9183261c6e9"
+    },
+    {
+      "script": "verify:v06",
+      "exitCode": 0,
+      "explicitTapTests": 20,
+      "sourceLog": "test-evidence/v69/version-suites/v06.log",
+      "sha256": "4dbd4a7d7c34429a7c16241a20b64bcbe7757b6a883ceae16782b360da4f6219"
+    },
+    {
+      "script": "verify:v07",
+      "exitCode": 0,
+      "explicitTapTests": 15,
+      "sourceLog": "test-evidence/v69/version-suites/v07.log",
+      "sha256": "1726300ad988b0fc0643cfb7e5f503629e946bf6b6b647f80a7aaeb114743e54"
+    },
+    {
+      "script": "verify:v08",
+      "exitCode": 0,
+      "explicitTapTests": 15,
+      "sourceLog": "test-evidence/v69/version-suites/v08.log",
+      "sha256": "8920c045ed0e29bf6fda97702a523efb107da1483e42a8dc98c5f37d43189e49"
+    },
+    {
+      "script": "verify:v09",
+      "exitCode": 0,
+      "explicitTapTests": 5,
+      "sourceLog": "test-evidence/v69/version-suites/v09.log",
+      "sha256": "a332eb21f264faed7f9f95ae820c34fb472f0cd9568c638b64e083ceaa756709"
+    },
+    {
+      "script": "verify:v10",
+      "exitCode": 0,
+      "explicitTapTests": 9,
+      "sourceLog": "test-evidence/v69/version-suites/v10.log",
+      "sha256": "78cca029cc1e2b5be768fa66927fb56109ccdfacea5b56688a052ae064022b95"
+    },
+    {
+      "script": "verify:v11",
+      "exitCode": 0,
+      "explicitTapTests": 18,
+      "sourceLog": "test-evidence/v69/version-suites/v11.log",
+      "sha256": "86de65171ece31156cc99d65b3c3bc97c7b467b2d50bc5d9ffd80cb57ba94aae"
+    },
+    {
+      "script": "verify:v12",
+      "exitCode": 0,
+      "explicitTapTests": 22,
+      "sourceLog": "test-evidence/v69/version-suites/v12.log",
+      "sha256": "3e9e44bd226deea08126fd06e951917c63e07be6b3bc47d2d52dd7f2c1759a4e"
+    },
+    {
+      "script": "verify:v13",
+      "exitCode": 0,
+      "explicitTapTests": 20,
+      "sourceLog": "test-evidence/v69/version-suites/v13.log",
+      "sha256": "f01ac8acd3f2198bfe2a369e8951aebbc9c1aeded39e6d235caa19ab3ee5a9da"
+    },
+    {
+      "script": "verify:v14",
+      "exitCode": 0,
+      "explicitTapTests": 10,
+      "sourceLog": "test-evidence/v69/version-suites/v14.log",
+      "sha256": "854eb43f3e5a9653296f0bea3a7f0efc8967347427f20c1b33d0e242a3004a0e"
+    },
+    {
+      "script": "verify:v15",
+      "exitCode": 0,
+      "explicitTapTests": 10,
+      "sourceLog": "test-evidence/v69/version-suites/v15.log",
+      "sha256": "8e4bfb24918a2b81ff03d8ecbb361aab1063b230035293c14cf2c56e36c62169"
+    },
+    {
+      "script": "verify:v16",
+      "exitCode": 0,
+      "explicitTapTests": 6,
+      "sourceLog": "test-evidence/v69/version-suites/v16.log",
+      "sha256": "9471cf5826312fbb0fa822d5c20a4082bb4bcf641a0afc25314b92b29a979c74"
+    },
+    {
+      "script": "verify:v17",
+      "exitCode": 0,
+      "explicitTapTests": 14,
+      "sourceLog": "test-evidence/v69/version-suites/v17.log",
+      "sha256": "38cbb490d76b406aca52478466a4ce8055ed16e010b6fc0e7ca050f0f8d30941"
+    },
+    {
+      "script": "verify:v18",
+      "exitCode": 0,
+      "explicitTapTests": 5,
+      "sourceLog": "test-evidence/v69/version-suites/v18.log",
+      "sha256": "5b2348e9ca131ee845c1877bbd8e80469c2122edde548556c620097d5633c12a"
+    },
+    {
+      "script": "verify:v19",
+      "exitCode": 0,
+      "explicitTapTests": 3,
+      "sourceLog": "test-evidence/v69/version-suites/v19.log",
+      "sha256": "d7d1486dd4a9dadaa7eb1a65414b7749d54b0a8f87b10469d994d722ea0eb86e"
+    },
+    {
+      "script": "verify:v20",
+      "exitCode": 0,
+      "explicitTapTests": 7,
+      "sourceLog": "test-evidence/v69/version-suites/v20.log",
+      "sha256": "42e62253f4760b98658572c2596a812e9d72d2eff00ea77704dfee1f6e110b7a"
+    },
+    {
+      "script": "verify:v21",
+      "exitCode": 0,
+      "explicitTapTests": 16,
+      "sourceLog": "test-evidence/v69/version-suites/v21.log",
+      "sha256": "34590a1165ed400e4324abc6d617495942cbadbbfe474691f3a784a18f863c6a"
+    },
+    {
+      "script": "verify:v22",
+      "exitCode": 0,
+      "explicitTapTests": 8,
+      "sourceLog": "test-evidence/v69/version-suites/v22.log",
+      "sha256": "6daf9e899728cf845f03fdc576856af4f50e603b906a2bc50b5a53309dc173b9"
+    },
+    {
+      "script": "verify:v23",
+      "exitCode": 0,
+      "explicitTapTests": 14,
+      "sourceLog": "test-evidence/v69/version-suites/v23.log",
+      "sha256": "ca3f77f0511698488f11dd7716b28252c82eaa36e60d10cfc6dc750d7a96d415"
+    },
+    {
+      "script": "verify:v24",
+      "exitCode": 0,
+      "explicitTapTests": 16,
+      "sourceLog": "test-evidence/v69/version-suites/v24.log",
+      "sha256": "c31351edff2f96e084bb84e86ec319da4008725323e317a77afb24106197e859"
+    },
+    {
+      "script": "verify:v25",
+      "exitCode": 0,
+      "explicitTapTests": 21,
+      "sourceLog": "test-evidence/v69/version-suites/v25.log",
+      "sha256": "54b634470a4264d9d20cf6c77ac3091a10491c9f514b974d897bf86bbdf1e5ab"
+    },
+    {
+      "script": "verify:v26",
+      "exitCode": 0,
+      "explicitTapTests": 16,
+      "sourceLog": "test-evidence/v69/version-suites/v26.log",
+      "sha256": "a60d69dbcd633aa6d1186768ce32cd4c55d0f40f0f90ceef77a44487e25f450f"
+    },
+    {
+      "script": "verify:v27",
+      "exitCode": 0,
+      "explicitTapTests": 19,
+      "sourceLog": "test-evidence/v69/version-suites/v27.log",
+      "sha256": "41cd3ee1e906c17e75811cfe87acab0e85d3cadc5aba74c8f150881e0300b56e"
+    },
+    {
+      "script": "verify:v28",
+      "exitCode": 0,
+      "explicitTapTests": 29,
+      "sourceLog": "test-evidence/v69/version-suites/v28.log",
+      "sha256": "b796f4fb94a98cd5f868c488d6ea229f8bdef3b15d7148763086e8bd98a791eb"
+    },
+    {
+      "script": "verify:v29",
+      "exitCode": 0,
+      "explicitTapTests": 27,
+      "sourceLog": "test-evidence/v69/version-suites/v29.log",
+      "sha256": "b33b931965469fd39a7af76fa0376ef358a33eb8e31768d28e03afd0c36695dd"
+    },
+    {
+      "script": "verify:v30",
+      "exitCode": 0,
+      "explicitTapTests": 24,
+      "sourceLog": "test-evidence/v69/version-suites/v30.log",
+      "sha256": "f7ba08eeeccf549c0e46e771bacf1568e60caee2b774077dd7b092f58252a790"
+    },
+    {
+      "script": "verify:v31",
+      "exitCode": 0,
+      "explicitTapTests": 29,
+      "sourceLog": "test-evidence/v69/version-suites/v31.log",
+      "sha256": "033cb729a0072682f3cdbb0fa9ad6ce0275a47fc48913a2870ec82ee3b4b6790"
+    },
+    {
+      "script": "verify:v32",
+      "exitCode": 0,
+      "explicitTapTests": 13,
+      "sourceLog": "test-evidence/v69/version-suites/v32.log",
+      "sha256": "4da2a116fd6812318409988ad3a52fed75e6021412bc586be80cb74916e146a5"
+    },
+    {
+      "script": "verify:v33",
+      "exitCode": 0,
+      "explicitTapTests": 27,
+      "sourceLog": "test-evidence/v69/version-suites/v33.log",
+      "sha256": "d593c2b1501750955f7f6ff83967eb1595d7a58af588e960a963a04053d9b041"
+    },
+    {
+      "script": "verify:v34",
+      "exitCode": 0,
+      "explicitTapTests": 28,
+      "sourceLog": "test-evidence/v69/version-suites/v34.log",
+      "sha256": "ca6ed5c7d042441221ea48bed888053c6adcb01bbce50578eeee1b86f76c799f"
+    },
+    {
+      "script": "verify:v35",
+      "exitCode": 0,
+      "explicitTapTests": 16,
+      "sourceLog": "test-evidence/v69/version-suites/v35.log",
+      "sha256": "4acba6e7f5809fa5b553cc70d6924f9f3ca07a29bcf660100aef7ee871c81a02"
+    },
+    {
+      "script": "verify:v36",
+      "exitCode": 0,
+      "explicitTapTests": 10,
+      "sourceLog": "test-evidence/v69/version-suites/v36.log",
+      "sha256": "6652e5dfbdf2a0b57cb5b0c16befde43683de05bda47de6b424781d7dc56becb"
+    },
+    {
+      "script": "verify:v37",
+      "exitCode": 0,
+      "explicitTapTests": 8,
+      "sourceLog": "test-evidence/v69/version-suites/v37.log",
+      "sha256": "4cd189002afcad7fcb54809afe3309b3181232e4b25cc3b825cb3d89ee67f9a8"
+    },
+    {
+      "script": "verify:v38",
+      "exitCode": 0,
+      "explicitTapTests": 9,
+      "sourceLog": "test-evidence/v69/version-suites/v38.log",
+      "sha256": "f29102a08f4946d32eca5375fee8c92cec314664b3fe374b872b4f842c8f7101"
+    },
+    {
+      "script": "verify:v39",
+      "exitCode": 0,
+      "explicitTapTests": 9,
+      "sourceLog": "test-evidence/v69/version-suites/v39.log",
+      "sha256": "1cb0f01503b343cac6a6d7d0c4cba52a4f368d8eb7d27e4815fc567175a99045"
+    },
+    {
+      "script": "verify:v40",
+      "exitCode": 0,
+      "explicitTapTests": 11,
+      "sourceLog": "test-evidence/v69/version-suites/v40.log",
+      "sha256": "359d25049aa01c0947f89ea7dc778540d4572ee9b9bf96f69916149d9074e527"
+    },
+    {
+      "script": "verify:v41",
+      "exitCode": 0,
+      "explicitTapTests": 9,
+      "sourceLog": "test-evidence/v69/version-suites/v41.log",
+      "sha256": "f844cbd60b44f5c67f911cde23527e710beefac0bb24c234e6bba0a06d5db9d1"
+    },
+    {
+      "script": "verify:v42",
+      "exitCode": 0,
+      "explicitTapTests": 8,
+      "sourceLog": "test-evidence/v69/version-suites/v42.log",
+      "sha256": "2f7fd92ad05504ea56144071c417cf599b006ca0eecb09d59a6915bd610799b6"
+    },
+    {
+      "script": "verify:v43",
+      "exitCode": 0,
+      "explicitTapTests": 8,
+      "sourceLog": "test-evidence/v69/version-suites/v43.log",
+      "sha256": "6331171a9531c7854a7f7286eac36e6dabde018b38440ca2b82ec68dcd3a4430"
+    },
+    {
+      "script": "verify:v44",
+      "exitCode": 0,
+      "explicitTapTests": 16,
+      "sourceLog": "test-evidence/v69/version-suites/v44.log",
+      "sha256": "886a03f26bc8f7939fbfbaaca36228afe14727c148b97eda57e2aed47a7fb50d"
+    },
+    {
+      "script": "verify:v45",
+      "exitCode": 0,
+      "explicitTapTests": 11,
+      "sourceLog": "test-evidence/v69/version-suites/v45.log",
+      "sha256": "8c97aec6e6165e4eb19ca542d582db78c44c4ba6cde89015a84e906feba625cf"
+    },
+    {
+      "script": "verify:v46",
+      "exitCode": 0,
+      "explicitTapTests": 13,
+      "sourceLog": "test-evidence/v69/version-suites/v46.log",
+      "sha256": "b941c7a6ba4f1d2ffcb658466d5e89fac3c705fc5d964271812655478ef57466"
+    },
+    {
+      "script": "verify:v47",
+      "exitCode": 0,
+      "explicitTapTests": 10,
+      "sourceLog": "test-evidence/v69/version-suites/v47.log",
+      "sha256": "3575054fe15811801cfdac964707c2a879c1b7ab36f3bee223b52ff3a07d52d2"
+    },
+    {
+      "script": "verify:v48",
+      "exitCode": 0,
+      "explicitTapTests": 9,
+      "sourceLog": "test-evidence/v69/version-suites/v48.log",
+      "sha256": "443585527053c3fdace0d929cd3c324d2cd0b5e8c2106f3898efd2848c40f213"
+    },
+    {
+      "script": "verify:v49",
+      "exitCode": 0,
+      "explicitTapTests": 9,
+      "sourceLog": "test-evidence/v69/version-suites/v49.log",
+      "sha256": "a36999515e3325721f68cae1580f98f989d44303800d319061710c248e01cbe7"
+    },
+    {
+      "script": "verify:v50",
+      "exitCode": 0,
+      "explicitTapTests": 9,
+      "sourceLog": "test-evidence/v69/version-suites/v50.log",
+      "sha256": "9b5ea367413877a51034304d715225141f38d3644700679626425453feda9c9e"
+    },
+    {
+      "script": "verify:v51",
+      "exitCode": 0,
+      "explicitTapTests": 17,
+      "sourceLog": "test-evidence/v69/version-suites/v51.log",
+      "sha256": "bd2ceda1e74a7b89a182f2302a2227a7ce97f145894c35cf205614448942f2a5"
+    },
+    {
+      "script": "verify:v52",
+      "exitCode": 0,
+      "explicitTapTests": 13,
+      "sourceLog": "test-evidence/v69/version-suites/v52.log",
+      "sha256": "baf1f4fcd618a35e0b0ebafd77ba046b1059920ea908744a585505b7e5b7b048"
+    },
+    {
+      "script": "verify:v53",
+      "exitCode": 0,
+      "explicitTapTests": 18,
+      "sourceLog": "test-evidence/v69/version-suites/v53.log",
+      "sha256": "196272567b7409881ab3607ceb935d614eac58b31f05bae143fd375ffad7c20b"
+    },
+    {
+      "script": "verify:v54",
+      "exitCode": 0,
+      "explicitTapTests": 15,
+      "sourceLog": "test-evidence/v69/version-suites/v54.log",
+      "sha256": "0f61766ced4262e3c4ca71712721e1204f21a4487ace4cace30c4aaa4e3cb2f0"
+    },
+    {
+      "script": "verify:v55",
+      "exitCode": 0,
+      "explicitTapTests": 16,
+      "sourceLog": "test-evidence/v69/version-suites/v55.log",
+      "sha256": "c7742d36b60b0e4097375e1853c568d51e58424ec8e74698f734ca3f83eacc1d"
+    },
+    {
+      "script": "verify:v56",
+      "exitCode": 0,
+      "explicitTapTests": 20,
+      "sourceLog": "test-evidence/v69/version-suites/v56.log",
+      "sha256": "34f07d5c451749cf6c4bb640ec78461b577f094c3526b40de1a31fb9e88aaff6"
+    },
+    {
+      "script": "verify:v57",
+      "exitCode": 0,
+      "explicitTapTests": 20,
+      "sourceLog": "test-evidence/v69/version-suites/v57.log",
+      "sha256": "9e793e8e639eb41937edaee7105b605cd4db2e427f601cc55e3f30cd8d3d9c13"
+    },
+    {
+      "script": "verify:v58",
+      "exitCode": 0,
+      "explicitTapTests": 15,
+      "sourceLog": "test-evidence/v69/version-suites/v58.log",
+      "sha256": "27320458b5b8a436196fc6ed1132ba33707eca933f3792c3c511dcf4aa618757"
+    },
+    {
+      "script": "verify:v59",
+      "exitCode": 0,
+      "explicitTapTests": 15,
+      "sourceLog": "test-evidence/v69/version-suites/v59.log",
+      "sha256": "c369f3384bb3bb8919a221f0cf568bca32746e6b1e83efe418ecefe09da544dc"
+    },
+    {
+      "script": "verify:v60",
+      "exitCode": 0,
+      "explicitTapTests": 15,
+      "sourceLog": "test-evidence/v69/version-suites/v60.log",
+      "sha256": "e40dcba000729dfaaa78c35d0f7637f4ae6b3c36b5b3dcb0f0b88c4c77b34683"
+    },
+    {
+      "script": "verify:v61",
+      "exitCode": 0,
+      "explicitTapTests": 16,
+      "sourceLog": "test-evidence/v69/version-suites/v61.log",
+      "sha256": "25251da9ab08c6e53195f759fb804a23314129631b204e190212d4d60100434c"
+    },
+    {
+      "script": "verify:v62",
+      "exitCode": 0,
+      "explicitTapTests": 18,
+      "sourceLog": "test-evidence/v69/version-suites/v62.log",
+      "sha256": "ad873541580f07e39f98004e546a4526a1a08e5d3a87937395d590ac8e314b48"
+    },
+    {
+      "script": "verify:v63",
+      "exitCode": 0,
+      "explicitTapTests": 31,
+      "sourceLog": "test-evidence/v69/version-suites/v63.log",
+      "sha256": "8acd662443a96a799bd84bfe9405fb2bc270eed7cd0055e770004169a3d2bc6f"
+    },
+    {
+      "script": "verify:v64",
+      "exitCode": 0,
+      "explicitTapTests": 15,
+      "sourceLog": "test-evidence/v69/version-suites/v64.log",
+      "sha256": "368c62b324db851d36171b0a9f56046fbc383a6ae93af83a08344ffd6e6a701a"
+    },
+    {
+      "script": "verify:v65",
+      "exitCode": 0,
+      "explicitTapTests": 16,
+      "sourceLog": "test-evidence/v69/version-suites/v65.log",
+      "sha256": "b77d90ad2adf26f370db0a06093d366ba6fa8edf8867444de5f53083e207d51d"
+    },
+    {
+      "script": "verify:v66",
+      "exitCode": 0,
+      "explicitTapTests": 25,
+      "sourceLog": "test-evidence/v69/version-suites/v66.log",
+      "sha256": "cf1fdaf0d13e98211fe54692cc2833518863b399bd2dcc0d299cbfbff505f073"
+    },
+    {
+      "script": "verify:v67",
+      "exitCode": 0,
+      "explicitTapTests": 19,
+      "sourceLog": "test-evidence/v69/version-suites/v67.log",
+      "sha256": "ef5ac29c2496ead0b7820b6c3556e10b9a6bf1ca84031d8c6582eca9db1063ac"
+    },
+    {
+      "script": "verify:v68",
+      "exitCode": 0,
+      "explicitTapTests": 25,
+      "sourceLog": "test-evidence/v69/version-suites/v68.log",
+      "sha256": "aec75b1663792c92bb37b95f5834c2a90ee9d0282a0f31a65ce2d1901b0ebd4c"
+    },
+    {
+      "script": "verify:v69",
+      "exitCode": 0,
+      "explicitTapTests": 22,
+      "sourceLog": "test-evidence/v69/version-suites/v69.log",
+      "sha256": "b0b4bc366e3008428833d2cae394659f69c453db5c318bd8953e0bcbe4494eb8"
+    }
+  ]
+}

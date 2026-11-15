@@ -1,0 +1,79 @@
+[
+  {
+    "suite": "verify:v66",
+    "status": "pass",
+    "exit_code": 0,
+    "reported_tap_pass": 25,
+    "elapsed_s": 1.45
+  },
+  {
+    "suite": "verify:v67",
+    "status": "pass",
+    "exit_code": 0,
+    "reported_tap_pass": 19,
+    "elapsed_s": 1.12
+  },
+  {
+    "suite": "verify:v68",
+    "status": "pass",
+    "exit_code": 0,
+    "reported_tap_pass": 25,
+    "elapsed_s": 0.44
+  },
+  {
+    "suite": "verify:v69",
+    "status": "pass",
+    "exit_code": 0,
+    "reported_tap_pass": 22,
+    "elapsed_s": 0.33
+  },
+  {
+    "suite": "verify:v70",
+    "status": "pass",
+    "exit_code": 0,
+    "reported_tap_pass": 29,
+    "elapsed_s": 0.69
+  },
+  {
+    "suite": "verify:v71",
+    "status": "pass",
+    "exit_code": 0,
+    "reported_tap_pass": 21,
+    "elapsed_s": 0.43
+  },
+  {
+    "suite": "verify:v72",
+    "status": "pass",
+    "exit_code": 0,
+    "reported_tap_pass": 21,
+    "elapsed_s": 1.12
+  },
+  {
+    "suite": "verify:v73",
+    "status": "pass",
+    "exit_code": 0,
+    "reported_tap_pass": 31,
+    "elapsed_s": 0.89
+  },
+  {
+    "suite": "verify:v74",
+    "status": "pass",
+    "exit_code": 0,
+    "reported_tap_pass": 19,
+    "elapsed_s": 1.0
+  },
+  {
+    "suite": "verify:v75",
+    "status": "pass",
+    "exit_code": 0,
+    "reported_tap_pass": 24,
+    "elapsed_s": 1.29
+  },
+  {
+    "suite": "verify:v76",
+    "status": "pass",
+    "exit_code": 0,
+    "reported_tap_pass": 33,
+    "elapsed_s": 0.69
+  }
+]

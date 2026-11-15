@@ -1,0 +1,8 @@
+{
+ "compilerOptions": {
+  "target": "ES2022", "module": "CommonJS", "moduleResolution": "Node",
+  "strict": true, "noEmit": true, "skipLibCheck": true,
+  "types": []
+ },
+ "include": ["typecheck-v23/nest.d.ts", "../apps/api/src/contexts/access/infrastructure/transactional-access.ts"]
+}

@@ -1,0 +1,141 @@
+
+> assettrust-platform@0.83.0 verify:v72
+> node --test tools/tests-v72/*.test.cjs
+
+TAP version 13
+# Subtest: v72 manifests, CI registration and all 27 reviewed migrations
+ok 1 - v72 manifests, CI registration and all 27 reviewed migrations
+  ---
+  duration_ms: 1.718517
+  type: 'test'
+  ...
+# Subtest: bounded query/lock/idle/connection deadlines are configured and immutable
+ok 2 - bounded query/lock/idle/connection deadlines are configured and immutable
+  ---
+  duration_ms: 0.721315
+  type: 'test'
+  ...
+# Subtest: actual database Pool receives bounded settings and source connection URL
+ok 3 - actual database Pool receives bounded settings and source connection URL
+  ---
+  duration_ms: 44.03259
+  type: 'test'
+  ...
+# Subtest: successful transaction commits and reuses safe connection
+ok 4 - successful transaction commits and reuses safe connection
+  ---
+  duration_ms: 23.132404
+  type: 'test'
+  ...
+# Subtest: application query failure rolls back, original error retained, connection reused only after successful rollback
+ok 5 - application query failure rolls back, original error retained, connection reused only after successful rollback
+  ---
+  duration_ms: 20.348505
+  type: 'test'
+  ...
+# Subtest: failed rollback destroys connection and preserves original application error
+ok 6 - failed rollback destroys connection and preserves original application error
+  ---
+  duration_ms: 23.249691
+  type: 'test'
+  ...
+# Subtest: failed COMMIT destroys connection even if ROLLBACK works
+ok 7 - failed COMMIT destroys connection even if ROLLBACK works
+  ---
+  duration_ms: 18.056594
+  type: 'test'
+  ...
+# Subtest: failed COMMIT plus failed ROLLBACK preserves commit error and discards connection
+ok 8 - failed COMMIT plus failed ROLLBACK preserves commit error and discards connection
+  ---
+  duration_ms: 21.785147
+  type: 'test'
+  ...
+# Subtest: failed BEGIN is never followed by business SQL; connection discarded
+ok 9 - failed BEGIN is never followed by business SQL; connection discarded
+  ---
+  duration_ms: 11.177158
+  type: 'test'
+  ...
+# Subtest: tenant scope remains transaction-local before a tenant read and commits safely
+ok 10 - tenant scope remains transaction-local before a tenant read and commits safely
+  ---
+  duration_ms: 19.967169
+  type: 'test'
+  ...
+# Subtest: tenant scope failure cannot execute business query and discards connection on rollback failure
+ok 11 - tenant scope failure cannot execute business query and discards connection on rollback failure
+  ---
+  duration_ms: 16.043849
+  type: 'test'
+  ...
+# Subtest: current-milestone build regression runs for v72 but does not weaken older v68 fixtures
+ok 12 - current-milestone build regression runs for v72 but does not weaken older v68 fixtures
+  ---
+  duration_ms: 2.51743
+  type: 'test'
+  ...
+# Subtest: v72 release build fails closed when current milestone test script is missing
+ok 13 - v72 release build fails closed when current milestone test script is missing
+  ---
+  duration_ms: 1.009921
+  type: 'test'
+  ...
+# Subtest: build prerequisites reject v72 when current milestone regression cannot run
+ok 14 - build prerequisites reject v72 when current milestone regression cannot run
+  ---
+  duration_ms: 1.904808
+  type: 'test'
+  ...
+# Subtest: v72 build runner performs current regression after all original six gates
+ok 15 - v72 build runner performs current regression after all original six gates
+  ---
+  duration_ms: 3.61334
+  type: 'test'
+  ...
+# Subtest: v71 supervisor recognizes a complete current v72 build evidence package
+ok 16 - v71 supervisor recognizes a complete current v72 build evidence package
+  ---
+  duration_ms: 1.277092
+  type: 'test'
+  ...
+# Subtest: v71 build evidence is rejected on v72 and absent current-regression step is rejected
+ok 17 - v71 build evidence is rejected on v72 and absent current-regression step is rejected
+  ---
+  duration_ms: 1.587359
+  type: 'test'
+  ...
+# Subtest: build provenance rejects modified source manifest and lockfile
+ok 18 - build provenance rejects modified source manifest and lockfile
+  ---
+  duration_ms: 1.065975
+  type: 'test'
+  ...
+# Subtest: offline diagnostics remain read-only, secret-free and non-release
+ok 19 - offline diagnostics remain read-only, secret-free and non-release
+  ---
+  duration_ms: 1.083341
+  type: 'test'
+  ...
+# Subtest: no SQL migration, tenant predicate or authentication guard was weakened
+ok 20 - no SQL migration, tenant predicate or authentication guard was weakened
+  ---
+  duration_ms: 0.37191
+  type: 'test'
+  ...
+# Subtest: v72 diagnostic CLI and local build inspection do not claim production approval
+ok 21 - v72 diagnostic CLI and local build inspection do not claim production approval
+  ---
+  duration_ms: 27.219709
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 568.902119
+

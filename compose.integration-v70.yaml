@@ -1,0 +1,43 @@
+# AssetTrust v0.70 disposable Kali integration database.
+# NOT a production database or an upgrade path for existing volumes.
+# The password secret file is created locally with mode 0600 by the guarded CLI.
+name: assettrust-v70-disposable
+services:
+  postgres:
+    image: postgis/postgis:17-3.5
+    restart: "no"
+    ports:
+      - "127.0.0.1:55432:5432"
+    environment:
+      POSTGRES_USER: assettrust_v70_operator
+      POSTGRES_DB: assettrust_test
+      POSTGRES_PASSWORD_FILE: /run/secrets/assettrust_v70_pg_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    secrets:
+      - assettrust_v70_pg_password
+    volumes:
+      - assettrust_v70_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U assettrust_v70_operator -d assettrust_test"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+  clamav:
+    profiles: ["scanner"]
+    image: clamav/clamav:stable
+    restart: "no"
+    ports:
+      - "127.0.0.1:13310:3310"
+    volumes:
+      - assettrust_v70_clamdb:/var/lib/clamav
+    security_opt:
+      - no-new-privileges:true
+secrets:
+  assettrust_v70_pg_password:
+    file: ./.assettrust-local/v70/pg-password
+volumes:
+  assettrust_v70_pgdata:
+  assettrust_v70_clamdb:

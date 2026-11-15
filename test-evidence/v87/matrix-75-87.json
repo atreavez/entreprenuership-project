@@ -1,0 +1,119 @@
+[
+  {
+    "suite": "verify:v75",
+    "ok": true,
+    "exitCode": 0,
+    "tests": 24,
+    "passed": 24,
+    "failed": 0,
+    "seconds": 0.61
+  },
+  {
+    "suite": "verify:v76",
+    "ok": true,
+    "exitCode": 0,
+    "tests": 33,
+    "passed": 33,
+    "failed": 0,
+    "seconds": 0.53
+  },
+  {
+    "suite": "verify:v77",
+    "ok": true,
+    "exitCode": 0,
+    "tests": 34,
+    "passed": 34,
+    "failed": 0,
+    "seconds": 0.65
+  },
+  {
+    "suite": "verify:v78",
+    "ok": true,
+    "exitCode": 0,
+    "tests": 30,
+    "passed": 30,
+    "failed": 0,
+    "seconds": 0.53
+  },
+  {
+    "suite": "verify:v79",
+    "ok": true,
+    "exitCode": 0,
+    "tests": 23,
+    "passed": 23,
+    "failed": 0,
+    "seconds": 0.6
+  },
+  {
+    "suite": "verify:v80",
+    "ok": true,
+    "exitCode": 0,
+    "tests": 17,
+    "passed": 17,
+    "failed": 0,
+    "seconds": 0.3
+  },
+  {
+    "suite": "verify:v81",
+    "ok": true,
+    "exitCode": 0,
+    "tests": 35,
+    "passed": 35,
+    "failed": 0,
+    "seconds": 1.54
+  },
+  {
+    "suite": "verify:v82",
+    "ok": true,
+    "exitCode": 0,
+    "tests": 45,
+    "passed": 45,
+    "failed": 0,
+    "seconds": 0.59
+  },
+  {
+    "suite": "verify:v83",
+    "ok": true,
+    "exitCode": 0,
+    "tests": 29,
+    "passed": 29,
+    "failed": 0,
+    "seconds": 0.52
+  },
+  {
+    "suite": "verify:v84",
+    "ok": true,
+    "exitCode": 0,
+    "tests": 28,
+    "passed": 28,
+    "failed": 0,
+    "seconds": 0.55
+  },
+  {
+    "suite": "verify:v85",
+    "ok": true,
+    "exitCode": 0,
+    "tests": 43,
+    "passed": 43,
+    "failed": 0,
+    "seconds": 1.71
+  },
+  {
+    "suite": "verify:v86",
+    "ok": true,
+    "exitCode": 0,
+    "tests": 34,
+    "passed": 34,
+    "failed": 0,
+    "seconds": 0.41
+  },
+  {
+    "suite": "verify:v87",
+    "ok": true,
+    "exitCode": 0,
+    "tests": 30,
+    "passed": 30,
+    "failed": 0,
+    "seconds": 0.59
+  }
+]

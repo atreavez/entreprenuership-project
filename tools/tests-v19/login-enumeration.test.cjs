@@ -17,14 +17,21 @@ function loadAuth({rows,validPassword=false}) {
  const deps={
   '@nestjs/common':stubNest,'@nestjs/jwt':{JwtModule:{register:()=>({})}},'@nestjs/throttler':{Throttle:decorator},
   'argon2':{verify:async (hash,pw)=>{verifications.push({hash,pw});return validPassword;},hash:async()=>{throw Error('Unexpected hashing')}},
-  './database':{}, './audit-service':{},
+  './database':{}, './audit':{},
   './common':{uid:()=>'',text:(value)=>{if(typeof value!=='string')throw Error('invalid field');return value;},hash:()=>'',UserAuth:class{}},
-  './contexts/identity/application/session-usecases':{}, './contexts/identity/infrastructure/pg-session.repository':{},
-  './contexts/identity/domain/identity-policy':{},
+  './contexts/identity/application/session-usecases':{}, './contexts/identity/infrastructure/pg-session.repository':{},'./contexts/identity/infrastructure/login-abuse.service':{LoginAbuseService:class{}},
+  './contexts/identity/domain/request-origin-policy':{isAllowedRequestOrigin:()=>true},
+  './contexts/identity/domain/coadmin-policy':{isCoAdminEnrollmentRoute:()=>false,requiresAdminMfa:(role,flag)=>role==='ORG_ADMIN'||flag===true,hasAdminSessionMfaProof:(enabled,verifiedAt)=>enabled===true&&verifiedAt!=null},
+ './contexts/identity/domain/identity-policy':{},
  };
  const box={module:{exports:{}},exports:{},require:id=>deps[id]||require(id),Buffer,Date,console,process:{env:{}},setTimeout};box.exports=box.module.exports;
  vm.runInNewContext(js,box,{timeout:3000,filename:'auth.ts'});
- const auth=new box.module.exports.AuthenticationService({query:async()=>({rows})},{},{write:async()=>{}});
+ const db={query:async()=>({rows}),transaction:async fn=>fn({query:async sql=>{
+  if(sql.includes('FROM users u WHERE u.id=$1'))return {rows:rows.map(u=>({password_hash:u.password_hash,suspended_at:null,role:u.role||'CLIENT',admin_mfa_required:false}))};
+  if(sql.includes('SELECT enabled FROM auth_mfa_credentials'))return {rows:[]};
+  throw Error('unexpected transaction SQL: '+sql);
+ }})};
+ const auth=new box.module.exports.AuthenticationService(db,{},{write:async()=>{}});
  return {auth,verifications};
 }
 test('RED/GREEN: nonexistent and incorrect-password accounts both perform one expensive verification',async()=>{

@@ -1,0 +1,201 @@
+
+> assettrust-platform@0.83.0 verify:v63
+> node --test --test-concurrency=1 tools/tests-v63/*.test.cjs
+
+TAP version 13
+# Subtest: reviewed policy inventory contains exactly 16 policies on 13 separate tables
+ok 1 - reviewed policy inventory contains exactly 16 policies on 13 separate tables
+  ---
+  duration_ms: 1.0899
+  type: 'test'
+  ...
+# Subtest: canonicalizer handles actual PostgreSQL pg_get_expr extra parentheses and casts
+ok 2 - canonicalizer handles actual PostgreSQL pg_get_expr extra parentheses and casts
+  ---
+  duration_ms: 0.440693
+  type: 'test'
+  ...
+# Subtest: complete unchanged catalog from realistic PostgreSQL formatting passes
+ok 3 - complete unchanged catalog from realistic PostgreSQL formatting passes
+  ---
+  duration_ms: 1.054507
+  type: 'test'
+  ...
+# Subtest: missing tenant policy rejects startup
+ok 4 - missing tenant policy rejects startup
+  ---
+  duration_ms: 0.195755
+  type: 'test'
+  ...
+# Subtest: extra permissive policy rejects startup
+ok 5 - extra permissive policy rejects startup
+  ---
+  duration_ms: 0.256005
+  type: 'test'
+  ...
+# Subtest: duplicate catalog key rejects startup
+ok 6 - duplicate catalog key rejects startup
+  ---
+  duration_ms: 0.243055
+  type: 'test'
+  ...
+# Subtest: policy command changed from ALL to SELECT rejects startup
+ok 7 - policy command changed from ALL to SELECT rejects startup
+  ---
+  duration_ms: 0.194182
+  type: 'test'
+  ...
+# Subtest: policy changed from PERMISSIVE to RESTRICTIVE rejects startup
+ok 8 - policy changed from PERMISSIVE to RESTRICTIVE rejects startup
+  ---
+  duration_ms: 0.280092
+  type: 'test'
+  ...
+# Subtest: policy role widened to unrestricted nonpublic actor rejects startup
+ok 9 - policy role widened to unrestricted nonpublic actor rejects startup
+  ---
+  duration_ms: 0.348204
+  type: 'test'
+  ...
+# Subtest: policy role changed to organization admin only rejects startup
+ok 10 - policy role changed to organization admin only rejects startup
+  ---
+  duration_ms: 0.372571
+  type: 'test'
+  ...
+# Subtest: PostgreSQL array text response {public} also accepted
+ok 11 - PostgreSQL array text response {public} also accepted
+  ---
+  duration_ms: 0.279961
+  type: 'test'
+  ...
+# Subtest: qual changed to TRUE rejects startup
+ok 12 - qual changed to TRUE rejects startup
+  ---
+  duration_ms: 0.14589
+  type: 'test'
+  ...
+# Subtest: qual altered by OR TRUE rejects startup
+ok 13 - qual altered by OR TRUE rejects startup
+  ---
+  duration_ms: 0.207332
+  type: 'test'
+  ...
+# Subtest: qual changed to a different tenant GUC rejects startup
+ok 14 - qual changed to a different tenant GUC rejects startup
+  ---
+  duration_ms: 0.140442
+  type: 'test'
+  ...
+# Subtest: WITH CHECK removed on writes rejects startup
+ok 15 - WITH CHECK removed on writes rejects startup
+  ---
+  duration_ms: 0.296346
+  type: 'test'
+  ...
+# Subtest: INSERT policy unexpectedly adds a read condition rejects startup
+ok 16 - INSERT policy unexpectedly adds a read condition rejects startup
+  ---
+  duration_ms: 0.135213
+  type: 'test'
+  ...
+# Subtest: SELECT policy unexpectedly permits an INSERT check rejects startup
+ok 17 - SELECT policy unexpectedly permits an INSERT check rejects startup
+  ---
+  duration_ms: 1.631766
+  type: 'test'
+  ...
+# Subtest: inbox SELECT missing recipient identity check rejects startup
+ok 18 - inbox SELECT missing recipient identity check rejects startup
+  ---
+  duration_ms: 0.13956
+  type: 'test'
+  ...
+# Subtest: inbox UPDATE WITH CHECK missing recipient identity rejects startup
+ok 19 - inbox UPDATE WITH CHECK missing recipient identity rejects startup
+  ---
+  duration_ms: 0.103716
+  type: 'test'
+  ...
+# Subtest: inbox UPDATE read authorization missing recipient identity rejects startup
+ok 20 - inbox UPDATE read authorization missing recipient identity rejects startup
+  ---
+  duration_ms: 0.101874
+  type: 'test'
+  ...
+# Subtest: inbox INSERT broadens tenant insert by OR TRUE rejects startup
+ok 21 - inbox INSERT broadens tenant insert by OR TRUE rejects startup
+  ---
+  duration_ms: 0.097046
+  type: 'test'
+  ...
+# Subtest: altered predicate using COALESCE rejects startup
+ok 22 - altered predicate using COALESCE rejects startup
+  ---
+  duration_ms: 0.09925
+  type: 'test'
+  ...
+# Subtest: all 16 declared policies originate in committed SQL migrations
+ok 23 - all 16 declared policies originate in committed SQL migrations
+  ---
+  duration_ms: 1.108688
+  type: 'test'
+  ...
+# Subtest: the API checks policy catalog at startup when enforcing runtime-role security
+ok 24 - the API checks policy catalog at startup when enforcing runtime-role security
+  ---
+  duration_ms: 0.21973
+  type: 'test'
+  ...
+# Subtest: CI executes TypeScript-dependent policy test after installs and live PG test before tenant fixtures
+ok 25 - CI executes TypeScript-dependent policy test after installs and live PG test before tenant fixtures
+  ---
+  duration_ms: 0.191919
+  type: 'test'
+  ...
+# Subtest: supervised runner orders policy inventory before other tenant checks
+ok 26 - supervised runner orders policy inventory before other tenant checks
+  ---
+  duration_ms: 2.543478
+  type: 'test'
+  ...
+# Subtest: read-only live policy runner refuses unsafe execution before importing PostgreSQL driver
+ok 27 - read-only live policy runner refuses unsafe execution before importing PostgreSQL driver
+  ---
+  duration_ms: 32.815097
+  type: 'test'
+  ...
+# Subtest: new release is consistent across workspaces, no new SQL migration
+ok 28 - new release is consistent across workspaces, no new SQL migration
+  ---
+  duration_ms: 0.78411
+  type: 'test'
+  ...
+# Subtest: pre-install CI does not execute TypeScript-dependent checks before npm ci
+ok 29 - pre-install CI does not execute TypeScript-dependent checks before npm ci
+  ---
+  duration_ms: 0.200061
+  type: 'test'
+  ...
+# Subtest: actual Database.onModuleInit accepts only a complete policy catalog in a fake PostgreSQL
+ok 30 - actual Database.onModuleInit accepts only a complete policy catalog in a fake PostgreSQL
+  ---
+  duration_ms: 45.967617
+  type: 'test'
+  ...
+# Subtest: actual Database.onModuleInit rejects injected permissive policy and changed recipient check
+ok 31 - actual Database.onModuleInit rejects injected permissive policy and changed recipient check
+  ---
+  duration_ms: 35.87998
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 410.21803
+

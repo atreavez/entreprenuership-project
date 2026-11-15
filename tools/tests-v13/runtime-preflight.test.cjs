@@ -8,6 +8,7 @@ const root=resolve(__dirname,'../..');
 const keys=()=>({
  JWT_SECRET:randomBytes(32).toString('hex'),
  MFA_ENCRYPTION_KEY:randomBytes(32).toString('hex'),
+ LOGIN_ABUSE_PEPPER:randomBytes(32).toString('hex'),
  document:randomBytes(32).toString('hex')
 });
 const run=(changes={})=>{
@@ -17,6 +18,7 @@ const run=(changes={})=>{
  WEB_ORIGIN:'http://localhost:5173',DOCUMENT_ACTIVE_KEY_ID:'ci_v13',
  DOCUMENT_ENCRYPTION_KEYS:JSON.stringify({ci_v13:k.document}),
  JWT_SECRET:k.JWT_SECRET,MFA_ENCRYPTION_KEY:k.MFA_ENCRYPTION_KEY,
+ LOGIN_ABUSE_PEPPER:k.LOGIN_ABUSE_PEPPER,
  ASSETTRUST_E2E_TARGET_ID:'test-only-disposable-v13-server',
  ASSETTRUST_E2E_EXPECT_TARGET:'test-only-disposable-v13-server',...changes};
  return spawnSync(process.execPath,['tools/ci-security-preflight.cjs'],{cwd:root,env,encoding:'utf8'});
@@ -39,5 +41,5 @@ test('actual startup policy rejects reused encryption keys',()=>{
 });
 test('actual startup policy rejects mismatched disposable CI marker',()=>{
  const res=run({ASSETTRUST_E2E_EXPECT_TARGET:'another-test-marker-value'});
- assert.notEqual(res.status,0);assert.match(res.stderr,/instance identity/);
+ assert.notEqual(res.status,0);assert.match(res.stderr,/\bTEST_MARKER_MISMATCH\b/);
 });

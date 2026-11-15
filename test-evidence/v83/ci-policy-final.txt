@@ -1,0 +1,13 @@
+
+> assettrust-platform@0.83.0 verify:ci:v53
+> ruby tools/workflow-policy-v53.rb
+
+{
+  "schema": "ASSETTRUST_WORKFLOW_POLICY_V53",
+  "ok": true,
+  "versionSuiteCount": 81,
+  "pgContractCount": 33,
+  "issues": [
+
+  ]
+}

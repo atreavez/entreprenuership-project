@@ -1,0 +1,1 @@
+PyYAML parsed GitHub Actions YAML; jobs key present. PyYAML 1.1 treats on: as boolean, GitHub Actions treats it as event key.

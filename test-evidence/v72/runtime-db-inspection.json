@@ -1,0 +1,27 @@
+{
+  "schema": "ASSETTRUST_V72_DATABASE_DIAGNOSTICS",
+  "mode": "READ_ONLY",
+  "version": "0.72.0",
+  "checks": {
+    "mandatoryPoolPolicy": true,
+    "rollbackFailureDiscardsConnection": true,
+    "commitFailureDiscardsConnection": true,
+    "connectionTimeout": true,
+    "statementTimeout": true,
+    "queryTimeout": true,
+    "lockTimeout": true,
+    "idleTransactionTimeout": true
+  },
+  "policyConfigured": true,
+  "expected": {
+    "max": 12,
+    "connectionTimeoutMillis": 5000,
+    "statement_timeout": 15000,
+    "query_timeout": 20000,
+    "lock_timeout": 3000,
+    "idle_in_transaction_session_timeout": 30000
+  },
+  "liveDatabaseTested": false,
+  "productionApproved": false,
+  "releaseStatus": "NO_GO"
+}

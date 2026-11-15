@@ -1,0 +1,25 @@
+
+> assettrust-platform@0.83.0 release:preflight:v51
+> node tools/release-validation-v51.cjs --preflight
+
+{
+  "mode": "--preflight",
+  "status": "BLOCKED",
+  "productionApproved": false,
+  "issues": [
+    "Authentic package-lock.json missing or unreadable; do not synthesize one"
+  ],
+  "supplyChain": {
+    "schema": "ASSETTRUST_V51_SUPPLY_CHAIN_POLICY",
+    "ok": false,
+    "lockfileSha256": null,
+    "issues": [
+      "Authentic package-lock.json missing or unreadable; do not synthesize one"
+    ],
+    "reviewRequired": {
+      "installScriptCount": 0,
+      "registryTarballsChecked": 0
+    },
+    "notes": "Static manifest and lockfile review. Requires online npm ci, npm audit, full builds and independent SBOM/signature review."
+  }
+}

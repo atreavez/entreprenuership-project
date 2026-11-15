@@ -1,0 +1,76 @@
+{
+  "schema": "ASSETTRUST_READ_ONLY_PREFLIGHT_V41",
+  "version": "0.41.0",
+  "prerequisitesPass": false,
+  "productionApproved": false,
+  "checks": [
+    {
+      "name": "supported-node",
+      "pass": true,
+      "description": "Node >=22.12 runtime"
+    },
+    {
+      "name": "ci-coverage-contract",
+      "pass": true,
+      "description": "43 offline suites and 19 declared PostgreSQL contracts are present in CI workflow"
+    },
+    {
+      "name": "reviewed-lockfile-graph",
+      "pass": false,
+      "description": "Authentic npm lockfile absent or inconsistent with workspace manifests"
+    },
+    {
+      "name": "installed-@nestjs/common",
+      "pass": false,
+      "description": "@nestjs/common installed under target project root"
+    },
+    {
+      "name": "installed-pg",
+      "pass": false,
+      "description": "pg installed under target project root"
+    },
+    {
+      "name": "installed-react",
+      "pass": false,
+      "description": "react installed under target project root"
+    },
+    {
+      "name": "installed-vite",
+      "pass": false,
+      "description": "vite installed under target project root"
+    },
+    {
+      "name": "api-build-output",
+      "pass": false,
+      "description": "Compiled API main.js exists (presence only, not runtime proof)"
+    },
+    {
+      "name": "web-build-output",
+      "pass": false,
+      "description": "Generated Vite index.html exists (presence only, not browser proof)"
+    },
+    {
+      "name": "migration-source-fingerprints",
+      "pass": true,
+      "description": "20 migration SQL files match their pinned SHA-256 manifest"
+    },
+    {
+      "name": "runtime-configuration-present",
+      "pass": false,
+      "description": "CI environment secrets populated, or local .env exists; content/security checks are separate"
+    }
+  ],
+  "status": "BLOCKED_PREREQUISITES",
+  "gateCount": {
+    "passed": 3,
+    "total": 11
+  },
+  "unverified": [
+    "Successful clean npm ci execution and complete npm test/build on deployment target",
+    "Applied all versioned migrations, PostGIS and live PostgreSQL contracts",
+    "Two independently authenticated administrators and recipient browser download tests",
+    "Full two-API-instance HTTP race test, rate-limiting at the reverse proxy",
+    "HTTPS, restore drill, signing-key custody, independent security and Uganda legal/privacy review"
+  ],
+  "notes": "CI/source checks and artifact presence cannot establish legal land title truth, customer identity, or production readiness."
+}

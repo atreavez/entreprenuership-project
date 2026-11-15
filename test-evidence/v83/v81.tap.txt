@@ -1,0 +1,225 @@
+
+> assettrust-platform@0.83.0 verify:v81
+> node --test --test-concurrency=1 tools/tests-v81/*.test.cjs
+
+TAP version 13
+# Subtest: a correctly configured development API is accepted
+ok 1 - a correctly configured development API is accepted
+  ---
+  duration_ms: 2.55109
+  type: 'test'
+  ...
+# Subtest: a correctly configured test API with disposable marker is accepted
+ok 2 - a correctly configured test API with disposable marker is accepted
+  ---
+  duration_ms: 0.571831
+  type: 'test'
+  ...
+# Subtest: development missing login abuse pepper is a startup blocker (not deferred to login)
+ok 3 - development missing login abuse pepper is a startup blocker (not deferred to login)
+  ---
+  duration_ms: 0.294994
+  type: 'test'
+  ...
+# Subtest: test mode missing login abuse pepper is a startup blocker
+ok 4 - test mode missing login abuse pepper is a startup blocker
+  ---
+  duration_ms: 0.184778
+  type: 'test'
+  ...
+# Subtest: weak login pepper cannot be accepted in development
+ok 5 - weak login pepper cannot be accepted in development
+  ---
+  duration_ms: 0.500483
+  type: 'test'
+  ...
+# Subtest: MFA and login-abuse keys cannot be reused outside production
+ok 6 - MFA and login-abuse keys cannot be reused outside production
+  ---
+  duration_ms: 0.238839
+  type: 'test'
+  ...
+# Subtest: document and login-abuse keys cannot be reused in test mode
+ok 7 - document and login-abuse keys cannot be reused in test mode
+  ---
+  duration_ms: 0.326191
+  type: 'test'
+  ...
+# Subtest: port defaults to 4000
+ok 8 - port defaults to 4000
+  ---
+  duration_ms: 0.113811
+  type: 'test'
+  ...
+# Subtest: port accepts configured valid endpoints
+ok 9 - port accepts configured valid endpoints
+  ---
+  duration_ms: 0.348925
+  type: 'test'
+  ...
+# Subtest: rejects invalid PORT="0"
+ok 10 - rejects invalid PORT="0"
+  ---
+  duration_ms: 0.717149
+  type: 'test'
+  ...
+# Subtest: rejects invalid PORT="65536"
+ok 11 - rejects invalid PORT="65536"
+  ---
+  duration_ms: 1.242
+  type: 'test'
+  ...
+# Subtest: rejects invalid PORT="-1"
+ok 12 - rejects invalid PORT="-1"
+  ---
+  duration_ms: 0.188204
+  type: 'test'
+  ...
+# Subtest: rejects invalid PORT="3.5"
+ok 13 - rejects invalid PORT="3.5"
+  ---
+  duration_ms: 0.116746
+  type: 'test'
+  ...
+# Subtest: rejects invalid PORT="abc"
+ok 14 - rejects invalid PORT="abc"
+  ---
+  duration_ms: 0.09314
+  type: 'test'
+  ...
+# Subtest: rejects invalid PORT="1e3"
+ok 15 - rejects invalid PORT="1e3"
+  ---
+  duration_ms: 0.084667
+  type: 'test'
+  ...
+# Subtest: rejects invalid PORT=" 4000"
+ok 16 - rejects invalid PORT=" 4000"
+  ---
+  duration_ms: 0.078288
+  type: 'test'
+  ...
+# Subtest: rejects invalid PORT="4000 "
+ok 17 - rejects invalid PORT="4000 "
+  ---
+  duration_ms: 0.078778
+  type: 'test'
+  ...
+# Subtest: rejects invalid PORT="01"
+ok 18 - rejects invalid PORT="01"
+  ---
+  duration_ms: 0.271689
+  type: 'test'
+  ...
+# Subtest: rejects invalid PORT="80/invalid"
+ok 19 - rejects invalid PORT="80/invalid"
+  ---
+  duration_ms: 0.101042
+  type: 'test'
+  ...
+# Subtest: rejects invalid PORT="9999999999999999"
+ok 20 - rejects invalid PORT="9999999999999999"
+  ---
+  duration_ms: 0.11241
+  type: 'test'
+  ...
+# Subtest: CORS normalizes whitespace in validated origin list
+ok 21 - CORS normalizes whitespace in validated origin list
+  ---
+  duration_ms: 0.243847
+  type: 'test'
+  ...
+# Subtest: CORS rejects duplicate origins after normalization
+ok 22 - CORS rejects duplicate origins after normalization
+  ---
+  duration_ms: 0.130136
+  type: 'test'
+  ...
+# Subtest: CORS rejects wildcard and credentials
+ok 23 - CORS rejects wildcard and credentials
+  ---
+  duration_ms: 0.755528
+  type: 'test'
+  ...
+# Subtest: CORS never silently falls back to an undeclared origin
+ok 24 - CORS never silently falls back to an undeclared origin
+  ---
+  duration_ms: 0.097166
+  type: 'test'
+  ...
+# Subtest: dev with test marker must be rejected before HTTP server binds
+ok 25 - dev with test marker must be rejected before HTTP server binds
+  ---
+  duration_ms: 0.137447
+  type: 'test'
+  ...
+# Subtest: prod with marker remains forbidden
+ok 26 - prod with marker remains forbidden
+  ---
+  duration_ms: 0.149786
+  type: 'test'
+  ...
+# Subtest: test markers must be safe, bounded strings
+ok 27 - test markers must be safe, bounded strings
+  ---
+  duration_ms: 0.193681
+  type: 'test'
+  ...
+# Subtest: mismatched E2E expectation prevents startup
+ok 28 - mismatched E2E expectation prevents startup
+  ---
+  duration_ms: 0.140221
+  type: 'test'
+  ...
+# Subtest: mutation opt-in requires both test mode and a marker
+ok 29 - mutation opt-in requires both test mode and a marker
+  ---
+  duration_ms: 0.146481
+  type: 'test'
+  ...
+# Subtest: test server cannot explicitly select public bind host
+ok 30 - test server cannot explicitly select public bind host
+  ---
+  duration_ms: 0.144718
+  type: 'test'
+  ...
+# Subtest: E2E API selects loopback even if an external bind is configured
+ok 31 - E2E API selects loopback even if an external bind is configured
+  ---
+  duration_ms: 0.087592
+  type: 'test'
+  ...
+# Subtest: production binds loopback by default
+ok 32 - production binds loopback by default
+  ---
+  duration_ms: 0.065449
+  type: 'test'
+  ...
+# Subtest: development without an E2E marker retains intentional LAN support
+ok 33 - development without an E2E marker retains intentional LAN support
+  ---
+  duration_ms: 0.044917
+  type: 'test'
+  ...
+# Subtest: the listener and runtime preflight use the same CORS, port and bind contract
+ok 34 - the listener and runtime preflight use the same CORS, port and bind contract
+  ---
+  duration_ms: 0.481585
+  type: 'test'
+  ...
+# Subtest: startup errors reveal issue codes, not secret values
+ok 35 - startup errors reveal issue codes, not secret values
+  ---
+  duration_ms: 0.160882
+  type: 'test'
+  ...
+1..35
+# tests 35
+# suites 0
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1222.517294
+

@@ -1,0 +1,63 @@
+
+> assettrust-platform@0.83.0 verify:v43
+> node --test tools/tests-v43/*.test.cjs
+
+TAP version 13
+# Subtest: refresh-cookie origin policy allows only exact same-origin approved browser requests
+ok 1 - refresh-cookie origin policy allows only exact same-origin approved browser requests
+  ---
+  duration_ms: 1140.946459
+  type: 'test'
+  ...
+# Subtest: server refresh endpoint requires Origin and cookies remain secure
+ok 2 - server refresh endpoint requires Origin and cookies remain secure
+  ---
+  duration_ms: 0.404419
+  type: 'test'
+  ...
+# Subtest: production runtime rejects public API bind and enabled debug / preview
+ok 3 - production runtime rejects public API bind and enabled debug / preview
+  ---
+  duration_ms: 998.715431
+  type: 'test'
+  ...
+# Subtest: example TLS proxy has HSTS and production backend defaults to loopback
+ok 4 - example TLS proxy has HSTS and production backend defaults to loopback
+  ---
+  duration_ms: 0.926219
+  type: 'test'
+  ...
+# Subtest: snapshot scanner detects high-confidence credentials without echoing their values
+ok 5 - snapshot scanner detects high-confidence credentials without echoing their values
+  ---
+  duration_ms: 2.742148
+  type: 'test'
+  ...
+# Subtest: source scanner completes on AssetTrust v0.43 snapshot
+ok 6 - source scanner completes on AssetTrust v0.43 snapshot
+  ---
+  duration_ms: 408.301901
+  type: 'test'
+  ...
+# Subtest: release preflight remains blocked with explicit unresolved controls
+ok 7 - release preflight remains blocked with explicit unresolved controls
+  ---
+  duration_ms: 0.65734
+  type: 'test'
+  ...
+# Subtest: CI includes v0.43, source scan and npm audit and prohibits fail-open
+ok 8 - CI includes v0.43, source scan and npm audit and prohibits fail-open
+  ---
+  duration_ms: 1.560258
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2608.187215
+

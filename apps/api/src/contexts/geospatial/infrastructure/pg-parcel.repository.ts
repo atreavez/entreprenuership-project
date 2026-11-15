@@ -1,3 +1,4 @@
+import {setTenantScope} from '../../../contexts/tenant-isolation/application/tenant-scope';
 import { Injectable, BadRequestException,ForbiddenException,NotFoundException,ConflictException } from '@nestjs/common';
 import { Database } from '../../../database';
 import { AuditService } from '../../../audit';
@@ -5,21 +6,25 @@ import { uid,isUuid,type UserAuth } from '../../../common';
 import type {BoundaryActor,BoundaryStore,BoundarySource} from '../application/parcel-usecases';
 import type {ParcelPolygon} from '../domain/parcel-boundary';
 import {canReviewBoundary} from '../domain/parcel-boundary';
+import {requireCurrentAssetContribution} from '../../../contexts/access/infrastructure/transactional-access';
 const projection=`p.id,p.asset_id,p.source_kind,p.source_reference,p.notes,p.status,p.submitted_by,p.reviewed_by,p.review_notes,p.created_at,p.submitted_at,p.reviewed_at,ROUND(ST_Area(p.geometry::geography)::numeric,2)::float AS area_sqm,ST_AsGeoJSON(p.geometry)::json AS geometry`;
 @Injectable()
 export class PgParcelRepository implements BoundaryStore{
  constructor(private readonly db:Database,private readonly audit:AuditService){}
- async list(u:BoundaryActor,assetId:string){const {rows}=await this.db.query(`SELECT ${projection} FROM parcel_boundary_claims p WHERE p.organization_id=$1 AND p.asset_id=$2 ORDER BY created_at DESC LIMIT 100`,[u.organizationId,isUuid(assetId)]);return rows}
+ async list(u:BoundaryActor,assetId:string){const {rows}=await this.db.tenantQuery(u.organizationId,`SELECT ${projection} FROM parcel_boundary_claims p WHERE p.organization_id=$1 AND p.asset_id=$2 ORDER BY created_at DESC LIMIT 100`,[u.organizationId,isUuid(assetId)]);return rows}
  async create(u:BoundaryActor,assetId:string,claim:{geometry:ParcelPolygon;sourceKind:BoundarySource;sourceReference:string;notes:string}){
   const id=uid();await this.db.transaction(async tx=>{
-   const asset=await tx.query('SELECT asset_type FROM assets WHERE id=$1 AND organization_id=$2',[isUuid(assetId),u.organizationId]);
-   if(asset.rows[0]?.asset_type!=='LAND')throw new BadRequestException('Only land assets can have parcel boundaries');
+   await setTenantScope(tx,u.organizationId);
+   const asset=await requireCurrentAssetContribution(tx,u,isUuid(assetId));
+   if(asset.assetType!=='LAND')throw new BadRequestException('Only land assets can have parcel boundaries');
    await tx.query(`INSERT INTO parcel_boundary_claims(id,organization_id,asset_id,geometry,source_kind,source_reference,notes,submitted_by)
        VALUES($1,$2,$3,ST_SetSRID(ST_GeomFromGeoJSON($4::text),4326),$5,$6,$7,$8)`,[id,u.organizationId,assetId,JSON.stringify(claim.geometry),claim.sourceKind,claim.sourceReference,claim.notes,u.id]);
    await this.audit.write(tx,u as UserAuth,'PARCEL_DRAFT_CREATED','asset',assetId,{claimId:id,sourceKind:claim.sourceKind});
   });return {id,status:'DRAFT'};
  }
  async submit(u:BoundaryActor,assetId:string,claimId:string){await this.db.transaction(async tx=>{
+   await setTenantScope(tx,u.organizationId);
+  await requireCurrentAssetContribution(tx,u,isUuid(assetId));
   const result=await tx.query(`UPDATE parcel_boundary_claims SET status='SUBMITTED',submitted_at=now()
     WHERE id=$1 AND organization_id=$2 AND asset_id=$3 AND submitted_by=$4 AND status='DRAFT' RETURNING id`,[isUuid(claimId),u.organizationId,isUuid(assetId),u.id]);
   if(!result.rows.length)throw new ConflictException('Only the creator can submit an active draft');
@@ -28,6 +33,7 @@ export class PgParcelRepository implements BoundaryStore{
  async review(u:BoundaryActor,sessionId:string,assetId:string,claimId:string,decision:'ACCEPTED'|'REJECTED',notes:string){
   if(u.role!=='SURVEYOR'||!u.professionalApproved)throw new ForbiddenException('Current accredited surveyor status required');
   await this.db.transaction(async tx=>{
+   await setTenantScope(tx,u.organizationId);
    // Security-critical authorization is revalidated *inside* the review transaction.
    // The actor's professionalApproved flag was computed at request authentication
    // and may now be stale (revocation, expiration or role/org reassignment).
@@ -37,15 +43,15 @@ export class PgParcelRepository implements BoundaryStore{
      JOIN auth_mfa_credentials m ON m.user_id=s.user_id
      JOIN users u ON u.id=s.user_id
      JOIN professional_accreditations p ON p.user_id=u.id AND p.professional_role=u.role
-     WHERE s.id=$1 AND s.user_id=$2 AND u.organization_id=$3 AND u.role='SURVEYOR'
+     WHERE s.id=$1 AND s.user_id=$2 AND u.organization_id=$3 AND u.role='SURVEYOR' AND u.suspended_at IS NULL
      AND s.revoked_at IS NULL AND s.expires_at > now() AND m.enabled=true
      AND s.mfa_verified_at > now()-interval '15 minutes'
      AND p.revoked_at IS NULL AND p.expires_at > now()
      FOR SHARE OF s,m,u,p`,[isUuid(sessionId),u.id,u.organizationId]);
    if(!step.rows.length)throw new ForbiddenException('Fresh MFA verification required');
-   // Lock the asset so concurrent accepted claims cannot race through the partial unique index.
-   const asset=await tx.query('SELECT id FROM assets WHERE id=$1 AND organization_id=$2 FOR UPDATE',[isUuid(assetId),u.organizationId]);
-   if(!asset.rows.length)throw new NotFoundException('Asset not found');
+   // Lock the asset exclusively, while rechecking live contribution rights.
+   // This serializes concurrent acceptance and grant/role revocation.
+   await requireCurrentAssetContribution(tx,u,isUuid(assetId),{lockAssetForReview:true});
    const claim=await tx.query(`SELECT submitted_by,status FROM parcel_boundary_claims WHERE id=$1 AND asset_id=$2 AND organization_id=$3 FOR UPDATE`,[isUuid(claimId),assetId,u.organizationId]);
    if(!claim.rows.length)throw new NotFoundException('Boundary claim not found');
    if(!canReviewBoundary(u,claim.rows[0].submitted_by))throw new ForbiddenException('Only a different accredited surveyor may review');
@@ -59,7 +65,7 @@ export class PgParcelRepository implements BoundaryStore{
  async overlaps(u:BoundaryActor,assetId:string,claimId:string){
   // The subject asset access is checked by the controller. Never disclose a different
   // organization's property or an asset the caller cannot independently access.
-  const {rows}=await this.db.query(`
+  const {rows}=await this.db.tenantQuery(u.organizationId,`
     WITH subject AS (
       SELECT id, geometry, asset_id FROM parcel_boundary_claims
       WHERE id=$1 AND asset_id=$2 AND organization_id=$3
@@ -91,7 +97,7 @@ export class PgParcelRepository implements BoundaryStore{
   return rows;
  }
  async search(u:BoundaryActor,bbox:[number,number,number,number]){
-  const {rows}=await this.db.query(`SELECT ${projection},a.asset_code,a.district
+  const {rows}=await this.db.tenantQuery(u.organizationId,`SELECT ${projection},a.asset_code,a.district
   FROM parcel_boundary_claims p JOIN assets a ON a.id=p.asset_id AND a.organization_id=p.organization_id
   WHERE p.organization_id=$1 AND p.geometry && ST_MakeEnvelope($2,$3,$4,$5,4326)
    AND (p.status='ACCEPTED' OR p.submitted_by=$6)

@@ -18,5 +18,17 @@ tools/.compiled-v04/
 tools/.compiled-v05/
 tools/.compiled-v06/
 
+# v0.51 local private-validation execution summary; do not commit operator runs
+test-evidence/v51/local-validation-summary.json
+
+# v0.70 private, generated, disposable Kali integration credentials
+.assettrust-local/
+
+# Local environment, generated caches and private validation artifacts
 .env.*
 !.env.example
+.assettrust-local/
+__pycache__/
+*.py[cod]
+*.tsbuildinfo
+tools/.compiled-*/

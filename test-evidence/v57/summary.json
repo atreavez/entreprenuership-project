@@ -1,0 +1,18 @@
+{
+  "schema": "ASSETTRUST_V57_OFFLINE_VERIFICATION",
+  "newTests": {
+    "passed": 20,
+    "failed": 0
+  },
+  "versionSuites": {
+    "passed": 55,
+    "failed": 0
+  },
+  "migrationHashes": {
+    "matched": 25,
+    "changed": 0
+  },
+  "compiledBuild": "BLOCKED_MISSING_DEPENDENCIES",
+  "livePostgreSQL": "NOT_RUN",
+  "productionApproved": false
+}

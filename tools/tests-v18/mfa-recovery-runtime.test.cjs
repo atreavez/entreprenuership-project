@@ -21,10 +21,13 @@ const fakeModules={
  '@nestjs/throttler':{Throttle:decorator},
  'argon2':{verify:async()=>true,hash:async()=> 'hash'},
  './database':{Database:class{}},
- './audit-service':{AuditService:class{}},
+ './audit':{AuditService:class{}},
  './common':{uid:crypto.randomUUID,hash:v=>crypto.createHash('sha256').update(v).digest('hex'), text:(v,key)=>{if(typeof v!=='string'||!v.trim())throw new BadRequestException(key);return v},UserAuth:class{}},
  './contexts/identity/application/session-usecases':{SessionUseCases:class{}},
  './contexts/identity/infrastructure/pg-session.repository':{PgSessionRepository:class{}},
+ './contexts/identity/infrastructure/login-abuse.service':{LoginAbuseService:class{}},
+ './contexts/identity/domain/request-origin-policy':{isAllowedRequestOrigin:()=>true},
+ './contexts/identity/domain/coadmin-policy':{isCoAdminEnrollmentRoute:()=>false,requiresAdminMfa:(role,flag)=>role==='ORG_ADMIN'||flag===true,hasAdminSessionMfaProof:(enabled,verifiedAt)=>enabled===true&&verifiedAt!=null},
  './contexts/identity/domain/identity-policy':{
   CHALLENGE_TTL_MS:300000,createMfaSecret:()=>'',decodeBase32:()=>Buffer.alloc(20),hashOpaque:v=>crypto.createHash('sha256').update(v).digest('hex'),
   openSecret:()=>'',sealSecret:()=>'',validateNewPassword:()=>{},verifyTotp:()=>null,isValidRecoveryCode:v=>typeof v==='string'&&/^[A-Za-z0-9_-]{14}$/.test(v)
@@ -38,8 +41,10 @@ function fixture(consumed,code='AbcdEFG123_456'){
  const record={hash:crypto.createHash('sha256').update(code).digest('hex'),consumed,exists:true};
  const state={mfaEnabled:true,otherSessionsRevoked:false,audits:0,deleted:false};
  const query=async(sql,values)=>{
-  if(sql.includes('SELECT password_hash FROM users'))return {rows:[{password_hash:'hash'}]};
-  if(sql.includes('SELECT secret_ciphertext,enabled,last_used_step'))return {rows:[{secret_ciphertext:'sealed',enabled:state.mfaEnabled,last_used_step:-1}]};
+  if(sql.includes('SELECT admin_mfa_required,role FROM users'))return {rows:[{admin_mfa_required:false,role:'CLIENT'}]};
+   if(sql.includes('SELECT password_hash FROM users'))return {rows:[{password_hash:'hash'}]};
+  if(sql.includes('SELECT id FROM auth_sessions WHERE id=$1'))return {rows:[{id:values?.[0] || params?.[0] || 'session-current'}]};
+   if(sql.includes('SELECT secret_ciphertext,enabled,last_used_step'))return {rows:[{secret_ciphertext:'sealed',enabled:state.mfaEnabled,last_used_step:-1}]};
   if(sql.includes('DELETE FROM auth_recovery_codes')&&sql.includes('code_hash')){
    const unusedCondition=sql.includes('consumed_at IS NULL');
    if(record.exists&&record.hash===values[1]&&(!unusedCondition||!record.consumed)){

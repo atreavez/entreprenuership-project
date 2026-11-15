@@ -1,0 +1,31 @@
+{
+  "count": 25,
+  "allUnchangedFromV53": true,
+  "filenames": [
+    "001_init.sql",
+    "002_operations.sql",
+    "003_evidence_review.sql",
+    "004_identity_security.sql",
+    "005_professional_trust.sql",
+    "006_document_encryption.sql",
+    "007_geospatial.sql",
+    "008_coadmin_invitation.sql",
+    "009_admin_control_plane.sql",
+    "010_member_management.sql",
+    "011_workflow_admin.sql",
+    "012_content_templates.sql",
+    "013_notification_provider_staging.sql",
+    "014_report_issuance.sql",
+    "015_report_withdrawal.sql",
+    "016_report_pdf_layouts.sql",
+    "017_report_recipient_shares.sql",
+    "018_recipient_attempt_windows.sql",
+    "019_password_reset.sql",
+    "020_distributed_login_abuse.sql",
+    "021_pdf_layout_rls.sql",
+    "022_core_tenant_relationship_integrity.sql",
+    "023_case_evidence_rls.sql",
+    "024_assets_and_cases_rls.sql",
+    "025_documents_rls.sql"
+  ]
+}

@@ -1,0 +1,77 @@
+[
+  {
+    "suite": "verify:v16",
+    "code": 0,
+    "seconds": 0.33
+  },
+  {
+    "suite": "verify:v17",
+    "code": 0,
+    "seconds": 0.53
+  },
+  {
+    "suite": "verify:v18",
+    "code": 0,
+    "seconds": 1.18
+  },
+  {
+    "suite": "verify:v19",
+    "code": 0,
+    "seconds": 1.12
+  },
+  {
+    "suite": "verify:v20",
+    "code": 0,
+    "seconds": 1.32
+  },
+  {
+    "suite": "verify:v21",
+    "code": 0,
+    "seconds": 0.73
+  },
+  {
+    "suite": "verify:v22",
+    "code": 0,
+    "seconds": 0.74
+  },
+  {
+    "suite": "verify:v23",
+    "code": 0,
+    "seconds": 2.01
+  },
+  {
+    "suite": "verify:v24",
+    "code": 0,
+    "seconds": 1.71
+  },
+  {
+    "suite": "verify:v25",
+    "code": 0,
+    "seconds": 1.79
+  },
+  {
+    "suite": "verify:v26",
+    "code": 0,
+    "seconds": 2.14
+  },
+  {
+    "suite": "verify:v27",
+    "code": 0,
+    "seconds": 2.14
+  },
+  {
+    "suite": "verify:v28",
+    "code": 0,
+    "seconds": 2.4
+  },
+  {
+    "suite": "verify:v29",
+    "code": 0,
+    "seconds": 2.28
+  },
+  {
+    "suite": "verify:v30",
+    "code": 0,
+    "seconds": 2.73
+  }
+]

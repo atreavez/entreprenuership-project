@@ -1,0 +1,252 @@
+
+> assettrust-platform@0.83.0 build
+> npm run build --workspace apps/api && npm run build --workspace apps/web
+
+
+> @assettrust/api@0.83.0 build
+> tsc -p tsconfig.json
+
+error TS2688: Cannot find type definition file for 'node'.
+  The file is in the program because:
+    Entry point of type library 'node' specified in compilerOptions
+src/access.ts(3,96): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/access.ts(8,69): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/assets.ts(2,135): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/audit.ts(3,69): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/audit.ts(4,28): error TS2307: Cannot find module 'pg' or its corresponding type declarations.
+src/auth.ts(1,237): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/auth.ts(2,39): error TS2307: Cannot find module '@nestjs/jwt' or its corresponding type declarations.
+src/auth.ts(3,40): error TS2307: Cannot find module 'express' or its corresponding type declarations.
+src/auth.ts(4,20): error TS2307: Cannot find module 'argon2' or its corresponding type declarations.
+src/auth.ts(5,29): error TS2307: Cannot find module 'node:crypto' or its corresponding type declarations.
+src/auth.ts(8,26): error TS2307: Cannot find module '@nestjs/throttler' or its corresponding type declarations.
+src/auth.ts(24,105): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/auth.ts(25,96): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/auth.ts(28,75): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/auth.ts(28,139): error TS7006: Parameter 'value' implicitly has an 'any' type.
+src/auth.ts(29,19): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/auth.ts(29,38): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/auth.ts(29,211): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/auth.ts(264,46): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/cases.ts(1,147): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/cases.ts(12,36): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/common.ts(1,40): error TS2307: Cannot find module 'node:crypto' or its corresponding type declarations.
+src/common.ts(2,57): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/common.ts(6,35): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/access/infrastructure/current-read-authority.ts(1,36): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/access/infrastructure/transactional-access.ts(1,55): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/admin-control/infrastructure/admin-control.module.ts(1,159): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/admin-control/infrastructure/admin-control.module.ts(2,26): error TS2307: Cannot find module 'pg' or its corresponding type declarations.
+src/contexts/content-admin/infrastructure/content-admin.module.ts(1,159): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/content-admin/infrastructure/content-admin.module.ts(2,31): error TS2307: Cannot find module 'pg' or its corresponding type declarations.
+src/contexts/content-admin/infrastructure/content-admin.module.ts(38,99): error TS2339: Property 'body' does not exist on type '{}'.
+src/contexts/content-admin/infrastructure/content-admin.module.ts(38,155): error TS2339: Property 'revision' does not exist on type '{}'.
+src/contexts/content-admin/infrastructure/content-admin.module.ts(38,198): error TS2339: Property 'updated_at' does not exist on type '{}'.
+src/contexts/content-publishing/infrastructure/published-content.module.ts(1,72): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/content-publishing/infrastructure/published-content.module.ts(2,31): error TS2307: Cannot find module 'pg' or its corresponding type declarations.
+src/contexts/document-vault/application/blob-store.port.ts(5,42): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/application/blob-store.port.ts(6,59): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/application/malware-scanner.port.ts(11,55): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(1,88): error TS2307: Cannot find module 'node:crypto' or its corresponding type declarations.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(6,13): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(9,62): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(11,33): error TS2503: Cannot find namespace 'NodeJS'.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(11,51): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(16,28): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(19,15): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(26,9): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(28,39): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(29,43): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(29,93): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(34,19): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(35,14): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(36,9): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(36,30): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(38,41): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(38,91): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(53,19): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(54,16): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(55,18): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/aes-gcm-envelope.ts(61,39): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/clamav-instream-scanner.ts(2,28): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/document-vault/infrastructure/clamav-instream-scanner.ts(3,34): error TS2307: Cannot find module 'node:net' or its corresponding type declarations.
+src/contexts/document-vault/infrastructure/clamav-instream-scanner.ts(8,76): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/clamav-instream-scanner.ts(26,42): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/clamav-instream-scanner.ts(35,19): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/clamav-instream-scanner.ts(36,8): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/clamav-instream-scanner.ts(41,33): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/clamav-instream-scanner.ts(52,28): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/clamav-instream-scanner.ts(55,11): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/clamav-instream-scanner.ts(63,19): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/clamav-instream-scanner.ts(66,20): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/clamav-instream-scanner.ts(69,19): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/encrypted-local-blob.store.ts(1,28): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/document-vault/infrastructure/encrypted-local-blob.store.ts(2,48): error TS2307: Cannot find module 'node:fs/promises' or its corresponding type declarations.
+src/contexts/document-vault/infrastructure/encrypted-local-blob.store.ts(3,27): error TS2307: Cannot find module 'node:fs' or its corresponding type declarations.
+src/contexts/document-vault/infrastructure/encrypted-local-blob.store.ts(4,30): error TS2307: Cannot find module 'node:path' or its corresponding type declarations.
+src/contexts/document-vault/infrastructure/encrypted-local-blob.store.ts(8,28): error TS2307: Cannot find module 'node:crypto' or its corresponding type declarations.
+src/contexts/document-vault/infrastructure/encrypted-local-blob.store.ts(13,34): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/encrypted-local-blob.store.ts(15,48): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/encrypted-local-blob.store.ts(26,65): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/encrypted-local-blob.store.ts(44,13): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/document-vault/infrastructure/encrypted-local-blob.store.ts(50,51): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/geospatial/infrastructure/geospatial.module.ts(1,143): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/geospatial/infrastructure/pg-parcel.repository.ts(2,104): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/identity/domain/identity-policy.ts(2,116): error TS2307: Cannot find module 'node:crypto' or its corresponding type declarations.
+src/contexts/identity/domain/identity-policy.ts(15,177): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/identity-policy.ts(15,203): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/identity-policy.ts(21,36): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/identity-policy.ts(22,270): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/identity-policy.ts(24,31): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/identity-policy.ts(24,128): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/identity-policy.ts(26,35): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/identity-policy.ts(28,185): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/identity-policy.ts(28,203): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/identity-policy.ts(29,45): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/identity-policy.ts(29,202): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/identity-policy.ts(30,49): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/identity-policy.ts(30,305): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/identity-policy.ts(30,349): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/identity-policy.ts(30,386): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/identity-policy.ts(30,412): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/login-abuse-policy.ts(2,26): error TS2307: Cannot find module 'node:crypto' or its corresponding type declarations.
+src/contexts/identity/domain/login-abuse-policy.ts(10,29): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/password-reset-policy.ts(2,53): error TS2307: Cannot find module 'node:crypto' or its corresponding type declarations.
+src/contexts/identity/domain/password-reset-policy.ts(18,14): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/domain/password-reset-policy.ts(27,29): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/infrastructure/current-admin-step-up.ts(1,34): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/identity/infrastructure/login-abuse.service.ts(1,82): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/identity/infrastructure/login-abuse.service.ts(9,35): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/infrastructure/password-reset.module.ts(1,81): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/identity/infrastructure/password-reset.module.ts(2,24): error TS2307: Cannot find module '@nestjs/throttler' or its corresponding type declarations.
+src/contexts/identity/infrastructure/password-reset.module.ts(3,28): error TS2307: Cannot find module 'express' or its corresponding type declarations.
+src/contexts/identity/infrastructure/password-reset.module.ts(8,17): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/infrastructure/password-reset.module.ts(8,81): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/contexts/identity/infrastructure/password-reset.service.ts(1,101): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/identity/infrastructure/password-reset.service.ts(2,20): error TS2307: Cannot find module 'argon2' or its corresponding type declarations.
+src/contexts/identity/infrastructure/password-reset.service.ts(3,28): error TS2307: Cannot find module 'node:crypto' or its corresponding type declarations.
+src/contexts/identity/infrastructure/password-reset.service.ts(15,37): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/infrastructure/password-reset.service.ts(20,35): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/infrastructure/password-reset.service.ts(42,34): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/infrastructure/pg-session.repository.ts(1,28): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/identity/infrastructure/pg-session.repository.ts(15,41): error TS2307: Cannot find module 'node:crypto' or its corresponding type declarations.
+src/contexts/identity/infrastructure/pg-session.repository.ts(16,19): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/identity/infrastructure/pg-session.repository.ts(16,64): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/member-management/infrastructure/member-management.module.ts(2,153): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/member-management/infrastructure/member-management.module.ts(3,24): error TS2307: Cannot find module '@nestjs/throttler' or its corresponding type declarations.
+src/contexts/member-management/infrastructure/member-management.module.ts(4,31): error TS2307: Cannot find module 'pg' or its corresponding type declarations.
+src/contexts/platform/infrastructure/schema-probe.ts(1,54): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/platform/infrastructure/schema-probe.ts(21,94): error TS7006: Parameter 'x' implicitly has an 'any' type.
+src/contexts/professional-trust/infrastructure/pg-trust.repository.ts(1,26): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/professional-trust/infrastructure/pg-trust.repository.ts(29,194): error TS7006: Parameter 'x' implicitly has an 'any' type.
+src/contexts/provider-admin/infrastructure/provider-admin.module.ts(1,153): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/provider-admin/infrastructure/provider-admin.module.ts(2,31): error TS2307: Cannot find module 'pg' or its corresponding type declarations.
+src/contexts/report-issuance/domain/signed-attestation.ts(7,124): error TS2307: Cannot find module 'node:crypto' or its corresponding type declarations.
+src/contexts/report-issuance/domain/signed-attestation.ts(25,54): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-attestation.ts(27,12): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-attestation.ts(38,130): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-attestation.ts(55,15): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-attestation.ts(55,58): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-attestation.ts(70,13): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-attestation.ts(85,13): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-pdf.ts(5,76): error TS2307: Cannot find module 'node:crypto' or its corresponding type declarations.
+src/contexts/report-issuance/domain/signed-pdf.ts(14,18): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-pdf.ts(48,87): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-pdf.ts(112,76): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-pdf.ts(119,49): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-pdf.ts(120,13): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-pdf.ts(124,12): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-pdf.ts(138,58): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-pdf.ts(139,35): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-pdf.ts(142,24): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-pdf.ts(145,38): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-pdf.ts(151,6): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-pdf.ts(152,15): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-pdf.ts(152,52): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-pdf.ts(155,64): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-pdf.ts(156,20): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/domain/signed-pdf.ts(156,134): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/infrastructure/report-issuance.module.ts(1,188): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/report-issuance/infrastructure/report-issuance.module.ts(2,26): error TS2307: Cannot find module 'node:crypto' or its corresponding type declarations.
+src/contexts/report-issuance/infrastructure/report-issuance.module.ts(3,31): error TS2307: Cannot find module 'pg' or its corresponding type declarations.
+src/contexts/report-issuance/infrastructure/report-issuance.module.ts(197,15): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/infrastructure/report-issuance.module.ts(198,16): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/infrastructure/report-issuance.module.ts(219,16): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/infrastructure/report-issuance.module.ts(220,17): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/infrastructure/report-issuance.module.ts(247,16): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/infrastructure/report-issuance.module.ts(248,17): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-issuance/infrastructure/report-issuance.module.ts(252,12): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-layout/infrastructure/report-layout.module.ts(1,160): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/report-sharing/domain/share-policy.ts(2,54): error TS2307: Cannot find module 'node:crypto' or its corresponding type declarations.
+src/contexts/report-sharing/domain/share-policy.ts(35,10): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-sharing/domain/share-policy.ts(35,68): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-sharing/domain/share-policy.ts(36,27): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-sharing/domain/share-policy.ts(36,77): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-sharing/infrastructure/report-sharing.module.ts(1,188): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/report-sharing/infrastructure/report-sharing.module.ts(2,24): error TS2307: Cannot find module '@nestjs/throttler' or its corresponding type declarations.
+src/contexts/report-sharing/infrastructure/report-sharing.module.ts(3,26): error TS2307: Cannot find module 'node:crypto' or its corresponding type declarations.
+src/contexts/report-sharing/infrastructure/report-sharing.module.ts(4,31): error TS2307: Cannot find module 'pg' or its corresponding type declarations.
+src/contexts/report-sharing/infrastructure/report-sharing.module.ts(140,16): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-sharing/infrastructure/report-sharing.module.ts(141,17): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/report-sharing/infrastructure/report-sharing.module.ts(149,12): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/contexts/verification/infrastructure/current-case-assignment.ts(5,74): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/verification/infrastructure/current-evidence-authorizer.ts(9,74): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/verification/infrastructure/current-workflow-authorizer.ts(7,36): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/verification/infrastructure/postgres-workflow.repository.ts(2,26): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/verification/infrastructure/postgres-workflow.repository.ts(3,26): error TS2307: Cannot find module 'pg' or its corresponding type declarations.
+src/contexts/workflow-admin/infrastructure/workflow-admin.module.ts(1,153): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/contexts/workflow-admin/infrastructure/workflow-admin.module.ts(2,31): error TS2307: Cannot find module 'pg' or its corresponding type declarations.
+src/contexts/workflow-admin/infrastructure/workflow-admin.module.ts(30,34): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/contexts/workflow-admin/infrastructure/workflow-admin.module.ts(33,82): error TS2339: Property 'target_days' does not exist on type '{}'.
+src/contexts/workflow-admin/infrastructure/workflow-admin.module.ts(34,23): error TS2339: Property 'reminder_days' does not exist on type '{}'.
+src/contexts/workflow-admin/infrastructure/workflow-admin.module.ts(34,81): error TS2339: Property 'additional_evidence_type' does not exist on type '{}'.
+src/contexts/workflow-admin/infrastructure/workflow-admin.module.ts(35,18): error TS2339: Property 'version' does not exist on type '{}'.
+src/contexts/workflow-admin/infrastructure/workflow-admin.module.ts(35,44): error TS2339: Property 'updated_at' does not exist on type '{}'.
+src/dashboard.ts(1,95): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/database.ts(3,75): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/database.ts(4,50): error TS2307: Cannot find module 'pg' or its corresponding type declarations.
+src/database.ts(11,8): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/database.ts(12,42): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/database.ts(17,6): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/database.ts(17,45): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/documents.ts(2,201): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/documents.ts(3,33): error TS2307: Cannot find module '@nestjs/platform-express' or its corresponding type declarations.
+src/documents.ts(4,31): error TS2307: Cannot find module 'multer' or its corresponding type declarations.
+src/documents.ts(13,31): error TS2307: Cannot find module 'express' or its corresponding type declarations.
+src/documents.ts(41,40): error TS2503: Cannot find namespace 'Express'.
+src/documents.ts(108,57): error TS2503: Cannot find namespace 'Express'.
+src/integrations.ts(1,91): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/integrations.ts(6,26): error TS2307: Cannot find module 'node:crypto' or its corresponding type declarations.
+src/main.ts(2,28): error TS2307: Cannot find module 'node:fs' or its corresponding type declarations.
+src/main.ts(3,23): error TS2307: Cannot find module 'node:path' or its corresponding type declarations.
+src/main.ts(4,29): error TS2307: Cannot find module '@nestjs/core' or its corresponding type declarations.
+src/main.ts(5,52): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/main.ts(6,27): error TS2307: Cannot find module '@nestjs/core' or its corresponding type declarations.
+src/main.ts(7,48): error TS2307: Cannot find module '@nestjs/throttler' or its corresponding type declarations.
+src/main.ts(8,20): error TS2307: Cannot find module 'helmet' or its corresponding type declarations.
+src/main.ts(34,45): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/main.ts(38,51): error TS2304: Cannot find name '__dirname'.
+src/main.ts(40,88): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/main.ts(40,125): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/main.ts(40,175): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/main.ts(48,41): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/main.ts(56,150): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/main.ts(56,173): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/main.ts(59,27): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/main.ts(61,27): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/main.ts(64,40): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/notifications.ts(1,92): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/operations.ts(2,159): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/professional-trust.ts(3,153): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/professional-trust.ts(4,24): error TS2307: Cannot find module '@nestjs/throttler' or its corresponding type declarations.
+src/team.ts(1,155): error TS2307: Cannot find module '@nestjs/common' or its corresponding type declarations.
+src/team.ts(2,29): error TS2307: Cannot find module 'node:crypto' or its corresponding type declarations.
+src/team.ts(6,26): error TS2307: Cannot find module '@nestjs/throttler' or its corresponding type declarations.
+src/team.ts(7,20): error TS2307: Cannot find module 'argon2' or its corresponding type declarations.
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path /mnt/data/assettrust-v83/apps/api
+npm error workspace @assettrust/api@0.83.0
+npm error location /mnt/data/assettrust-v83/apps/api
+npm error command failed
+npm error command sh -c tsc -p tsconfig.json

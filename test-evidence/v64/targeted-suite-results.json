@@ -1,0 +1,74 @@
+{
+  "schema": "ASSETTRUST_V64_TARGETED_SUITES",
+  "date": "2026-11-11",
+  "productionApproved": false,
+  "fullHistoricalMatrixPassed": false,
+  "suites": [
+    {
+      "command": "npm run verify:v54",
+      "exitCode": 0,
+      "reportedTapPass": 15,
+      "type": "offline-unit-regression"
+    },
+    {
+      "command": "npm run verify:v55",
+      "exitCode": 0,
+      "reportedTapPass": 16,
+      "type": "offline-unit-regression"
+    },
+    {
+      "command": "npm run verify:v56",
+      "exitCode": 0,
+      "reportedTapPass": 20,
+      "type": "offline-unit-regression"
+    },
+    {
+      "command": "npm run verify:v57",
+      "exitCode": 0,
+      "reportedTapPass": 20,
+      "type": "offline-unit-regression"
+    },
+    {
+      "command": "npm run verify:v58",
+      "exitCode": 0,
+      "reportedTapPass": 15,
+      "type": "offline-unit-regression"
+    },
+    {
+      "command": "npm run verify:v59",
+      "exitCode": 0,
+      "reportedTapPass": 15,
+      "type": "offline-unit-regression"
+    },
+    {
+      "command": "npm run verify:v60",
+      "exitCode": 0,
+      "reportedTapPass": 15,
+      "type": "offline-unit-regression"
+    },
+    {
+      "command": "npm run verify:v61",
+      "exitCode": 0,
+      "reportedTapPass": 16,
+      "type": "offline-unit-regression"
+    },
+    {
+      "command": "npm run verify:v62",
+      "exitCode": 0,
+      "reportedTapPass": 18,
+      "type": "offline-unit-regression"
+    },
+    {
+      "command": "npm run verify:v63",
+      "exitCode": 0,
+      "reportedTapPass": 31,
+      "type": "offline-unit-regression"
+    },
+    {
+      "command": "npm run verify:v64",
+      "exitCode": 0,
+      "reportedTapPass": 15,
+      "type": "offline-unit-regression"
+    }
+  ]
+}

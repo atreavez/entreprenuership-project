@@ -1,0 +1,111 @@
+
+> assettrust-platform@0.83.0 verify:v61
+> node --test tools/tests-v61/*.test.cjs
+
+TAP version 13
+# Subtest: append-only forward migration enables and forces audit_events RLS
+ok 1 - append-only forward migration enables and forces audit_events RLS
+  ---
+  duration_ms: 0.880165
+  type: 'test'
+  ...
+# Subtest: default-deny SELECT and INSERT policies use transaction-local scope
+ok 2 - default-deny SELECT and INSERT policies use transaction-local scope
+  ---
+  duration_ms: 0.366421
+  type: 'test'
+  ...
+# Subtest: SQL migration never adds update/delete bypass, permissive fallback or destructive statements
+ok 3 - SQL migration never adds update/delete bypass, permissive fallback or destructive statements
+  ---
+  duration_ms: 0.308995
+  type: 'test'
+  ...
+# Subtest: new migration SHA-256 is recorded without changing historical fingerprints
+ok 4 - new migration SHA-256 is recorded without changing historical fingerprints
+  ---
+  duration_ms: 4.017658
+  type: 'test'
+  ...
+# Subtest: audit.write sets scoped database tenant before locking or querying chain head
+ok 5 - audit.write sets scoped database tenant before locking or querying chain head
+  ---
+  duration_ms: 279.320985
+  type: 'test'
+  ...
+# Subtest: audit.verify scopes and authorizes within the same transaction as hash verification
+ok 6 - audit.verify scopes and authorizes within the same transaction as hash verification
+  ---
+  duration_ms: 25.40543
+  type: 'test'
+  ...
+# Subtest: audit.list uses same scoped authorized transaction and never unscoped pool
+ok 7 - audit.list uses same scoped authorized transaction and never unscoped pool
+  ---
+  duration_ms: 21.240501
+  type: 'test'
+  ...
+# Subtest: integrations local proof checks current admin and tenant scope in the audit-head transaction
+ok 8 - integrations local proof checks current admin and tenant scope in the audit-head transaction
+  ---
+  duration_ms: 0.344248
+  type: 'test'
+  ...
+# Subtest: operator platform bootstrap sets transaction-local tenant context before reading audit chain head
+ok 9 - operator platform bootstrap sets transaction-local tenant context before reading audit chain head
+  ---
+  duration_ms: 0.406632
+  type: 'test'
+  ...
+# Subtest: all direct API audit event accesses have a reviewed tenant-scoped access boundary
+ok 10 - all direct API audit event accesses have a reviewed tenant-scoped access boundary
+  ---
+  duration_ms: 3.732399
+  type: 'test'
+  ...
+# Subtest: production startup and restricted runtime contract require all eight RLS tables
+ok 11 - production startup and restricted runtime contract require all eight RLS tables
+  ---
+  duration_ms: 0.731511
+  type: 'test'
+  ...
+# Subtest: v0.61 live database contract rejects non-disposable invocation before loading pg
+ok 12 - v0.61 live database contract rejects non-disposable invocation before loading pg
+  ---
+  duration_ms: 36.067888
+  type: 'test'
+  ...
+# Subtest: CI validates v0.61 after npm ci, then tests audit RLS after role privilege audit
+ok 13 - CI validates v0.61 after npm ci, then tests audit RLS after role privilege audit
+  ---
+  duration_ms: 2.429377
+  type: 'test'
+  ...
+# Subtest: supervised database runner explicitly prioritizes audit security after role grants
+ok 14 - supervised database runner explicitly prioritizes audit security after role grants
+  ---
+  duration_ms: 2.141694
+  type: 'test'
+  ...
+# Subtest: CI runtime role has read and append privilege but cannot update or delete audit records
+ok 15 - CI runtime role has read and append privilege but cannot update or delete audit records
+  ---
+  duration_ms: 0.33855
+  type: 'test'
+  ...
+# Subtest: three workspace versions are aligned and v0.61 scripts are present
+ok 16 - three workspace versions are aligned and v0.61 scripts are present
+  ---
+  duration_ms: 0.445691
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 449.314076
+

@@ -1,0 +1,81 @@
+
+> assettrust-platform@0.83.0 verify:v45
+> node --test tools/tests-v45/*.test.cjs
+
+TAP version 13
+# Subtest: keyed digest normalizes email without disclosing address and rejects malformed keys/identities
+ok 1 - keyed digest normalizes email without disclosing address and rejects malformed keys/identities
+  ---
+  duration_ms: 1.71404
+  type: 'test'
+  ...
+# Subtest: blocked status uses supplied database time, not application clock
+ok 2 - blocked status uses supplied database time, not application clock
+  ---
+  duration_ms: 0.200342
+  type: 'test'
+  ...
+# Subtest: first ten reservations allowed and 11th fails with HTTP 429
+ok 3 - first ten reservations allowed and 11th fails with HTTP 429
+  ---
+  duration_ms: 1.337473
+  type: 'test'
+  ...
+# Subtest: only valid password proof clears keyed counter, and another identity is unaffected
+ok 4 - only valid password proof clears keyed counter, and another identity is unaffected
+  ---
+  duration_ms: 0.69768
+  type: 'test'
+  ...
+# Subtest: database errors or missing pepper fail closed
+ok 5 - database errors or missing pepper fail closed
+  ---
+  duration_ms: 0.333251
+  type: 'test'
+  ...
+# Subtest: actual login controller reserves attempt BEFORE verifying, clears only on valid password
+ok 6 - actual login controller reserves attempt BEFORE verifying, clears only on valid password
+  ---
+  duration_ms: 152.689542
+  type: 'test'
+  ...
+# Subtest: MFA failure preserves the counter; successful MFA clears only after second factor
+ok 7 - MFA failure preserves the counter; successful MFA clears only after second factor
+  ---
+  duration_ms: 87.798619
+  type: 'test'
+  ...
+# Subtest: blocked login never reaches password verification
+ok 8 - blocked login never reaches password verification
+  ---
+  duration_ms: 38.719469
+  type: 'test'
+  ...
+# Subtest: new migration is append-only and stores no plaintext identifier
+ok 9 - new migration is append-only and stores no plaintext identifier
+  ---
+  duration_ms: 3.262291
+  type: 'test'
+  ...
+# Subtest: production startup rejects absent/reused HMAC secret, while valid distinct secret is accepted
+ok 10 - production startup rejects absent/reused HMAC secret, while valid distinct secret is accepted
+  ---
+  duration_ms: 12.447568
+  type: 'test'
+  ...
+# Subtest: CI includes all version suites plus a guarded PostgreSQL contract
+ok 11 - CI includes all version suites plus a guarded PostgreSQL contract
+  ---
+  duration_ms: 1.759208
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 601.520741
+

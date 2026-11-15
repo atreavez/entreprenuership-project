@@ -1,0 +1,5 @@
+
+> assettrust-platform@0.83.0 verify:syntax
+> node tools/verify-v05-syntax.cjs
+
+109 TS/TSX source files transpile, 0 syntax diagnostics. This is NOT a full npm typecheck/build.

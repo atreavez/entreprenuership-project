@@ -4,8 +4,12 @@
 const ts=(()=>{try{return require('typescript')}catch{return require(require('node:path').join(require('node:child_process').execFileSync('npm',['root','-g'],{encoding:'utf8'}).trim(),'typescript'))}})();
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const authMode=process.argv.includes('--auth');
+const adminGlobalMode=process.argv.includes('--admin-global');
 const reviewerMode=process.argv.includes('--review-desk');
-const pages=authMode?['auth']:reviewerMode?['professional']:['dashboard','geo','assets','asset-detail/demo-1','cases','case-detail/case1','documents','reports','billing','audit','notifications','assignments','team','tasks','disputes','monitoring','quotes','access','integrations','readiness','settings','security','professional'];
+const providerOnly=process.argv.includes('--providers-only');
+const issuanceOnly=process.argv.includes('--issuance-only');
+const publicVerificationOnly=process.argv.includes('--verify-only');
+const pages=publicVerificationOnly?['verify/report/fa3466d1-6fd2-464d-a489-892fc8acd169']:issuanceOnly?['issuance']:providerOnly?['providers']:authMode?['auth']:reviewerMode?['professional']:adminGlobalMode?['admin']:['dashboard','geo','assets','asset-detail/demo-1','cases','case-detail/case1','documents','reports','billing','audit','notifications','assignments','team','tasks','disputes','monitoring','quotes','access','integrations','readiness','settings','security','professional','admin','members','workflows','content','providers','issuance'];
 const root=path.resolve(__dirname,'..'),src=path.join(root,'apps/web/src'),output=path.join(root,'screenshots');fs.mkdirSync(output,{recursive:true});
 let currentFrame=null, dirty=false, effects=[];
 const hooks=new Map();
@@ -20,10 +24,10 @@ const FakeIcon=(name)=>function icon(props={}){return REACT.createElement('svg',
 const ICONS=new Proxy({__esModule:true},{get(_,prop){if(prop==='__esModule')return true;if(prop===Symbol.toStringTag)return 'Module';return FakeIcon(prop)}});
 const REACT_MODULE={__esModule:true,default:REACT,...REACT};
 const moduleCache=new Map();const contextGlobals={console,Buffer,process,URL,Intl,Date,Math,Number,String,Boolean,Array,Object,Set,Map,Promise,Error,JSON,RegExp,
- window:{__ASSETTRUST_PREVIEW_DESK__:reviewerMode,location:{hash:'#dashboard'},addEventListener(){},removeEventListener(){},scrollTo(){}},
+ window:{__ASSETTRUST_PREVIEW_DESK__:reviewerMode,__ASSETTRUST_PREVIEW_ADMIN_PLATFORM__:adminGlobalMode,location:{hash:'#dashboard'},addEventListener(){},removeEventListener(){},scrollTo(){}},
  sessionStorage:{getItem(){return ''},setItem(){},removeItem(){}},document:{},fetch(){throw Error('fetch not expected in demo')},
 };
-function localRequire(from,spec){if(spec==='react')return REACT_MODULE;if(spec==='lucide-react')return ICONS;if(spec.startsWith('.'))return load(path.resolve(path.dirname(from),spec.endsWith('.tsx')||spec.endsWith('.ts')?spec: spec+(fs.existsSync(path.resolve(path.dirname(from),spec+'.tsx'))?'.tsx':'.ts')));throw Error('unknown '+spec)}
+function localRequire(from,spec){if(spec==='react')return REACT_MODULE;if(spec==='lucide-react')return ICONS;if(spec==='qrcode.react')return {__esModule:true,QRCodeSVG:(props)=>REACT.createElement('div',{className:'qr-source-preview',role:'img','aria-label':'QR rendered by qrcode.react in the real browser'},'QR LINK PREVIEW')};if(spec.startsWith('.'))return load(path.resolve(path.dirname(from),spec.endsWith('.tsx')||spec.endsWith('.ts')?spec: spec+(fs.existsSync(path.resolve(path.dirname(from),spec+'.tsx'))?'.tsx':'.ts')));throw Error('unknown '+spec)}
 function load(file){if(moduleCache.has(file))return moduleCache.get(file).exports;let raw=fs.readFileSync(file,'utf8');raw=raw.replace(/import\.meta\.env\.VITE_DESIGN_PREVIEW/g,authMode?"'false'":"'true'").replace(/import\.meta\.env\.VITE_SELF_HOSTED_MAP_ENABLED/g,"'false'").replace(/import\.meta\.env\.VITE_LOCAL_MAP_STYLE_PATH/g,"'/maps/style.json'");const code=ts.transpileModule(raw,{fileName:file,compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.React,esModuleInterop:true}}).outputText;const module={exports:{}};moduleCache.set(file,module);const sandbox={...contextGlobals,exports:module.exports,module,require:spec=>localRequire(file,spec)};vm.runInNewContext(code,sandbox,{filename:file});return module.exports}
 function escape(s){return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
 function kebab(s){return s.replace(/[A-Z]/g,x=>'-'+x.toLowerCase())}
@@ -46,11 +50,13 @@ function render(element,path='root'){
   attrs+=` ${name}="${v===true?'':escape(v)}"`;
  }
  if(['input','img','br','hr','meta','link'].includes(type))return `<${type}${attrs}/>`;
+ if(type==='textarea')return `<textarea${attrs}>${escape(props.value??props.defaultValue??props.children??'')}</textarea>`;
+ if(type==='select'){let options=render(props.children,path+'/children');if(props.value!==undefined){options=options.replace(/<option([^>]*?)value="([^"]*)"([^>]*)>/g,(match,b,value,a)=>value===String(props.value)?`<option${b}value="${value}"${a} selected>`:match);}return `<select${attrs}>${options}</select>`;}
  return `<${type}${attrs}>${render(props.children,path+'/children')}</${type}>`;
 }
 const App=load(path.join(src,'App.tsx')).default;
 (async()=>{for(const page of pages){contextGlobals.window.location.hash='#'+page;hooks.clear();let html='';for(let i=0;i<7;i++){dirty=false;effects=[];html=render(REACT.createElement(App,{}));const fns=effects;effects=[];for(const fn of fns){try{fn()}catch(e){console.warn('effect',e.message)}}await new Promise(r=>setTimeout(r,0));if(!dirty&&!effects.length)break;}
- const css=fs.readFileSync(path.join(src,'styles.css'),'utf8');const title=(reviewerMode?'professional-review-desk':page.replaceAll('/','_'));const outputHtml=`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AssetTrust ${escape(title)}</title><style>${css}</style></head><body>${html}</body></html>`;
+ const css=fs.readFileSync(path.join(src,'styles.css'),'utf8');const title=(reviewerMode?'professional-review-desk':adminGlobalMode?'admin-platform':page.replaceAll('/','_'));const outputHtml=`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AssetTrust ${escape(title)}</title><style>${css}</style></head><body>${html}</body></html>`;
  fs.writeFileSync(path.join(output,title+'.html'),outputHtml);
  console.log('Rendered '+title,html.length,'bytes');}
 })().catch(err=>{console.error(err);process.exitCode=1});

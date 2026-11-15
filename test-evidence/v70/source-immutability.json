@@ -1,0 +1,23 @@
+{
+  "schema": "ASSETTRUST_V70_COMPARISON",
+  "base": "v0.69 source checkpoint as locally mounted",
+  "checks": {
+    "apps/api/sql": {
+      "originalCount": 27,
+      "currentCount": 27,
+      "hashesMatch": true
+    },
+    "apps/api/src/contexts/tenant-isolation/domain": {
+      "originalCount": 2,
+      "currentCount": 2,
+      "hashesMatch": true
+    },
+    "apps/api/src/contexts/platform/domain": {
+      "originalCount": 4,
+      "currentCount": 4,
+      "hashesMatch": true
+    }
+  },
+  "schemaMigrationsChanged": false,
+  "productionApproved": false
+}

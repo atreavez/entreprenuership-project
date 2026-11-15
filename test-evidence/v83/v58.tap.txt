@@ -1,0 +1,105 @@
+
+> assettrust-platform@0.83.0 verify:v58
+> node --test --test-concurrency=1 tools/tests-v58/*.test.cjs
+
+TAP version 13
+# Subtest: releases must select the same restricted runtime role and a disposable local database before doing anything
+ok 1 - releases must select the same restricted runtime role and a disposable local database before doing anything
+  ---
+  duration_ms: 1.802513
+  type: 'test'
+  ...
+# Subtest: database checks cannot run against remote or wrong database despite runtime confirmation
+ok 2 - database checks cannot run against remote or wrong database despite runtime confirmation
+  ---
+  duration_ms: 0.43797
+  type: 'test'
+  ...
+# Subtest: live seeded contract refuses unsafe environment before dynamic pg import or connection
+ok 3 - live seeded contract refuses unsafe environment before dynamic pg import or connection
+  ---
+  duration_ms: 32.776192
+  type: 'test'
+  ...
+# Subtest: no network or database socket opens before explicit mutation/role checks
+ok 4 - no network or database socket opens before explicit mutation/role checks
+  ---
+  duration_ms: 0.198378
+  type: 'test'
+  ...
+# Subtest: real runtime and operator use independently connected PostgreSQL clients and committed synthetic fixture data
+ok 5 - real runtime and operator use independently connected PostgreSQL clients and committed synthetic fixture data
+  ---
+  duration_ms: 0.110697
+  type: 'test'
+  ...
+# Subtest: each of four core tenant-protected data families is seeded and tested
+ok 6 - each of four core tenant-protected data families is seeded and tested
+  ---
+  duration_ms: 0.1597
+  type: 'test'
+  ...
+# Subtest: tests cover no scope, own-tenant reads, cross-tenant update/delete and invalid inserts
+ok 7 - tests cover no scope, own-tenant reads, cross-tenant update/delete and invalid inserts
+  ---
+  duration_ms: 0.1659
+  type: 'test'
+  ...
+# Subtest: failure path rolls back runtime transaction and always attempts operator fixture cleanup
+ok 8 - failure path rolls back runtime transaction and always attempts operator fixture cleanup
+  ---
+  duration_ms: 0.09286
+  type: 'test'
+  ...
+# Subtest: seeded fixture cleanup deletes child rows before users and organizations
+ok 9 - seeded fixture cleanup deletes child rows before users and organizations
+  ---
+  duration_ms: 0.324529
+  type: 'test'
+  ...
+# Subtest: CI proves restricted role before seeded RLS, and runs seeded RLS before normal HTTP tests
+ok 10 - CI proves restricted role before seeded RLS, and runs seeded RLS before normal HTTP tests
+  ---
+  duration_ms: 0.509878
+  type: 'test'
+  ...
+# Subtest: CI verifies v58 source before npm ci and offline test batch keeps v58 checks
+ok 11 - CI verifies v58 source before npm ci and offline test batch keeps v58 checks
+  ---
+  duration_ms: 0.16611
+  type: 'test'
+  ...
+# Subtest: supervised release planner requires the seeded RLS live test, never silently omits it
+ok 12 - supervised release planner requires the seeded RLS live test, never silently omits it
+  ---
+  duration_ms: 1.779589
+  type: 'test'
+  ...
+# Subtest: project and workspace versions agree and v58 commands exist
+ok 13 - project and workspace versions agree and v58 commands exist
+  ---
+  duration_ms: 0.516197
+  type: 'test'
+  ...
+# Subtest: local runtime provisioner never prints generated credentials as unmasked GitHub commands
+ok 14 - local runtime provisioner never prints generated credentials as unmasked GitHub commands
+  ---
+  duration_ms: 0.316967
+  type: 'test'
+  ...
+# Subtest: local role provisioning rejects world-readable credential output before trying pg connection
+ok 15 - local role provisioning rejects world-readable credential output before trying pg connection
+  ---
+  duration_ms: 32.187981
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 132.76754
+

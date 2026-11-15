@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
 export type Role = 'ORG_ADMIN'|'CLIENT'|'REVIEWER'|'SURVEYOR'|'LEGAL_REVIEWER';
-export type UserAuth = { id:string; organizationId:string; role:Role; email:string; fullName:string; professionalApproved:boolean };
+export type UserAuth = { id:string; organizationId:string; role:Role; email:string; fullName:string; professionalApproved:boolean; adminMfaRequired?:boolean; adminMfaEnrolled?:boolean };
 export const uid = () => randomUUID();
 export const hash = (value:string|Buffer) => createHash('sha256').update(value).digest('hex');
 export function text(value:unknown,label:string,max=300,required=true) {

@@ -1,0 +1,38 @@
+{
+  "schema": "ASSETTRUST_V66_OFFLINE_EVIDENCE",
+  "date": "2026-11-11",
+  "version": "0.66.0",
+  "newSuite": {
+    "tests": 25,
+    "passed": 25,
+    "failed": 0
+  },
+  "recentRegression": {
+    "versionRange": "v54-v66",
+    "suiteCommands": 13,
+    "passedCommands": 13,
+    "testCaseExecutions": 237
+  },
+  "sourceChecks": {
+    "architecture": true,
+    "syntaxTranspiledFiles": 105,
+    "syntaxErrors": 0,
+    "sourceGraphFiles": 102,
+    "relativeImports": 285,
+    "ciYaml": true,
+    "ciVersionScripts": 64,
+    "ciPgContractEntries": 31
+  },
+  "releasePreflight": "BLOCKED_MISSING_AUTHENTIC_LOCKFILE",
+  "productionApproved": false,
+  "livePostgresVerified": false,
+  "fullBuildVerified": false,
+  "actualNestHttpVerified": false,
+  "originalGitHistoryScanned": false,
+  "limitations": [
+    "No authenticated actual API/browser tests",
+    "No real PostGIS/RLS live verification",
+    "No genuine package-lock.json or node_modules",
+    "npm registry inaccessible in this offline runtime"
+  ]
+}

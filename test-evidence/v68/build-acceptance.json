@@ -1,0 +1,103 @@
+{
+  "schema": "ASSETTRUST_V68_SUPERVISED_BUILD",
+  "version": "0.87.0",
+  "status": "BUILD_CHECKS_PASSED_RELEASE_STILL_BLOCKED",
+  "productionApproved": false,
+  "databaseTested": false,
+  "sourceManifestSha256": "113aec18f5811371a23532a8e58cfd6423f05372b38a36a4e6a1f48d85e52fca",
+  "lockfileSha256": "bada8b66066e5fd729b301c5d04f89e6a441c19cd8549f8ec1f6deff220b21c2",
+  "prerequisites": {
+    "schema": "ASSETTRUST_V68_BUILD_PRECONDITIONS",
+    "version": "0.87.0",
+    "ok": true,
+    "productionApproved": false,
+    "checks": {
+      "versionConsistent": true,
+      "nodeSupported": true,
+      "sqlMigrationsVerified": true,
+      "sourceImportPreflightPassed": true,
+      "reviewedLockfileValid": true,
+      "originalGitHistoryAvailable": false
+    },
+    "issues": [],
+    "notes": "Original repository history and separate live PostgreSQL/HTTP/security testing remain mandatory for release."
+  },
+  "steps": [
+    {
+      "id": "lockfile",
+      "command": "npm run lockfile:check:v55",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 204
+    },
+    {
+      "id": "install",
+      "command": "npm ci",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 21352
+    },
+    {
+      "id": "dependency-audit",
+      "command": "npm audit --omit=dev --audit-level=high",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 1083
+    },
+    {
+      "id": "compile",
+      "command": "npm run build",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 5628
+    },
+    {
+      "id": "artifact-policy",
+      "command": "npm run build:artifacts:v56",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 222
+    },
+    {
+      "id": "milestone-regression",
+      "command": "npm run verify:v68",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 442
+    },
+    {
+      "id": "current-milestone-regression",
+      "command": "npm run verify:v87",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 845
+    }
+  ],
+  "issues": [],
+  "releaseBlockers": [
+    "Live restricted-role PostgreSQL/PostGIS integration is not proven by a build",
+    "Authentication, browser workflows, backup/restore, independent security testing and deployment remain unverified"
+  ],
+  "sourceSnapshotSha256": "f1f6cf924fb5130471f1dd2608497f7480dfe25d0fac4b5ad660bcadadaf0c1f",
+  "sourceSnapshotFileCount": 416,
+  "artifacts": {
+    "ok": true,
+    "productionApproved": false,
+    "issues": [],
+    "entries": {
+      "apps/api/dist/main.js": {
+        "sha256": "036ae80138f82130d7c310cdb8e313363e8b0e907471d17ccfd7de2d4f55db56",
+        "bytes": 9391,
+        "modifiedAtMs": 1794648439758.6038
+      },
+      "apps/web/dist/index.html": {
+        "sha256": "151ce7744fb8e57fa196ed14bfcef28a2a92cbafa105bbde8da5d1cc0f2c12a9",
+        "bytes": 600,
+        "modifiedAtMs": 1794648443311.4448
+      }
+    },
+    "webPolicyFilesChecked": 4
+  },
+  "compiledOutputSnapshotSha256": "f692967c92c90dedad5e4dfbd0532e3c097db99b520971433abc3f23a8e3fea5",
+  "compiledOutputSnapshotFileCount": 86
+}

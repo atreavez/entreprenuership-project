@@ -1,0 +1,105 @@
+
+> assettrust-platform@0.83.0 verify:v54
+> node --test --test-concurrency=1 tools/tests-v54/*.test.cjs
+
+TAP version 13
+# Subtest: the real Git object scanner passes benign committed history
+ok 1 - the real Git object scanner passes benign committed history
+  ---
+  duration_ms: 40.425628
+  type: 'test'
+  ...
+# Subtest: a secret deleted from the working tree is still found in reachable Git history without exposure
+ok 2 - a secret deleted from the working tree is still found in reachable Git history without exposure
+  ---
+  duration_ms: 49.054817
+  type: 'test'
+  ...
+# Subtest: reflog-only removed commits are inspected, not just --all branch tips
+ok 3 - reflog-only removed commits are inspected, not just --all branch tips
+  ---
+  duration_ms: 40.078015
+  type: 'test'
+  ...
+# Subtest: Git commit-message credentials are inspected without revealing their value
+ok 4 - Git commit-message credentials are inspected without revealing their value
+  ---
+  duration_ms: 45.680453
+  type: 'test'
+  ...
+# Subtest: historically committed sensitive filenames are flagged even after removal
+ok 5 - historically committed sensitive filenames are flagged even after removal
+  ---
+  duration_ms: 49.726669
+  type: 'test'
+  ...
+# Subtest: oversized historical data yields a review-required finding instead of being silently skipped
+ok 6 - oversized historical data yields a review-required finding instead of being silently skipped
+  ---
+  duration_ms: 57.527864
+  type: 'test'
+  ...
+# Subtest: a shallow clone cannot claim full history
+ok 7 - a shallow clone cannot claim full history
+  ---
+  duration_ms: 51.916552
+  type: 'test'
+  ...
+# Subtest: a source ZIP without .git cannot claim historical secrets were reviewed
+ok 8 - a source ZIP without .git cannot claim historical secrets were reviewed
+  ---
+  duration_ms: 0.473683
+  type: 'test'
+  ...
+# Subtest: byte or object budget exhaustion fails closed
+ok 9 - byte or object budget exhaustion fails closed
+  ---
+  duration_ms: 37.902038
+  type: 'test'
+  ...
+# Subtest: many historical objects are batched and checked without per-object process calls
+ok 10 - many historical objects are batched and checked without per-object process calls
+  ---
+  duration_ms: 67.3627
+  type: 'test'
+  ...
+# Subtest: CLI can explicitly audit the original repository instead of a source ZIP
+ok 11 - CLI can explicitly audit the original repository instead of a source ZIP
+  ---
+  duration_ms: 60.482742
+  type: 'test'
+  ...
+# Subtest: CLI detects historical token through --repo without printing secret bytes
+ok 12 - CLI detects historical token through --repo without printing secret bytes
+  ---
+  duration_ms: 73.942024
+  type: 'test'
+  ...
+# Subtest: CLI refuses duplicate or unsupported target arguments rather than silently scanning wrong root
+ok 13 - CLI refuses duplicate or unsupported target arguments rather than silently scanning wrong root
+  ---
+  duration_ms: 76.489048
+  type: 'test'
+  ...
+# Subtest: CI and supervised release plan use the batched Git scanner and include v0.54 tests
+ok 14 - CI and supervised release plan use the batched Git scanner and include v0.54 tests
+  ---
+  duration_ms: 73.138834
+  type: 'test'
+  ...
+# Subtest: workflow policy rejects omitting the new history scan
+ok 15 - workflow policy rejects omitting the new history scan
+  ---
+  duration_ms: 82.474563
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 864.428087
+

@@ -1,0 +1,117 @@
+
+> assettrust-platform@0.83.0 verify:v51
+> node --test tools/tests-v51/*.test.cjs
+
+TAP version 13
+# Subtest: direct Git, local file, remote script and insecure dependency specifiers rejected
+ok 1 - direct Git, local file, remote script and insecure dependency specifiers rejected
+  ---
+  duration_ms: 1.364374
+  type: 'test'
+  ...
+# Subtest: only allow explicitly trusted https registry tarballs, no credentials, redirects or private endpoint
+ok 2 - only allow explicitly trusted https registry tarballs, no credentials, redirects or private endpoint
+  ---
+  duration_ms: 0.509377
+  type: 'test'
+  ...
+# Subtest: missing authentic npm lockfile blocks supply chain verification
+ok 3 - missing authentic npm lockfile blocks supply chain verification
+  ---
+  duration_ms: 1.090982
+  type: 'test'
+  ...
+# Subtest: release modes reject unknown and combined options
+ok 4 - release modes reject unknown and combined options
+  ---
+  duration_ms: 0.420313
+  type: 'test'
+  ...
+# Subtest: disposable database requires exact local target, explicit approvals and matching name
+ok 5 - disposable database requires exact local target, explicit approvals and matching name
+  ---
+  duration_ms: 0.838672
+  type: 'test'
+  ...
+# Subtest: supervised build always runs verified lockfile install, dependency audit, all version suites and secret history
+ok 6 - supervised build always runs verified lockfile install, dependency audit, all version suites and secret history
+  ---
+  duration_ms: 0.90307
+  type: 'test'
+  ...
+# Subtest: supervised database plan includes actual migrations and all PostgreSQL contracts
+ok 7 - supervised database plan includes actual migrations and all PostgreSQL contracts
+  ---
+  duration_ms: 2.68375
+  type: 'test'
+  ...
+# Subtest: plan is read-only even if database is missing and does not write a local evidence file
+ok 8 - plan is read-only even if database is missing and does not write a local evidence file
+  ---
+  duration_ms: 0.834326
+  type: 'test'
+  ...
+# Subtest: failed preflight performs no npm or database actions and never reports success
+ok 9 - failed preflight performs no npm or database actions and never reports success
+  ---
+  duration_ms: 1.228409
+  type: 'test'
+  ...
+# Subtest: database-only mode rejects an unsafe DB before any action despite missing lockfile
+ok 10 - database-only mode rejects an unsafe DB before any action despite missing lockfile
+  ---
+  duration_ms: 0.87022
+  type: 'test'
+  ...
+# Subtest: preflight marks missing lockfile as blocked and is read-only
+ok 11 - preflight marks missing lockfile as blocked and is read-only
+  ---
+  duration_ms: 2.369788
+  type: 'test'
+  ...
+# Subtest: CI includes all v51 checks without bypassing npm ci
+ok 12 - CI includes all v51 checks without bypassing npm ci
+  ---
+  duration_ms: 3.695934
+  type: 'test'
+  ...
+# Subtest: synthetic fixture can satisfy static graph checks without shipping a fabricated project lockfile
+ok 13 - synthetic fixture can satisfy static graph checks without shipping a fabricated project lockfile
+  ---
+  duration_ms: 1.444335
+  type: 'test'
+  ...
+# Subtest: supervised build records success in a sanitized JSON evidence file but never approves production
+ok 14 - supervised build records success in a sanitized JSON evidence file but never approves production
+  ---
+  duration_ms: 1.519888
+  type: 'test'
+  ...
+# Subtest: supervised run halts on first child-process failure and records explicit failure
+ok 15 - supervised run halts on first child-process failure and records explicit failure
+  ---
+  duration_ms: 1.326828
+  type: 'test'
+  ...
+# Subtest: database execution requires safety confirmation and records its own plan
+ok 16 - database execution requires safety confirmation and records its own plan
+  ---
+  duration_ms: 0.826013
+  type: 'test'
+  ...
+# Subtest: release runner never logs full environment, passwords or database connection strings in the summary
+ok 17 - release runner never logs full environment, passwords or database connection strings in the summary
+  ---
+  duration_ms: 0.199691
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 87.381295
+

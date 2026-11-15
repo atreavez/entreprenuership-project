@@ -17,7 +17,7 @@ export class PgTrustRepository implements TrustRepository{
     getActor:async(id,sessionId)=>{
      // Lock active appointment, MFA state, and user row together before recording a vote.
      const {rows}=await connection.query(`SELECT u.id,u.organization_id,pr.appointment_reference,m.enabled AS mfa_enabled
-       FROM platform_trust_reviewers pr JOIN users u ON u.id=pr.user_id
+       FROM platform_trust_reviewers pr JOIN users u ON u.id=pr.user_id AND u.suspended_at IS NULL
        JOIN auth_mfa_credentials m ON m.user_id=pr.user_id
        JOIN auth_sessions s ON s.user_id=u.id AND s.id=$2
        WHERE pr.user_id=$1 AND pr.disabled_at IS NULL AND m.enabled=true

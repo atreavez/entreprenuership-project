@@ -1,0 +1,142 @@
+[
+  {
+    "command": "npm run smoke:offline",
+    "exit_code": 0,
+    "seconds": 0.54
+  },
+  {
+    "command": "npm run verify:v03",
+    "exit_code": 0,
+    "seconds": 0.32
+  },
+  {
+    "command": "npm run verify:v04",
+    "exit_code": 0,
+    "seconds": 0.66
+  },
+  {
+    "command": "npm run verify:v05",
+    "exit_code": 0,
+    "seconds": 1.22
+  },
+  {
+    "command": "npm run verify:v06",
+    "exit_code": 0,
+    "seconds": 0.64
+  },
+  {
+    "command": "npm run verify:v07",
+    "exit_code": 0,
+    "seconds": 0.46
+  },
+  {
+    "command": "npm run verify:v08",
+    "exit_code": 0,
+    "seconds": 1.56
+  },
+  {
+    "command": "npm run verify:v09",
+    "exit_code": 0,
+    "seconds": 2.1
+  },
+  {
+    "command": "npm run verify:v10",
+    "exit_code": 0,
+    "seconds": 1.31
+  },
+  {
+    "command": "npm run verify:v11",
+    "exit_code": 0,
+    "seconds": 1.18
+  },
+  {
+    "command": "npm run verify:v12",
+    "exit_code": 0,
+    "seconds": 1.12
+  },
+  {
+    "command": "npm run verify:v13",
+    "exit_code": 0,
+    "seconds": 4.71
+  },
+  {
+    "command": "npm run verify:v14",
+    "exit_code": 0,
+    "seconds": 0.18
+  },
+  {
+    "command": "npm run verify:v15",
+    "exit_code": 0,
+    "seconds": 1.08
+  },
+  {
+    "command": "npm run verify:v16",
+    "exit_code": 0,
+    "seconds": 0.16
+  },
+  {
+    "command": "npm run verify:v17",
+    "exit_code": 0,
+    "seconds": 0.18
+  },
+  {
+    "command": "npm run verify:v18",
+    "exit_code": 0,
+    "seconds": 0.45
+  },
+  {
+    "command": "npm run verify:v19",
+    "exit_code": 0,
+    "seconds": 0.44
+  },
+  {
+    "command": "npm run verify:v20",
+    "exit_code": 0,
+    "seconds": 0.56
+  },
+  {
+    "command": "npm run verify:v21",
+    "exit_code": 0,
+    "seconds": 0.38
+  },
+  {
+    "command": "npm run verify:v22",
+    "exit_code": 0,
+    "seconds": 0.41
+  },
+  {
+    "command": "npm run verify:v23",
+    "exit_code": 0,
+    "seconds": 0.85
+  },
+  {
+    "command": "npm run verify:v24",
+    "exit_code": 0,
+    "seconds": 0.82
+  },
+  {
+    "command": "npm run verify:v25",
+    "exit_code": 0,
+    "seconds": 0.91
+  },
+  {
+    "command": "npm run verify:v26",
+    "exit_code": 0,
+    "seconds": 1.32
+  },
+  {
+    "command": "npm run verify:v27",
+    "exit_code": 0,
+    "seconds": 1.27
+  },
+  {
+    "command": "npm run verify:architecture",
+    "exit_code": 0,
+    "seconds": 0.12
+  },
+  {
+    "command": "npm run verify:syntax",
+    "exit_code": 0,
+    "seconds": 0.89
+  }
+]

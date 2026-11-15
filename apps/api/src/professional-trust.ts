@@ -1,3 +1,4 @@
+import {setTenantScope} from './contexts/tenant-isolation/application/tenant-scope';
 /** TRANSPORT: validation, authorization and HTTP endpoints. Trust policy/use case live below this layer. */
 import {Body,Controller,Get,Post,Param,Req,UseGuards,Injectable,Module,BadRequestException,ForbiddenException,NotFoundException,ConflictException} from '@nestjs/common';
 import {Throttle} from '@nestjs/throttler';
@@ -41,6 +42,7 @@ export class ProfessionalTrustService{
   try{expiry=validateLicenceExpiry(expiresText,Date.now())}catch(e:any){throw new BadRequestException(e.message)}
   const documentId=b?.supportingDocumentId?isUuid(b.supportingDocumentId):null;
   const id=uid();await this.db.transaction(async tx=>{
+   await setTenantScope(tx,user.organizationId);
    const current=await tx.query('SELECT id,role FROM users WHERE id=$1 AND organization_id=$2 FOR UPDATE',[user.id,user.organizationId]);
    if(!current.rows[0]||!canSubmitProfession(current.rows[0].role,user.role))throw new ForbiddenException('Role changed');
    if(documentId){const doc=await tx.query(`SELECT id FROM documents WHERE id=$1 AND organization_id=$2 AND uploaded_by=$3`,[documentId,user.organizationId,user.id]);if(!doc.rows.length)throw new ForbiddenException('Supporting file must be your own private upload in this organization');}

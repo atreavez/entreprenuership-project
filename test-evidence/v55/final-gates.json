@@ -1,0 +1,62 @@
+[
+  {
+    "check": "architecture",
+    "exitCode": 0,
+    "seconds": 0.25
+  },
+  {
+    "check": "syntax",
+    "exitCode": 0,
+    "seconds": 2.36
+  },
+  {
+    "check": "ci-v41",
+    "exitCode": 0,
+    "seconds": 0.17
+  },
+  {
+    "check": "ci-v53",
+    "exitCode": 0,
+    "seconds": 0.23
+  },
+  {
+    "check": "smoke-offline",
+    "exitCode": 0,
+    "seconds": 0.81
+  },
+  {
+    "check": "source-secret-scan",
+    "exitCode": 0,
+    "seconds": 0.4
+  },
+  {
+    "check": "lockfile-check-blocked",
+    "exitCode": 1,
+    "seconds": 0.17
+  },
+  {
+    "check": "release-preflight-blocked",
+    "exitCode": 1,
+    "seconds": 0.17
+  },
+  {
+    "check": "git-history-zip-blocked",
+    "exitCode": 1,
+    "seconds": 0.31
+  },
+  {
+    "check": "evidence-review-blocked",
+    "exitCode": 1,
+    "seconds": 0.16
+  },
+  {
+    "check": "build-blocked",
+    "exitCode": 1,
+    "seconds": 2.05
+  },
+  {
+    "check": "clamav-live-blocked",
+    "exitCode": 1,
+    "seconds": 0.51
+  }
+]

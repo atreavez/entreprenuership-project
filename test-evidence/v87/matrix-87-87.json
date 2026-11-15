@@ -1,0 +1,11 @@
+[
+  {
+    "suite": "verify:v87",
+    "ok": true,
+    "exitCode": 0,
+    "tests": 30,
+    "passed": 30,
+    "failed": 0,
+    "seconds": 0.78
+  }
+]
