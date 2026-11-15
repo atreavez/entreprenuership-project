@@ -165,5 +165,5 @@ test('new milestone is registered in manifest and CI before npm install',()=>{
  assert.match(pkg.scripts['verify:v85'],/tests-v85/);
  assert.ok(ci.indexOf('npm run verify:v85')>=0&&ci.indexOf('npm run verify:v85')<ci.indexOf('npm run build\n'));
 });
-test('migration inventory remains 27 SQL scripts',()=>assert.equal(fs.readdirSync(path.join(ROOT,'apps/api/sql')).filter(n=>/^\d+_.*\.sql$/.test(n)).length,27));
+test('migration inventory remains 28 SQL scripts',()=>assert.equal(fs.readdirSync(path.join(ROOT,'apps/api/sql')).filter(n=>/^\d+_.*\.sql$/.test(n)).length,28));
 test.after(()=>fs.rmSync(temp,{recursive:true,force:true}));

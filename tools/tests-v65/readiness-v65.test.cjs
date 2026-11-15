@@ -29,9 +29,9 @@ function probe({postgis=true,tables=manifest.REQUIRED_POSTGIS_TABLES,migrations=
  }};
  return new infra.SchemaProbe(db);
 }
-test('genuine schema readiness exposes 27 verified migrations, only after hash checks pass',async()=>{
+test('genuine schema readiness exposes 28 verified migrations, only after hash checks pass',async()=>{
  const result=await probe().check();assert.equal(result.ready,true);
- assert.equal(result.verifiedMigrations,27);assert.equal(manifest.REQUIRED_SCHEMA_MIGRATIONS.length,27);
+ assert.equal(result.verifiedMigrations,28);assert.equal(manifest.REQUIRED_SCHEMA_MIGRATIONS.length,28);
 });
 test('missing/altered PostgreSQL migration does NOT expose a verified count',async()=>{
  for(const migrations of [manifest.REQUIRED_SCHEMA_MIGRATIONS.slice(0,-1),
@@ -71,7 +71,7 @@ test('readiness UI treats integrations as independent so a 403 does not reset re
 });
 test('three workspace versions agree and migration source SHA-256 matches reviewed manifest',()=>{
  const v=diag.versionConsistency(root);assert(Number(v.version.split('.')[1])>=65);assert.equal(v.consistent,true);
- const m=diag.sourceMigrations(root);assert.equal(m.sourceCount,27);assert.equal(m.manifestCount,27);assert.equal(m.hashesMatch,true);
+ const m=diag.sourceMigrations(root);assert.equal(m.sourceCount,28);assert.equal(m.manifestCount,28);assert.equal(m.hashesMatch,true);
 });
 test('read-only diagnostic reports facts without claiming live test or production approval',()=>{
  const result=diag.inspect(root,{PATH:'',DATABASE_URL:'postgres://secret:password@127.0.0.1/assettrust_ci',ASSETTRUST_RUNTIME_DATABASE_URL:'postgres://other:password@127.0.0.1/assettrust_ci'});

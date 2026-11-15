@@ -20,7 +20,7 @@ function fake({grantRevocationBroken=false,tenantLeak=false,ownershipBroken=fals
   seen.push({route,method,token,redirect:options.redirect,body:options.body});
   const isAdmin=token==='admin-A-token-test',other=token==='admin-B-token-test',reviewer=token==='reviewer-token-test';
   if(route==='/healthz')return respond(200,{ok:true,service:'assettrust-api',version:VERSION,e2eTargetId:ownershipBroken?'other-process':MARK});
-  if(route==='/readyz')return respond(200,{ok:true,version:VERSION,database:'ready',postgis:'ready',schema:'verified-migration-ledger',security:'rls-policy-contract-verified',migrationsVerified:27,rlsPoliciesVerified:16,protectedTablesVerified:13});
+  if(route==='/readyz')return respond(200,{ok:true,version:VERSION,database:'ready',postgis:'ready',schema:'verified-migration-ledger',security:'rls-policy-contract-verified',migrationsVerified:28,rlsPoliciesVerified:16,protectedTablesVerified:13});
   // Simulated disposable MFA provisioning (never a real credential).
   if(route==='/auth/mfa/enroll')return respond(201,{secret:'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ'});
   if(route==='/auth/mfa/confirm')return respond(201,{enabled:true,recoveryCodes:Array(10).fill('synthetic-test-only')});

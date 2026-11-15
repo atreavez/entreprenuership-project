@@ -47,12 +47,12 @@ function fakeEvidence(root,version='0.72.0',steps=7){
 }
 const build=require('../build-acceptance-v68.cjs');const accept=require('../kali-acceptance-v71.cjs');
 
-test('v72 manifests, CI registration and all 27 reviewed migrations',()=>{
+test('v72 manifests, CI registration and all 28 reviewed migrations',()=>{
  const pkg=JSON.parse(read('package.json'));assert.match(pkg.version,/^0\.(?:7[2-9]|[89]\d|\d{3,})\.0$/);
  assert.equal(JSON.parse(read('apps/api/package.json')).version,pkg.version);assert.equal(JSON.parse(read('apps/web/package.json')).version,pkg.version);
  assert.equal(pkg.scripts['verify:v72'],'node --test tools/tests-v72/*.test.cjs');assert.equal(pkg.scripts['kali:acceptance:run:v72'],'node tools/kali-acceptance-v71.cjs --run');
  assert.match(read('.github/workflows/ci.yml'),/npm run verify:v72/);
- const sql=fs.readdirSync(path.join(ROOT,'apps/api/sql')).filter(f=>/^\d{3}_.*\.sql$/.test(f));assert.equal(sql.length,27);
+ const sql=fs.readdirSync(path.join(ROOT,'apps/api/sql')).filter(f=>/^\d{3}_.*\.sql$/.test(f));assert.equal(sql.length,28);
 });
 test('bounded query/lock/idle/connection deadlines are configured and immutable',()=>{
  assert.equal(Object.isFrozen(limits),true);assert.deepEqual({...limits},{max:12,connectionTimeoutMillis:5000,statement_timeout:15000,query_timeout:20000,lock_timeout:3000,idle_in_transaction_session_timeout:30000});
@@ -109,7 +109,7 @@ test('v72 release build fails closed when current milestone test script is missi
 test('build prerequisites reject v72 when current milestone regression cannot run',()=>fixture(root=>{
  buildFixture(root,'0.72.0',false);
  for(const d of ['apps/api','apps/web']){fs.mkdirSync(path.join(root,d),{recursive:true});fs.writeFileSync(path.join(root,d,'package.json'),JSON.stringify({version:'0.72.0'}));}
- const report=build.detect(root,{lockCheck:()=>({ok:true}),sourceCheck:()=>({ok:true}),migrationCheck:()=>({hashesMatch:true,sourceCount:27,manifestCount:27}),nodeVersion:'22.16.0'});
+ const report=build.detect(root,{lockCheck:()=>({ok:true}),sourceCheck:()=>({ok:true}),migrationCheck:()=>({hashesMatch:true,sourceCount:28,manifestCount:28}),nodeVersion:'22.16.0'});
  assert.equal(report.ok,false);assert(report.issues.includes('CURRENT_MILESTONE_REGRESSION_SCRIPT_REQUIRED'));
 }));
 test('v72 build runner performs current regression after all original six gates',()=>fixture(root=>{

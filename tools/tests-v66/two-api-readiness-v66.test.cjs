@@ -35,7 +35,7 @@ test('proxy environment is explicitly rejected for deterministic loopback test',
  assert.throws(()=>tool.validate({...env([4000,4001]),HTTPS_PROXY:'http://external.invalid:8080'}),/PROXY_ENV_NOT_ALLOWED/);
 });
 test('local source versions and migration/policy inventory are derived, not invented',()=>{
- const c=tool.expected();assert.match(c.version,/^0\.\d+\.0$/);assert.equal(c.migrations,27);assert.equal(c.policies,16);assert.equal(c.tables,13);
+ const c=tool.expected();assert.match(c.version,/^0\.\d+\.0$/);assert.equal(c.migrations,28);assert.equal(c.policies,16);assert.equal(c.tables,13);
 });
 test('two distinct local actual HTTP servers with matching markers are accepted as LOCAL-only',async()=>{
  await withServers([{},{}],async servers=>{

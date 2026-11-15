@@ -117,20 +117,20 @@ export class ReportSharingService{
    if(rows.length!==1)return null;const p=rows[0];
    // The share row lock serializes concurrent attempts at this known share across all API nodes.
    // PostgreSQL time is authoritative even when application server clocks disagree.
-   const {rows:windows}=await tx.query(`SELECT window_started_at,failed_count,now() AS checked_at
+   const {rows:windows}=await tx.query(`SELECT window_started_at,failed_count,statement_timestamp() AS checked_at
      FROM report_share_access_windows WHERE share_id=$1 AND organization_id=$2 FOR UPDATE`,[p.id,p.organization_id]);
-   const databaseNow=windows.length?new Date(windows[0].checked_at):new Date((await tx.query('SELECT now() AS checked_at')).rows[0].checked_at);
+   const databaseNow=windows.length?new Date(windows[0].checked_at):new Date((await tx.query('SELECT statement_timestamp() AS checked_at')).rows[0].checked_at);
    if(attemptBlocked(windows[0]||null,databaseNow))return null;
    if(!matchShareSecrets(b.accessToken,b.accessCode,p.token_sha256,p.code_sha256)){
     // Return denial as a value so this write COMMITS; throwing here would roll back the counter.
     await tx.query(`INSERT INTO report_share_access_windows
-     (share_id,organization_id,window_started_at,failed_count,last_failed_at) VALUES($1,$2,now(),1,now())
+     (share_id,organization_id,window_started_at,failed_count,last_failed_at) VALUES($1,$2,statement_timestamp(),1,statement_timestamp())
      ON CONFLICT (share_id) DO UPDATE SET
-      window_started_at=CASE WHEN report_share_access_windows.window_started_at<=now()-interval '15 minutes'
-       THEN now() ELSE report_share_access_windows.window_started_at END,
-      failed_count=CASE WHEN report_share_access_windows.window_started_at<=now()-interval '15 minutes'
+      window_started_at=CASE WHEN report_share_access_windows.window_started_at<=statement_timestamp()-interval '15 minutes'
+       THEN statement_timestamp() ELSE report_share_access_windows.window_started_at END,
+      failed_count=CASE WHEN report_share_access_windows.window_started_at<=statement_timestamp()-interval '15 minutes'
        THEN 1 ELSE LEAST(10,report_share_access_windows.failed_count+1) END,
-      last_failed_at=now()`,[p.id,p.organization_id]);
+      last_failed_at=GREATEST(report_share_access_windows.last_failed_at,statement_timestamp())`,[p.id,p.organization_id]);
     return null;
    }
    try{assertRedeemable(p);}catch{throw unavailable()}

@@ -35,7 +35,7 @@ function fixture(){const shares=[],redemptions=[],audit=[],queries=[],counters=n
   if(sql.includes('FROM report_recipient_shares WHERE id=$1 AND organization_id=$2 FOR UPDATE')||sql.includes('FROM report_recipient_shares WHERE id=$1 AND organization_id=$2 FOR UPDATE'))return {rows:shares.filter(s=>s.id===params[0]&&s.organization_id===params[1])};
   if(sql.includes('FROM report_recipient_shares WHERE id=$1 FOR UPDATE'))return {rows:shares.filter(s=>s.id===params[0])};
   if(sql.includes('FROM report_share_access_windows WHERE share_id=$1'))return {rows:counters.has(params[0])?[{...counters.get(params[0]),checked_at:new Date()}]:[]};
-  if(sql==='SELECT now() AS checked_at')return {rows:[{checked_at:new Date()}]};
+  if(sql==='SELECT statement_timestamp() AS checked_at')return {rows:[{checked_at:new Date()}]};
   if(sql.includes('INSERT INTO report_share_access_windows')){const prev=counters.get(params[0]);const old=prev&&Date.now()-new Date(prev.window_started_at).getTime()<15*60000;
     counters.set(params[0],{window_started_at:old?prev.window_started_at:new Date(),failed_count:old?Math.min(10,prev.failed_count+1):1,last_failed_at:new Date()});return {rows:[]};}
   if(sql.includes('FROM report_share_access_windows w JOIN report_recipient_shares'))return {rows:[...counters].filter(([id])=>shares.some(s=>s.id===id&&s.organization_id===params[0])).map(([share_id,row])=>({share_id,...row}))};

@@ -60,7 +60,7 @@ test('in insecure dev mode onModuleInit can skip but readiness NEVER skips polic
  const f=fixture(),{db,calls}=createDb(f);
  await db.onModuleInit();assert.equal(calls.length,0);
  const result=await new SchemaProbe(db).check();assert.equal(result.ready,true);assert.equal(calls.length,7);
- assert.equal(result.verifiedMigrations,27);assert.equal(result.policiesVerified,16);assert.equal(result.tablesVerified,13);
+ assert.equal(result.verifiedMigrations,28);assert.equal(result.policiesVerified,16);assert.equal(result.tablesVerified,13);
 });
 test('policy added AFTER first readiness causes next readiness to fail closed',async()=>{
  const f=fixture();const {db}=createDb(f),probe=new SchemaProbe(db);

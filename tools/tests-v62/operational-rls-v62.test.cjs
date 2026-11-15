@@ -29,9 +29,9 @@ test('inbox read and update both require tenant PLUS recipient actor; insert acc
  assert.doesNotMatch(migration,/CREATE POLICY.*?FOR DELETE/i);
 });
 test('migration manifest appends one SHA-256 without modifying earlier migrations',()=>{
- const entries=require('../migrations/plan.cjs').buildPlan();assert.equal(entries.length,27);
- assert.equal(entries.at(-1).filename,'027_operational_data_rls.sql');
- assert.equal(entries.at(-1).sha256,crypto.createHash('sha256').update(migration).digest('hex'));
+ const entries=require('../migrations/plan.cjs').buildPlan();assert.equal(entries.length,28);
+ assert.equal(entries[26].filename,'027_operational_data_rls.sql');
+ assert.equal(entries[26].sha256,crypto.createHash('sha256').update(migration).digest('hex'));
  const source=read('apps/api/src/contexts/platform/domain/schema-manifest.ts');
  for(const row of entries)assert(source.includes(row.sha256),row.filename);
 });
@@ -105,7 +105,7 @@ test('all three live RLS entrypoints dynamically query the complete protected ta
 });
 test('new v62 source carries package version and no earlier migration bytes changed',()=>{
  assert(/^0\.(?:6[2-9]|[7-9]\d)\.0$/.test(manifest.version));assert.equal(JSON.parse(read('apps/api/package.json')).version,manifest.version);assert.equal(JSON.parse(read('apps/web/package.json')).version,manifest.version);
- const previous=fs.readdirSync(path.join(root,'apps/api/sql')).filter(x=>/^\d{3}_/.test(x)).sort();assert.equal(previous.length,27);
+ const previous=fs.readdirSync(path.join(root,'apps/api/sql')).filter(x=>/^\d{3}_/.test(x)).sort();assert.equal(previous.length,28);
 });
 test('operator preflight probes every cross-tenant relationship without mutating records',()=>{
  const sql=read('tools/sql/v62-operational-preflight.sql');assert.match(sql,/BEGIN READ ONLY;/);assert.match(sql,/COMMIT;\s*$/);

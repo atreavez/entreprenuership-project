@@ -19,7 +19,7 @@ function createProject(dir){
  fs.writeFileSync(api,'console.log("fixture")\n');fs.writeFileSync(web,'<!doctype html>fixture\n');
  return dir;
 }
-function mockOptions(){return {lockCheck:()=>({ok:true}),sourceCheck:()=>({ok:true}),migrationCheck:()=>({hashesMatch:true,sourceCount:27,manifestCount:27}),nodeVersion:'22.16.0'};}
+function mockOptions(){return {lockCheck:()=>({ok:true}),sourceCheck:()=>({ok:true}),migrationCheck:()=>({hashesMatch:true,sourceCount:28,manifestCount:28}),nodeVersion:'22.16.0'};}
 function clean(root){fs.rmSync(root,{recursive:true,force:true});}
 function okArtifacts(root){return gate.artifacts(root,{artifactCheck:()=>({ok:true,filesChecked:2})});}
 function simulateRunner(root,{fail=null,refresh=true,token=null}={}){
