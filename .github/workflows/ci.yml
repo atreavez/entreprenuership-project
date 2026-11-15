@@ -68,11 +68,16 @@ jobs:
           marker="assettrust-ci-$(openssl rand -hex 24)"
           echo "ASSETTRUST_E2E_TARGET_ID=${marker}" >> "$GITHUB_ENV"
           echo "ASSETTRUST_E2E_EXPECT_TARGET=${marker}" >> "$GITHUB_ENV"
-          echo "JWT_SECRET=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
-          echo "MFA_ENCRYPTION_KEY=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
-          echo "LOGIN_ABUSE_PEPPER=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+          JWT_SECRET=$(openssl rand -hex 32)
+          MFA_ENCRYPTION_KEY=$(openssl rand -hex 32)
+          LOGIN_ABUSE_PEPPER=$(openssl rand -hex 32)
           document_key="$(openssl rand -hex 32)"
-          printf 'DOCUMENT_ENCRYPTION_KEYS={"ci_v13":"%s"}\n' "$document_key" >> "$GITHUB_ENV"
+          document_ring=$(printf '{"ci_v13":"%s"}' "$document_key")
+          printf '::add-mask::%s\n' "$JWT_SECRET" "$MFA_ENCRYPTION_KEY" "$LOGIN_ABUSE_PEPPER" "$document_key" "$document_ring"
+          printf 'JWT_SECRET=%s\n' "$JWT_SECRET" >> "$GITHUB_ENV"
+          printf 'MFA_ENCRYPTION_KEY=%s\n' "$MFA_ENCRYPTION_KEY" >> "$GITHUB_ENV"
+          printf 'LOGIN_ABUSE_PEPPER=%s\n' "$LOGIN_ABUSE_PEPPER" >> "$GITHUB_ENV"
+          printf 'DOCUMENT_ENCRYPTION_KEYS=%s\n' "$document_ring" >> "$GITHUB_ENV"
       - name: Verify release integrity and lockfile
         run: npm run release:gate
       - name: Assert build prerequisites
