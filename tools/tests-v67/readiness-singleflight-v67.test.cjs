@@ -63,7 +63,7 @@ test('SchemaProbe shares exactly one real catalog inspection across concurrent c
  const first=probe.check(),second=probe.check(),third=probe.check();assert.equal(first,second);assert.equal(second,third);
  await Promise.resolve();assert.equal(counters.queries,1);
  barrier.resolve();const results=await Promise.all([first,second,third]);
- assert(results.every(x=>x.ready===true&&x.verifiedMigrations===27&&x.policiesVerified===16));
+ assert(results.every(x=>x.ready===true&&x.verifiedMigrations===manifest.REQUIRED_SCHEMA_MIGRATIONS.length&&x.policiesVerified===16));
  assert.equal(counters.queries,3);assert.equal(counters.policyChecks,1);
 });
 test('a later RLS drift fails the next check rather than reusing last success',async()=>{
