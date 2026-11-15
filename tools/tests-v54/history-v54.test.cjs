@@ -161,3 +161,33 @@ test('workflow policy rejects omitting the new history scan',()=>{
   assert(report.issues.some(issue=>/batched whole-history/i.test(issue)));
  }finally{fs.rmSync(folder,{recursive:true,force:true});}
 });
+
+test('exact reviewed demo map is reported; changed bytes remain blocked',()=>sandbox(root=>{
+ const source=path.resolve(__dirname,'../../data/maps/uganda-demo.mbtiles');
+ const bytes=fs.readFileSync(source);
+ const digest=require('node:crypto').createHash('sha256').update(bytes).digest('hex');
+ assert.equal(digest,'de3706625ffb3e0f26db5805467ddcd6d72ae7632529f38832c0132c4d61e2c6');
+ const target=path.join(root,'data/maps/uganda-demo.mbtiles');
+ fs.mkdirSync(path.dirname(target),{recursive:true});
+ fs.writeFileSync(target,bytes);
+ git(root,'add','.');git(root,'commit','-qm','reviewed synthetic map');
+ const clean=scanGitHistory(root);
+ assert.equal(clean.complete,true,clean.reason);
+ assert.equal(clean.issues.length,0);
+ assert.equal(clean.reviewedObjects.length,1);
+ assert.equal(clean.reviewedObjects[0].sha256,digest);
+ assert(clean.scannedBytes>=bytes.length);
+
+ const changed=Buffer.from(bytes);changed[changed.length-1]^=1;
+ fs.writeFileSync(target,changed);
+ git(root,'add','.');git(root,'commit','-qm','changed map bytes');
+ const altered=scanGitHistory(root);
+ assert(altered.issues.some(x=>x.type==='LARGE_OBJECT_REVIEW_REQUIRED'));
+}));
+test('reviewed map bytes under a different filename remain blocked',()=>sandbox(root=>{
+ const source=path.resolve(__dirname,'../../data/maps/uganda-demo.mbtiles');
+ fs.copyFileSync(source,path.join(root,'unreviewed.mbtiles'));
+ git(root,'add','.');git(root,'commit','-qm','different artifact path');
+ const result=scanGitHistory(root);
+ assert(result.issues.some(x=>x.type==='LARGE_OBJECT_REVIEW_REQUIRED'));
+}));

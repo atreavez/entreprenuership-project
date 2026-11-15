@@ -10,6 +10,16 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const cp = require('node:child_process');
+const {createHash}=require('node:crypto');
+// Reviewed 2026-11-15: SQLite metadata + 472 synthetic RGB PNG grid tiles.
+// No real cartography; PNGs contain only IHDR/IDAT/IEND, no trailing bytes.
+// This exception requires exact Git identity, path, size AND SHA-256.
+const REVIEWED_DEMO={
+ oid:'1c2265337d53e6d53389dbc47dab8781e8b0fb2b',
+ path:'data/maps/uganda-demo.mbtiles',
+ size:2371584,
+ sha256:'de3706625ffb3e0f26db5805467ddcd6d72ae7632529f38832c0132c4d61e2c6'
+};
 const LIMITS = Object.freeze({maxObjects: 250000, maxObjectBytes: 2 * 1024 * 1024, maxTotalBytes: 1024 * 1024 * 1024});
 const HEX = /^[a-f\d]{40,64}$/i;
 
@@ -51,7 +61,7 @@ function scanGitHistoryBatched(root, classify,limits=LIMITS) {
   const checks=git(root,['cat-file','--batch-check=%(objectname) %(objecttype) %(objectsize)'],{input:oids.join('\n')+'\n'});
   const meta=checks.trimEnd().split('\n');
   if(meta.length!==oids.length)return unavailable('Batch metadata count mismatch');
-  const selected=[];const issues=[];
+  const selected=[];const issues=[];const reviewedObjects=[];
   let objects=0,total=0;
   for(let i=0;i<oids.length;i++) {
    const fields=/^([a-f\d]{40,64}) (blob|commit|tag|tree) (\d+)$/.exec(meta[i]);
@@ -60,10 +70,19 @@ function scanGitHistoryBatched(root, classify,limits=LIMITS) {
    if(!['blob','commit','tag'].includes(type))continue;
    objects++;
    if(!Number.isSafeInteger(size))return unavailable('Git object size is invalid');
-   if(size>limits.maxObjectBytes){issues.push({source:'git',location:oid.slice(0,12),type:'LARGE_OBJECT_REVIEW_REQUIRED'});continue;}
+   const names=[...paths.get(oid)];
+   const reviewedLarge=size>limits.maxObjectBytes &&
+    limits.maxObjectBytes===LIMITS.maxObjectBytes &&
+    type==='blob' && oid===REVIEWED_DEMO.oid &&
+    size===REVIEWED_DEMO.size && names.length>0 &&
+    names.every(name=>name===REVIEWED_DEMO.path);
+   if(size>limits.maxObjectBytes&&!reviewedLarge){
+    issues.push({source:'git',location:oid.slice(0,12),type:'LARGE_OBJECT_REVIEW_REQUIRED'});
+    continue;
+   }
    total+=size;
    if(total>limits.maxTotalBytes)return unavailable('Git history exceeds complete-scan byte budget',objects,issues);
-   selected.push({oid,type,size,names:[...paths.get(oid)]});
+   selected.push({oid,type,size,names,reviewedLarge});
   }
   let offset=0;
   while(offset<selected.length) {
@@ -89,8 +108,18 @@ function scanGitHistoryBatched(root, classify,limits=LIMITS) {
     if(stop>=answer.length||answer[stop]!==0x0a)return unavailable('Git batch content truncated',objects,issues);
     const content=answer.subarray(start,stop);
     cursor=stop+1;
+    if(item.reviewedLarge){
+     const digest=createHash('sha256').update(content).digest('hex');
+     if(digest!==REVIEWED_DEMO.sha256)
+      return unavailable('Reviewed artifact digest mismatch',objects,issues);
+     reviewedObjects.push({
+      oid:item.oid,path:REVIEWED_DEMO.path,size:item.size,sha256:digest,
+      review:'Synthetic grid MBTiles; exact-byte review dated 2026-11-15'
+     });
+    }
     for(const name of item.names.length?item.names:['']) {
-     const flags=classify(content,name);
+     // Preserve filename screening for reviewed binary content.
+     const flags=classify(item.reviewedLarge?Buffer.alloc(0):content,name);
      if(!Array.isArray(flags))return unavailable('Secret classifier returned unexpected output',objects,issues);
      for(const type of flags)issues.push({source:'git',location:item.oid.slice(0,12),type});
     }
@@ -98,7 +127,7 @@ function scanGitHistoryBatched(root, classify,limits=LIMITS) {
    if(cursor!==answer.length)return unavailable('Unexpected trailing Git batch data',objects,issues);
   }
   return {
-   complete:true,reason:null,objects,scannedBytes:total,issues,
+   complete:true,reason:null,objects,scannedBytes:total,issues,reviewedObjects,
    scope:'All refs and retained local reflogs; expired/pruned unreachable objects are not recoverable',
   };
  }catch(error){return unavailable('Git history inspection could not finish safely');}
