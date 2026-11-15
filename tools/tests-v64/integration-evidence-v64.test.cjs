@@ -22,9 +22,19 @@ test('plan is side-effect free and never grants production approval',()=>{
  const r=tool.execute('--plan',{root:'/missing'});
  assert.equal(r.status,'PLAN_ONLY');assert.equal(r.productionApproved,false);assert.equal(r.steps.length,2);
 });
-test('inspection identifies missing authentic lockfile and real builds',()=>{
- const r=tool.inspect(repo,{});assert.equal(r.productionApproved,false);assert.equal(typeof r.sourceManifestSha256,'string');
- assert.equal(r.checks.genuineLockfilePresent,false);
+test('inspection identifies missing lockfile and builds in an isolated fixture',()=>{
+ const dir=fakeRepo();
+ try{
+  const r=tool.inspect(dir,{});
+  assert.equal(r.productionApproved,false);
+  assert.equal(typeof r.sourceManifestSha256,'string');
+  assert.equal(r.checks.genuineLockfilePresent,false);
+  assert.equal(r.checks.apiBuildPresent,false);
+  assert.equal(r.checks.webBuildPresent,false);
+  assert.equal(r.checks.originalGitHistoryPresent,false);
+ }finally{
+  fs.rmSync(dir,{recursive:true,force:true});
+ }
 });
 test('incompatible manifest is rejected before trying to run external commands',()=>{
  const d=fakeRepo();fs.writeFileSync(path.join(d,'package.json'),'{}');

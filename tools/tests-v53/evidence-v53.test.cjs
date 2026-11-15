@@ -18,11 +18,18 @@ function fixture(fn){
  try{return fn({dir,sample,write,check:()=>verify(dir,{requireGit:false,checkLockfile:false})})}
  finally{fs.rmSync(dir,{recursive:true,force:true})}
 }
-test('current snapshot remains an explicit NO-GO and never claims production readiness',()=>{
- const result=verify(ROOT);
- assert.equal(result.ok,false);assert.equal(result.productionApproved,false);
- assert(result.issues.some(s=>/lockfile/.test(s)));assert(result.issues.some(s=>/Git/.test(s)));
- assert(result.stagesRequired>75);
+test('missing lockfile and Git history block even a complete synthetic report',()=>fixture(({dir,sample,write})=>{
+ write(sample);
+ const result=verify(dir,{historyRepo:dir});
+ assert.equal(result.ok,false);
+ assert.equal(result.productionApproved,false);
+ assert(result.issues.some(s=>/lockfile/.test(s)));
+ assert(result.issues.some(s=>/Git/.test(s)));
+ assert.equal(result.stagesReported,result.stagesRequired);
+}));
+test('current release plan retains its extensive validation coverage',()=>{
+ const expected=plan(ROOT);
+ assert(expected.build.length+expected.database.length>75);
 });
 test('synthetic full report with exact ordered stages is accepted for completeness ONLY',()=>fixture(({sample,write,check})=>{
  write(sample);const result=check();assert.equal(result.ok,true,result.issues.join('; '));assert.equal(result.productionApproved,false);
