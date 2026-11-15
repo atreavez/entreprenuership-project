@@ -20,7 +20,8 @@ try{
  await db.query(insert,[t1,user,'a'.repeat(64)]);checks++;
  await reject(insert,[t2,user,'b'.repeat(64)]); // Unique active token invariant.
  await reject("INSERT INTO auth_password_reset_requests(id,user_id,token_hash,expires_at) VALUES($1,$2,$3,now()+interval '16 minutes')",[t2,user,'b'.repeat(64)]);
- await reject("UPDATE auth_password_reset_requests SET delivery_state='SENT',consumed_at=now() WHERE id=$1",[t1]);
+ // A token still awaiting delivery cannot be consumed.
+ await reject("UPDATE auth_password_reset_requests SET consumed_at=now() WHERE id=$1",[t1]);
  await db.query("UPDATE auth_password_reset_requests SET delivery_state='SENT' WHERE id=$1",[t1]);
  await db.query("UPDATE auth_password_reset_requests SET consumed_at=now() WHERE id=$1",[t1]);checks++;
  await db.query(insert,[t2,user,'b'.repeat(64)]);checks++;

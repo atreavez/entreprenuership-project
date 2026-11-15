@@ -68,7 +68,7 @@ test('failed relay invalidates reset token without exposing account or token in 
  assert(!JSON.stringify(warnings).includes(x.messages[0].token));
 });
 test('reset token is one-use and invalid after expiry, withdrawal, suspension or failed delivery',async()=>{
- for(const edit of [{expires_at:new Date(Date.now()-1000)},{revoked_at:new Date()},{consumed_at:new Date()},{suspended_at:new Date()},{delivery_state:'FAILED'}]){
+ for(const edit of [{expires_at:new Date(Date.now()-1000)},{revoked_at:new Date()},{consumed_at:new Date()},{suspended_at:new Date()},{delivery_state:'FAILED'},{delivery_state:'PENDING'}]){
   const x=setup({recordState:edit});await assert.rejects(()=>x.service.confirm(x.resetToken,'newpassword12345'),/Invalid or expired/);
   assert(!x.calls.some(c=>c.sql.startsWith('UPDATE users SET password_hash')));
  }
