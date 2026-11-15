@@ -33,16 +33,18 @@ test('untrusted schema identifiers cannot be interpolated into DDL',()=>{
  const name=makeSchemaName(()=>Buffer.alloc(12,0x1));assert.equal(quoteControlledSchema(name),`"${name}"`);
  for(const bad of ['public','assettrust_v41_test_hello','assettrust_v41_test_111111111111111111111111";DROP SCHEMA public;--'])assert.throws(()=>quoteControlledSchema(bad));
 });
-test('read-only release inspection reports incomplete local gates but never production approval',()=>{
+test('read-only release inspection validates the committed lockfile without production approval',()=>{
  const result=inspect(ROOT,{env:{CI:'false'}});assert.equal(result.productionApproved,false);
  assert.equal(result.checks.find(x=>x.name==='ci-coverage-contract').pass,true);
  assert.equal(result.checks.find(x=>x.name==='migration-source-fingerprints').pass,true);
- assert.equal(result.checks.find(x=>x.name==='reviewed-lockfile-graph').pass,false);
+ assert.equal(result.checks.find(x=>x.name==='reviewed-lockfile-graph').pass,true);
  assert(result.unverified.some(x=>/browser/.test(x)));
 });
 test('preflight has no mutation side effects on an empty directory',()=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'assettrust-v41-gates-'));try{
-  const before=fs.readdirSync(dir);const p=inspect(dir);assert.equal(p.productionApproved,false);assert.equal(p.prerequisitesPass,false);assert.deepEqual(fs.readdirSync(dir),before);
+  const before=fs.readdirSync(dir);const p=inspect(dir);assert.equal(p.productionApproved,false);assert.equal(p.prerequisitesPass,false);
+  assert.equal(p.checks.find(x=>x.name==='reviewed-lockfile-graph').pass,false);
+  assert.deepEqual(fs.readdirSync(dir),before);
  }finally{fs.rmSync(dir,{recursive:true,force:true});}
 });
 test('two-session runner uses exact SQL migration, never touches production tables and fails before importing pg',()=>{
