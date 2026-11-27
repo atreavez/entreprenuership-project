@@ -92,3 +92,13 @@ export function paidSubscription(invoice:Invoice,catalogInput:unknown,code:strin
 export function subscriptionActive(subscription:Subscription,now:number):boolean{
  return integer(now,0,8_640_000_000_000_000)&&now>=subscription.startsAt&&now<subscription.endsAt;
 }
+
+export const BILLING_CATALOG_KEY='billing.price_catalog';
+/** Admin input supplies only a price array; the approved setting version
+ * becomes the catalog version. Canonical validated JSON is stored in proposals.
+ */
+export function canonicalCatalogText(value:unknown):string{
+ if(typeof value!=='string'||value.length>24000)throw Error('Invalid catalog encoding');
+ let prices:unknown;try{prices=JSON.parse(value);}catch{throw Error('Invalid catalog JSON');}
+ return JSON.stringify(validateCatalog({version:1,prices}).prices);
+}

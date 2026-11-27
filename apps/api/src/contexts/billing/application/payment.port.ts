@@ -13,6 +13,7 @@ export interface BillingTransaction{
  approvedCatalog():Promise<Catalog|null>;
  createDraft(invoiceId:string,expectedCatalogVersion:number,items:unknown):Promise<Invoice>;
  invoice(organizationId:string,id:string):Promise<Invoice|null>;
+ listInvoices(organizationId:string):Promise<readonly Invoice[]>;
  commit(organizationId:string,expectedRevision:number,transition:Transition):Promise<boolean>;
  createSubscription(organizationId:string,subscription:Subscription):Promise<boolean>;
 }

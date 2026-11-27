@@ -8,12 +8,15 @@ const deco=()=>()=>{};
 const nest={ForbiddenException,BadRequestException,NotFoundException,ConflictException,Body:deco,Controller:deco,Get:deco,Post:deco,Param:deco,Query:deco,Req:deco,UseGuards:deco,Injectable:deco,Module:deco};
 function load(file,imports={}){const name=path.join(src,file),txt=fs.readFileSync(name,'utf8');const js=ts.transpileModule(txt,{fileName:name,compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,experimentalDecorators:true,emitDecoratorMetadata:false}}).outputText;const m={exports:{}};vm.runInNewContext(js,{module:m,exports:m.exports,require:id=>{if(Object.hasOwn(imports,id))return imports[id];throw Error('Unexpected import '+id)},console,Date,JSON},{filename:name,timeout:5000});return m.exports}
 const anchorPolicy=load('contexts/anchoring/domain/anchor-job-policy.ts');
-const policy=load('contexts/admin-control/domain/configuration-policy.ts',{'../../anchoring/domain/anchor-job-policy':anchorPolicy});
+const billing=load('contexts/billing/domain/commercial-policy.ts');
+const policy=load('contexts/admin-control/domain/configuration-policy.ts',{'../../anchoring/domain/anchor-job-policy':anchorPolicy,'../../billing/domain/commercial-policy':billing});
 const current=load('contexts/identity/infrastructure/current-admin-step-up.ts',{'@nestjs/common':nest});
 const {AdminControlService}=load('contexts/admin-control/infrastructure/admin-control.module.ts',{
  '@nestjs/common':nest,'../../../database':{},'../../../auth':{AuthGuard:class{},AuthModule:class{}},'../../../audit':{AuditModule:class{}},
  '../../../common':{uid:()=>`00000000-0000-4000-8000-${String(++counter).padStart(12,'0')}`,isUuid:s=>s},
- '../../identity/infrastructure/current-admin-step-up':current,'../domain/configuration-policy':policy
+ '../../identity/infrastructure/current-admin-step-up':current,'../domain/configuration-policy':policy,
+ '../../billing/infrastructure/pg-catalog-publication':{BILLING_CATALOG_KEY:billing.BILLING_CATALOG_KEY,publishApprovedCatalog:async()=>{throw Error('STAGED_PUBLICATION_MUST_NOT_RUN');}},
+ '../../billing/infrastructure/billing-activation':{requireBillingActivation:async()=>{throw Error('BILLING_SCHEMA_STAGED');}}
 });
 let counter=0;
 const owner={id:'o1',organizationId:'org1',role:'ORG_ADMIN'};
@@ -24,7 +27,7 @@ function create({stepUp=true,platform=false,orgAdmin=true}={}){
  async function query(sql,args=[]){state.queries.push({sql,args});
   if(sql.includes('JOIN auth_sessions')&&sql.includes('JOIN auth_mfa_credentials'))return {rows:state.stepUp?[{id:args[0]}]:[]};
   if(sql.includes('JOIN auth_sessions')&&sql.includes('SELECT u.id'))return {rows:state.orgAdmin?[{id:args[0]}]:[]};
-  if(sql.includes('FROM platform_admin_appointments'))return {rows:state.platform?[{user_id:args[0]}]:[]};
+  if(sql.includes('FROM platform_admin_appointments')&&!sql.includes('FROM admin_configuration_changes c WHERE id=$1'))return {rows:state.platform?[{user_id:args[0]}]:[]};
   if(sql.includes('FROM users u WHERE u.id=$1'))return {rows:state.orgAdmin?[{id:args[0]}]:[]};
   if(sql.includes('pg_advisory_xact_lock'))return {rows:[]};
   if(sql.includes('FROM admin_configuration_values')&&sql.includes('WHERE scope=$1')&&sql.includes('FOR UPDATE')){const key=[args[0],args[1],args[2]].join('|');return {rows:state.rows.has(key)?[{version:state.rows.get(key).version}]:[]};}
@@ -69,4 +72,10 @@ test('ordinary organization administrator receives not found for hidden platform
  x.state.platform=false;
  await assert.rejects(x.svc.decide(second,'22222222-2222-4222-8222-222222222222',p.id,'APPROVE'),NotFoundException);
  assert.equal(x.state.proposals.get(p.id).status,'PENDING');
+});
+
+test('staged commercial migration cannot create a pricing proposal or applied setting',async()=>{
+ const x=create({platform:true});
+ await assert.rejects(x.svc.propose(owner,'11111111-1111-4111-8111-111111111111',body('platform','billing.price_catalog',JSON.stringify([{code:'review',unitUgx:25000,periodDays:null}]))),/BILLING_SCHEMA_STAGED/);
+ assert.equal(x.state.proposals.size,0);assert.equal(x.state.rows.size,0);assert.equal(x.state.audit.length,0);
 });

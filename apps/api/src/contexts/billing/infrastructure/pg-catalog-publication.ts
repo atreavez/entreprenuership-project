@@ -1,6 +1,6 @@
 import type {PoolClient} from 'pg';
-import {validateCatalog,type Catalog} from '../domain/commercial-policy';
-export const BILLING_CATALOG_KEY='billing.price_catalog';
+import {validateCatalog,BILLING_CATALOG_KEY,type Catalog} from '../domain/commercial-policy';
+export {BILLING_CATALOG_KEY};
 const PLATFORM_ID='00000000-0000-0000-0000-000000000000';
 /** A publication hook for the existing dual-control admin approval transaction.
  * Not yet wired: the staged migration must be activated first. No public route.

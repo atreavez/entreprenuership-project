@@ -6,6 +6,8 @@ import {AuditService,AuditModule} from '../../../audit';
 import {UserAuth,uid,isUuid} from '../../../common';
 import {assertCurrentAdminStepUp,assertCurrentAdminSession} from '../../identity/infrastructure/current-admin-step-up';
 import {catalog,prepareChange,assertExpectedVersion,assertScope,assertDecision,type ConfigScope} from '../domain/configuration-policy';
+import {BILLING_CATALOG_KEY,publishApprovedCatalog} from '../../billing/infrastructure/pg-catalog-publication';
+import {requireBillingActivation} from '../../billing/infrastructure/billing-activation';
 
 const PLATFORM_ID='00000000-0000-0000-0000-000000000000';
 function inputError(e:unknown):never{throw new BadRequestException(e instanceof Error?e.message:'Invalid configuration');}
@@ -68,6 +70,7 @@ export class AdminControlService{
   const expected=versionOf(body?.expectedVersion);
   return this.db.transaction(async tx=>{
    await this.currentAdmin(tx,u,sid,scope,true);
+   if(definition.key===BILLING_CATALOG_KEY)await requireBillingActivation(tx);
    const scopeId=this.scopeId(u,scope);
    // Advisory lock covers version=0 as no database row exists to FOR UPDATE.
    await tx.query('SELECT pg_advisory_xact_lock(hashtext($1))',[`assettrust:admin:${scope}:${scopeId}:${definition.key}`]);
@@ -124,8 +127,12 @@ export class AdminControlService{
    // Revalidate using the current allowlist to prevent policy evolution from bypassing validation.
    const validated=validateKeyValue(scope,change.setting_key,change.proposed_value);
    if(!validated.requiresApproval)throw new ForbiddenException('This proposal is not an independently reviewable setting');
-   if(decision==='APPROVE')await this.apply(tx,scope,change.scope_id,change.setting_key,validated.value,Number(change.expected_version),u.id);
+   if(decision==='APPROVE'){
+    if(change.setting_key===BILLING_CATALOG_KEY)await requireBillingActivation(tx);
+    await this.apply(tx,scope,change.scope_id,change.setting_key,validated.value,Number(change.expected_version),u.id);
+   }
    await tx.query('UPDATE admin_configuration_changes SET status=$2,reviewed_by=$3,reviewed_at=now() WHERE id=$1',[id,decision==='APPROVE'?'APPROVED':'REJECTED',u.id]);
+   if(decision==='APPROVE'&&change.setting_key===BILLING_CATALOG_KEY)await publishApprovedCatalog(tx,id);
    await this.audit.write(tx,u,decision==='APPROVE'?'ADMIN_SETTING_APPROVED':'ADMIN_SETTING_REJECTED','configuration',id,{scope,key:change.setting_key,fromVersion:change.expected_version});
    return {id,status:decision==='APPROVE'?'APPROVED':'REJECTED',applied:decision==='APPROVE'};
   });

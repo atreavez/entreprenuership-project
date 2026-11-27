@@ -17,8 +17,8 @@ function numeric(v:unknown):number{
 }
 async function loadCatalog(tx:PoolClient,version?:number):Promise<Catalog|null>{
  const result=version===undefined
-  ?await tx.query('SELECT version,prices FROM public.billing_catalog_versions ORDER BY version DESC LIMIT 1 FOR SHARE')
-  :await tx.query('SELECT version,prices FROM public.billing_catalog_versions WHERE version=$1 FOR SHARE',[version]);
+  ?await tx.query('SELECT version,prices FROM public.billing_catalog_versions ORDER BY version DESC LIMIT 1')
+  :await tx.query('SELECT version,prices FROM public.billing_catalog_versions WHERE version=$1',[version]);
  if(result.rows.length===0)return null;
  return validateCatalog({version:numeric(result.rows[0].version),prices:result.rows[0].prices});
 }
@@ -56,6 +56,10 @@ export class PgBillingRepository implements BillingRepository{
    const tx:BillingTransaction={
     approvedCatalog:async()=>{await catalogLock();return loadCatalog(connection);},
     invoice:read,
+    listInvoices:async(org)=>{
+     scope(org);const {rows}=await connection.query('SELECT * FROM public.billing_invoices WHERE organization_id=$1 ORDER BY created_at DESC,id LIMIT 50',[org]);
+     const invoices:Invoice[]=[];for(const row of rows)invoices.push(await hydrateInvoice(connection,row));return invoices;
+    },
     createDraft:async(id,expectedVersion,items)=>{
      await catalogLock();const catalog=await loadCatalog(connection);
      if(!catalog)throw Error('Approved billing catalog unavailable');
@@ -93,7 +97,7 @@ export class PgBillingRepository implements BillingRepository{
      // and matching settlement record can fund a term.
      const invoice=await read(org,requested.fundingInvoiceId);
      if(!invoice||invoice.state!=='PAID')throw Error('Paid funding invoice required');
-     const settlement=await connection.query('SELECT amount_ugx,currency,provider_id,transaction_id FROM public.billing_settlements WHERE organization_id=$1 AND invoice_id=$2 FOR SHARE',[org,invoice.id]);
+     const settlement=await connection.query('SELECT amount_ugx,currency,provider_id,transaction_id FROM public.billing_settlements WHERE organization_id=$1 AND invoice_id=$2',[org,invoice.id]);
      const row=settlement.rows[0];
      if(settlement.rows.length!==1||numeric(row.amount_ugx)!==invoice.totalUgx||row.currency!==invoice.currency||
       JSON.stringify([row.provider_id,row.transaction_id])!==invoice.paymentKey)throw Error('Verified settlement record required');

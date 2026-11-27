@@ -10,7 +10,8 @@ function load(file,imports={}){
  return mod.exports;
 }
 const anchor=load('contexts/anchoring/domain/anchor-job-policy.ts');
-const config=load('contexts/admin-control/domain/configuration-policy.ts',{'../../anchoring/domain/anchor-job-policy':anchor});
+const billing=load('contexts/billing/domain/commercial-policy.ts');
+const config=load('contexts/admin-control/domain/configuration-policy.ts',{'../../anchoring/domain/anchor-job-policy':anchor,'../../billing/domain/commercial-policy':billing});
 const settings={enabled:true,target:{providerId:'mock',networkId:'testnet',minConfirmations:6},retryBaseMs:1000,maxAttempts:3,pollMs:5000};
 const actor={id:'12345678-1234-4234-8234-123456789abc',organizationId:'22345678-1234-4234-8234-123456789abc'};
 const proof='a'.repeat(64);
