@@ -17,9 +17,14 @@ export class AuditService{
   await tx.query('SELECT pg_advisory_xact_lock(hashtext($1))',[u.organizationId]);
   const previous=await tx.query('SELECT event_hash FROM audit_events WHERE organization_id=$1 ORDER BY event_sequence DESC LIMIT 1',[u.organizationId]);
   const prevHash=previous.rows[0]?.event_hash||'GENESIS';const eventId=uid();const timestamp=new Date().toISOString();
-  const eventHash=auditHash(u.organizationId,u.id,action,entityType,entityId,detail,timestamp,prevHash);
+  // Serialize exactly once: hash the same JSON snapshot that PostgreSQL persists.
+  // Date/toJSON and omitted properties otherwise produce divergent chain hashes.
+  const detailJson=JSON.stringify(detail);
+  const storedDetail=JSON.parse(detailJson);
+  if(storedDetail===null||typeof storedDetail!=='object'||Array.isArray(storedDetail))throw new Error('Audit detail must serialize to a JSON object');
+  const eventHash=auditHash(u.organizationId,u.id,action,entityType,entityId,storedDetail,timestamp,prevHash);
   await tx.query(`INSERT INTO audit_events(id,organization_id,actor_id,action,entity_type,entity_id,detail,previous_hash,event_hash,created_at)
-    VALUES($1,$2,$3,$4,$5,$6,$7::jsonb,$8,$9,$10)`,[eventId,u.organizationId,u.id,action,entityType,entityId,JSON.stringify(detail),prevHash,eventHash,timestamp]);
+    VALUES($1,$2,$3,$4,$5,$6,$7::jsonb,$8,$9,$10)`,[eventId,u.organizationId,u.id,action,entityType,entityId,detailJson,prevHash,eventHash,timestamp]);
   return eventHash;
  }
  async verify(u:UserAuth){
@@ -29,11 +34,14 @@ export class AuditService{
    const {rows}=await tx.query('SELECT * FROM audit_events WHERE organization_id=$1 ORDER BY event_sequence ASC',[u.organizationId]);
   let prev='GENESIS';
   for(const event of rows){
-   const timestamp=new Date(event.created_at).toISOString();
-   const expected=auditHash(event.organization_id,event.actor_id,event.action,event.entity_type,event.entity_id,event.detail,timestamp,prev);
-   if(expected!==event.event_hash||event.previous_hash!==prev)return {verified:false,checked:rows.length,firstInvalidEventId:event.id};
+   const invalid={verified:false,checked:rows.length,firstInvalidEventId:event.id};
+   if(event.organization_id!==u.organizationId||event.previous_hash!==prev)return invalid;
+   const date=new Date(event.created_at);
+   if(event.created_at==null||!Number.isFinite(date.getTime()))return invalid;
+   const expected=auditHash(event.organization_id,event.actor_id,event.action,event.entity_type,event.entity_id,event.detail,date.toISOString(),prev);
+   if(expected!==event.event_hash)return invalid;
    prev=event.event_hash;
-  }return {verified:true,checked:rows.length,head:prev,disclaimer:'Local audit chain integrity only. No external blockchain notarization has been performed.'};
+  }return {verified:true,checked:rows.length,head:prev,disclaimer:'Local audit chain integrity only. No external blockchain notarization has been performed. A deleted suffix or fully recomputed chain cannot be detected without an independently trusted commitment.'};
   });
  }
  async list(u:UserAuth){
