@@ -145,3 +145,34 @@ test('three workspace versions are aligned and v0.61 scripts are present',()=>{
  assert.equal(manifest.scripts['verify:v61'],'node --test tools/tests-v61/*.test.cjs');
  assert.equal(manifest.scripts['test:pg:audit-rls:v61'],'node tools/e2e-pg-audit-rls-v61.mjs');
 });
+
+test('audit.write hashes the exact persisted JSON snapshot including nested dates',async()=>{
+ const spy=[],AuditService=loadAudit(spy),user={id:crypto.randomUUID(),organizationId:crypto.randomUUID()};
+ const tx={query:async(sql,params)=>{spy.push(['query',sql,params]);return {rows:[]};}};
+ const date=new Date('2026-11-11T00:00:00.000Z');
+ let serializations=0;
+ const detail={nested:{date},custom:{toJSON(){return {count:++serializations};}},omitted:undefined};
+ const hash=await new AuditService({}).write(tx,user,'CHECK','asset','a1',detail);
+ const p=spy.find(e=>e[1]?.includes('INSERT INTO audit_events'))[2];
+ assert.equal(serializations,1);
+ const stored=JSON.parse(p[6]);
+ assert.equal(stored.nested.date,date.toISOString());assert.equal(stored.custom.count,1);
+ const canonical={custom:{count:1},nested:{date:date.toISOString()}};
+ assert.equal(hash,crypto.createHash('sha256').update(JSON.stringify([user.organizationId,user.id,'CHECK','asset','a1',canonical,p[9],'GENESIS'])).digest('hex'));
+ assert.equal(p[8],hash);
+});
+test('audit verification rejects wrong-tenant rows, malformed timestamps, missing intermediate events and altered detail',async()=>{
+ const spy=[],AuditService=loadAudit(spy),user={id:crypto.randomUUID(),organizationId:crypto.randomUUID()};
+ const stamp='2026-11-11T00:00:00.000Z';
+ function event(id,previous,org=user.organizationId){
+  const detail={id};
+  const event_hash=crypto.createHash('sha256').update(JSON.stringify([org,user.id,'CHECK','asset','a1',detail,stamp,previous])).digest('hex');
+  return {id,organization_id:org,actor_id:user.id,action:'CHECK',entity_type:'asset',entity_id:'a1',detail,created_at:stamp,previous_hash:previous,event_hash};
+ }
+ const a=event('a','GENESIS'),b=event('b',a.event_hash),c=event('c',b.event_hash);
+ const verify=rows=>new AuditService({transaction:async fn=>fn({query:async sql=>({rows:sql.includes('FROM audit_events')?rows:[]})})}).verify(user);
+ assert.equal((await verify([a,b,c])).verified,true);
+ for(const [rows,bad] of [[[event('foreign','GENESIS',crypto.randomUUID())],'foreign'],[[{...a,created_at:'invalid'}],'a'],[[a,c],'c'],[[a,{...b,detail:{id:'changed'}},c],'b']]){
+  const result=await verify(rows);assert.equal(result.verified,false);assert.equal(result.firstInvalidEventId,bad);
+ }
+});
