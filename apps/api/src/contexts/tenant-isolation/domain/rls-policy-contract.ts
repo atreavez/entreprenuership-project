@@ -27,7 +27,16 @@ export const POLICY_CONTRACT:readonly ExpectedPolicy[]=Object.freeze([
  {table:'anchor_jobs',name:'anchor_jobs_insert_v87',cmd:'INSERT',read:null,write:'tenant'},
  {table:'anchor_jobs',name:'anchor_jobs_update_v87',cmd:'UPDATE',read:'tenant',write:'tenant'},
  {table:'anchor_job_history',name:'anchor_job_history_select_v87',cmd:'SELECT',read:'tenant',write:null},
- {table:'anchor_job_history',name:'anchor_job_history_insert_v87',cmd:'INSERT',read:null,write:'tenant'}
+ {table:'anchor_job_history',name:'anchor_job_history_insert_v87',cmd:'INSERT',read:null,write:'tenant'},
+ {table:'billing_invoices',name:'billing_invoices_select_v87',cmd:'SELECT',read:'tenant',write:null},
+ {table:'billing_invoices',name:'billing_invoices_insert_v87',cmd:'INSERT',read:null,write:'tenant'},
+ {table:'billing_journal',name:'billing_journal_select_v87',cmd:'SELECT',read:'tenant',write:null},
+ {table:'billing_journal',name:'billing_journal_insert_v87',cmd:'INSERT',read:null,write:'tenant'},
+ {table:'billing_settlements',name:'billing_settlements_select_v87',cmd:'SELECT',read:'tenant',write:null},
+ {table:'billing_settlements',name:'billing_settlements_insert_v87',cmd:'INSERT',read:null,write:'tenant'},
+ {table:'billing_subscriptions',name:'billing_subscriptions_select_v87',cmd:'SELECT',read:'tenant',write:null},
+ {table:'billing_subscriptions',name:'billing_subscriptions_insert_v87',cmd:'INSERT',read:null,write:'tenant'},
+ {table:'billing_invoices',name:'billing_invoices_update_v87',cmd:'UPDATE',read:'tenant',write:'tenant'}
 ]);
 export const PROTECTED_TABLES=Object.freeze([...new Set(POLICY_CONTRACT.map(p=>p.table))]);
 export interface CatalogPolicy {

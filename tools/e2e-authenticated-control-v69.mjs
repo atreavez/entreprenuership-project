@@ -43,7 +43,7 @@ function readExpected(){
  const policy=fs.readFileSync(path.join(ROOT,'apps/api/src/contexts/tenant-isolation/domain/rls-policy-contract.ts'),'utf8');
  const migrations=[...schema.matchAll(/filename:\s*'[^']+',\s*sha256:\s*'[a-f\d]{64}'/g)].length;
  const policies=[...policy.matchAll(/\{table:'([^']+)',name:'([^']+)',cmd:/g)];
- if(!/^0\.\d+\.\d+$/.test(manifest.version)||migrations!==29||policies.length!==21)
+ if(!/^0\.\d+\.\d+$/.test(manifest.version)||migrations!==30||policies.length!==30)
   throw Error('SOURCE_CONTRACT_UNVERIFIED');
  return {version:manifest.version,migrations,policies:policies.length,tables:new Set(policies.map(x=>x[1])).size};
 }

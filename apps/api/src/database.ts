@@ -40,7 +40,15 @@ export class Database implements OnModuleDestroy, OnModuleInit {
      OR has_table_privilege(current_user,'public.audit_events','DELETE')
      OR has_any_column_privilege(current_user,'public.anchor_job_history','UPDATE')
      OR has_table_privilege(current_user,'public.anchor_job_history','DELETE')
-     OR has_table_privilege(current_user,'public.anchor_jobs','DELETE')) AS immutable_write,
+     OR has_table_privilege(current_user,'public.anchor_jobs','DELETE')
+     OR EXISTS(SELECT 1 FROM unnest(ARRAY['billing_catalog_versions','billing_journal','billing_settlements','billing_subscriptions']) AS t(name)
+      WHERE has_any_column_privilege(current_user,'public.'||t.name,'UPDATE') OR has_table_privilege(current_user,'public.'||t.name,'DELETE'))
+     OR has_table_privilege(current_user,'public.billing_invoices','DELETE')
+     OR has_any_column_privilege(current_user,'public.billing_settlements','INSERT')
+     OR EXISTS(SELECT 1 FROM unnest(ARRAY['id','organization_id','catalog_version','lines','total_ugx','currency','payment_key','created_at']) AS c(name)
+      WHERE has_column_privilege(current_user,'public.billing_invoices',c.name,'UPDATE'))
+     OR EXISTS(SELECT 1 FROM unnest(ARRAY['currency','state','revision','payment_key','created_at']) AS c(name)
+      WHERE has_column_privilege(current_user,'public.billing_invoices',c.name,'INSERT'))) AS immutable_write,
     (has_table_privilege(current_user,'public.assettrust_schema_migrations','SELECT')
      AND has_table_privilege(current_user,'public.audit_events','SELECT')
      AND has_table_privilege(current_user,'public.audit_events','INSERT')
@@ -48,8 +56,16 @@ export class Database implements OnModuleDestroy, OnModuleInit {
      AND has_table_privilege(current_user,'public.anchor_job_history','INSERT')
      AND has_table_privilege(current_user,'public.anchor_jobs','SELECT')
      AND has_table_privilege(current_user,'public.anchor_jobs','INSERT')
-     AND has_table_privilege(current_user,'public.anchor_jobs','UPDATE')) AS required_access
-   FROM pg_roles WHERE rolname=current_user`,[[...PROTECTED_TABLES,'assettrust_schema_migrations']]);
+     AND has_table_privilege(current_user,'public.anchor_jobs','UPDATE')
+     AND NOT EXISTS(SELECT 1 FROM unnest(ARRAY['billing_catalog_versions','billing_invoices','billing_journal','billing_settlements','billing_subscriptions']) AS t(name)
+       WHERE NOT has_table_privilege(current_user,'public.'||t.name,'SELECT'))
+     AND NOT EXISTS(SELECT 1 FROM unnest(ARRAY['billing_catalog_versions','billing_journal','billing_subscriptions']) AS t(name)
+       WHERE NOT has_table_privilege(current_user,'public.'||t.name,'INSERT'))
+     AND NOT EXISTS(SELECT 1 FROM unnest(ARRAY['id','organization_id','catalog_version','lines','total_ugx']) AS c(name)
+       WHERE NOT has_column_privilege(current_user,'public.billing_invoices',c.name,'INSERT'))
+     AND has_column_privilege(current_user,'public.billing_invoices','state','UPDATE')
+     AND has_column_privilege(current_user,'public.billing_invoices','revision','UPDATE')) AS required_access
+   FROM pg_roles WHERE rolname=current_user`,[[...PROTECTED_TABLES,'assettrust_schema_migrations','billing_catalog_versions']]);
   if(roles.length!==1||roles[0].rolsuper||roles[0].rolbypassrls||roles[0].rolcreaterole||roles[0].rolcreatedb)
    throw new Error('Unsafe PostgreSQL application role: elevated privileges are forbidden in production');
   const flags=roles[0];
@@ -74,9 +90,13 @@ export class Database implements OnModuleDestroy, OnModuleInit {
     'public.verification_quotes'::regclass,
     'public.notifications'::regclass,
     'public.anchor_jobs'::regclass,
-    'public.anchor_job_history'::regclass
+    'public.anchor_job_history'::regclass,
+    'public.billing_invoices'::regclass,
+    'public.billing_journal'::regclass,
+    'public.billing_settlements'::regclass,
+    'public.billing_subscriptions'::regclass
    ])`);
-  if(tables.length!==15||tables.some((r:any)=>!r.relrowsecurity||!r.relforcerowsecurity))
+  if(tables.length!==19||tables.some((r:any)=>!r.relrowsecurity||!r.relforcerowsecurity))
    throw new Error('Required private table tenant row-level security is missing; do not start production API');
   const currentRole=(await this.pool.query('SELECT current_user AS runtime_role')).rows[0]?.runtime_role;
   if(!currentRole||tables.some((r:any)=>r.table_owner===currentRole))

@@ -100,7 +100,7 @@ function detect(root=ROOT,{lockCheck=checkLock,sourceCheck=inspectSource,migrati
  if(!nodeSupported(nodeVersion))issues.push('NODE_VERSION_UNSUPPORTED');
  if(v.consistent&&versionParts(v.version)?.[1]>=72){try{milestoneStep(root);}catch{issues.push('CURRENT_MILESTONE_REGRESSION_SCRIPT_REQUIRED');}}
  const migration=migrationCheck(root);
- if(!migration.hashesMatch||migration.sourceCount!==29||migration.manifestCount!==29)issues.push('SOURCE_MIGRATIONS_UNVERIFIED');
+ if(!migration.hashesMatch||migration.sourceCount!==30||migration.manifestCount!==30)issues.push('SOURCE_MIGRATIONS_UNVERIFIED');
  const source=sourceCheck(root);
  if(!source.ok)issues.push('SOURCE_ENTRY_OR_IMPORTS_INVALID');
  const lockPresent=regular(path.join(root,'package-lock.json'));
@@ -111,7 +111,7 @@ function detect(root=ROOT,{lockCheck=checkLock,sourceCheck=inspectSource,migrati
  return {schema:'ASSETTRUST_V68_BUILD_PRECONDITIONS',version:v.version,
   ok:issues.length===0,productionApproved:false,
   checks:{versionConsistent:v.consistent,nodeSupported:nodeSupported(nodeVersion),
-   sqlMigrationsVerified:migration.hashesMatch&&migration.sourceCount===29&&migration.manifestCount===29,
+   sqlMigrationsVerified:migration.hashesMatch&&migration.sourceCount===30&&migration.manifestCount===30,
    sourceImportPreflightPassed:source.ok,reviewedLockfileValid:lockOk,originalGitHistoryAvailable:git},issues,
   notes:'Original repository history and separate live PostgreSQL/HTTP/security testing remain mandatory for release.'};
 }

@@ -274,6 +274,12 @@ jobs:
           ASSETTRUST_V87_ANCHOR_PG_CONFIRM: YES
           NODE_ENV: test
         run: npm run test:pg:anchoring:v87
+      - name: Verify commercial SQL tenant boundaries and restricted financial privileges
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+          ASSETTRUST_V87_BILLING_PG_CONFIRM: YES
+          NODE_ENV: test
+        run: npm run test:pg:billing:v87
       - name: Verify surveyor accreditation against live disposable PostgreSQL
         env:
           ASSETTRUST_E2E_ALLOW_MUTATION: YES

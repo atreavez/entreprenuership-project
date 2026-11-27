@@ -20,7 +20,7 @@ const infra=transpile('apps/api/src/contexts/platform/infrastructure/schema-prob
  '../../../database':{},'../domain/schema-readiness':domain,'../domain/readiness-coordinator':coordinator,
 });
 function probe({postgis=true,tables=manifest.REQUIRED_POSTGIS_TABLES,migrations=manifest.REQUIRED_SCHEMA_MIGRATIONS,throwError=false}={}){
- const db={assertRuntimeIsolation:async()=>({policiesVerified:21,tablesVerified:15}),query:async sql=>{
+ const db={assertRuntimeIsolation:async()=>({policiesVerified:30,tablesVerified:19}),query:async sql=>{
   if(throwError)throw Error('credentials-in-database-error-should-not-leak');
   if(sql.includes('pg_extension'))return {rowCount:postgis?1:0};
   if(sql.includes('pg_tables'))return {rows:tables.map(tablename=>({tablename}))};
@@ -29,9 +29,9 @@ function probe({postgis=true,tables=manifest.REQUIRED_POSTGIS_TABLES,migrations=
  }};
  return new infra.SchemaProbe(db);
 }
-test('genuine schema readiness exposes 29 verified migrations, only after hash checks pass',async()=>{
+test('genuine schema readiness exposes 30 verified migrations, only after hash checks pass',async()=>{
  const result=await probe().check();assert.equal(result.ready,true);
- assert.equal(result.verifiedMigrations,29);assert.equal(manifest.REQUIRED_SCHEMA_MIGRATIONS.length,29);
+ assert.equal(result.verifiedMigrations,30);assert.equal(manifest.REQUIRED_SCHEMA_MIGRATIONS.length,30);
 });
 test('missing/altered PostgreSQL migration does NOT expose a verified count',async()=>{
  for(const migrations of [manifest.REQUIRED_SCHEMA_MIGRATIONS.slice(0,-1),
@@ -71,7 +71,7 @@ test('readiness UI treats integrations as independent so a 403 does not reset re
 });
 test('three workspace versions agree and migration source SHA-256 matches reviewed manifest',()=>{
  const v=diag.versionConsistency(root);assert(Number(v.version.split('.')[1])>=65);assert.equal(v.consistent,true);
- const m=diag.sourceMigrations(root);assert.equal(m.sourceCount,29);assert.equal(m.manifestCount,29);assert.equal(m.hashesMatch,true);
+ const m=diag.sourceMigrations(root);assert.equal(m.sourceCount,30);assert.equal(m.manifestCount,30);assert.equal(m.hashesMatch,true);
 });
 test('read-only diagnostic reports facts without claiming live test or production approval',()=>{
  const result=diag.inspect(root,{PATH:'',DATABASE_URL:'postgres://secret:password@127.0.0.1/assettrust_ci',ASSETTRUST_RUNTIME_DATABASE_URL:'postgres://other:password@127.0.0.1/assettrust_ci'});

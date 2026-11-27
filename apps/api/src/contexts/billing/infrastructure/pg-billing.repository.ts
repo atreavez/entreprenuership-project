@@ -64,8 +64,8 @@ export class PgBillingRepository implements BillingRepository{
      await catalogLock();const catalog=await loadCatalog(connection);
      if(!catalog)throw Error('Approved billing catalog unavailable');
      const draft=draftInvoice(id,organizationId,catalog,expectedVersion,items);
-     await connection.query(`INSERT INTO public.billing_invoices(id,organization_id,catalog_version,lines,total_ugx,currency,state,revision)
-      VALUES($1,$2,$3,$4::jsonb,$5,'UGX','DRAFT',0)`,[draft.id,organizationId,draft.catalogVersion,JSON.stringify(draft.lines),draft.totalUgx]);
+     await connection.query(`INSERT INTO public.billing_invoices(id,organization_id,catalog_version,lines,total_ugx)
+      VALUES($1,$2,$3,$4::jsonb,$5)`,[draft.id,organizationId,draft.catalogVersion,JSON.stringify(draft.lines),draft.totalUgx]);
      await this.audit.write(connection,this.actor,'BILLING_DRAFT_CREATED','invoice',id,{catalogVersion:draft.catalogVersion,totalUgx:draft.totalUgx});
      return draft;
     },

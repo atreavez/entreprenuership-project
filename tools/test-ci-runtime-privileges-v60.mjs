@@ -44,6 +44,44 @@ try{
   has_table_privilege(current_user,'public.anchor_jobs','TRUNCATE') AS anchor_jobs_truncate,
   has_table_privilege(current_user,'public.anchor_jobs','TRIGGER') AS anchor_jobs_trigger,
   has_any_column_privilege(current_user,'public.anchor_jobs','REFERENCES') AS anchor_jobs_references,
+  has_table_privilege(current_user,'public.billing_catalog_versions','DELETE') AS billing_catalog_versions_delete,
+  has_table_privilege(current_user,'public.billing_catalog_versions','TRUNCATE') AS billing_catalog_versions_truncate,
+  has_table_privilege(current_user,'public.billing_catalog_versions','TRIGGER') AS billing_catalog_versions_trigger,
+  has_any_column_privilege(current_user,'public.billing_catalog_versions','REFERENCES') AS billing_catalog_versions_references,
+  has_any_column_privilege(current_user,'public.billing_catalog_versions','UPDATE') AS billing_catalog_versions_update,
+  has_table_privilege(current_user,'public.billing_invoices','DELETE') AS billing_invoices_delete,
+  has_table_privilege(current_user,'public.billing_invoices','TRUNCATE') AS billing_invoices_truncate,
+  has_table_privilege(current_user,'public.billing_invoices','TRIGGER') AS billing_invoices_trigger,
+  has_any_column_privilege(current_user,'public.billing_invoices','REFERENCES') AS billing_invoices_references,
+  has_table_privilege(current_user,'public.billing_journal','DELETE') AS billing_journal_delete,
+  has_table_privilege(current_user,'public.billing_journal','TRUNCATE') AS billing_journal_truncate,
+  has_table_privilege(current_user,'public.billing_journal','TRIGGER') AS billing_journal_trigger,
+  has_any_column_privilege(current_user,'public.billing_journal','REFERENCES') AS billing_journal_references,
+  has_any_column_privilege(current_user,'public.billing_journal','UPDATE') AS billing_journal_update,
+  has_table_privilege(current_user,'public.billing_settlements','DELETE') AS billing_settlements_delete,
+  has_table_privilege(current_user,'public.billing_settlements','TRUNCATE') AS billing_settlements_truncate,
+  has_table_privilege(current_user,'public.billing_settlements','TRIGGER') AS billing_settlements_trigger,
+  has_any_column_privilege(current_user,'public.billing_settlements','REFERENCES') AS billing_settlements_references,
+  has_any_column_privilege(current_user,'public.billing_settlements','UPDATE') AS billing_settlements_update,
+  has_any_column_privilege(current_user,'public.billing_settlements','INSERT') AS billing_settlements_insert,
+  has_table_privilege(current_user,'public.billing_subscriptions','DELETE') AS billing_subscriptions_delete,
+  has_table_privilege(current_user,'public.billing_subscriptions','TRUNCATE') AS billing_subscriptions_truncate,
+  has_table_privilege(current_user,'public.billing_subscriptions','TRIGGER') AS billing_subscriptions_trigger,
+  has_any_column_privilege(current_user,'public.billing_subscriptions','REFERENCES') AS billing_subscriptions_references,
+  has_any_column_privilege(current_user,'public.billing_subscriptions','UPDATE') AS billing_subscriptions_update,
+  has_column_privilege(current_user,'public.billing_invoices','id','UPDATE') AS invoice_id_update,
+  has_column_privilege(current_user,'public.billing_invoices','organization_id','UPDATE') AS invoice_organization_id_update,
+  has_column_privilege(current_user,'public.billing_invoices','catalog_version','UPDATE') AS invoice_catalog_version_update,
+  has_column_privilege(current_user,'public.billing_invoices','lines','UPDATE') AS invoice_lines_update,
+  has_column_privilege(current_user,'public.billing_invoices','total_ugx','UPDATE') AS invoice_total_ugx_update,
+  has_column_privilege(current_user,'public.billing_invoices','currency','UPDATE') AS invoice_currency_update,
+  has_column_privilege(current_user,'public.billing_invoices','payment_key','UPDATE') AS invoice_payment_key_update,
+  has_column_privilege(current_user,'public.billing_invoices','created_at','UPDATE') AS invoice_created_at_update,
+  has_column_privilege(current_user,'public.billing_invoices','currency','INSERT') AS invoice_currency_insert,
+  has_column_privilege(current_user,'public.billing_invoices','state','INSERT') AS invoice_state_insert,
+  has_column_privilege(current_user,'public.billing_invoices','revision','INSERT') AS invoice_revision_insert,
+  has_column_privilege(current_user,'public.billing_invoices','payment_key','INSERT') AS invoice_payment_key_insert,
+  has_column_privilege(current_user,'public.billing_invoices','created_at','INSERT') AS invoice_created_at_insert,
   has_schema_privilege(current_user,'public','CREATE') AS public_schema_create,
   has_database_privilege(current_user,current_database(),'CREATE') AS database_create,
   EXISTS(SELECT 1 FROM pg_catalog.pg_auth_members m
@@ -55,7 +93,7 @@ try{
  if(!result.ok)throw Error(result.issues.join('; '));
  // TRUNCATE is not subject to RLS. Column-level grants can bypass a table-only ACL check.
  const additional=['migration_truncate','audit_truncate','migration_trigger','audit_trigger',
-  'migration_references','audit_references','protected_table_owner','rolreplication','anchor_job_history_update','anchor_job_history_delete','anchor_job_history_truncate','anchor_job_history_trigger','anchor_job_history_references','anchor_jobs_delete','anchor_jobs_truncate','anchor_jobs_trigger','anchor_jobs_references'];
+  'migration_references','audit_references','protected_table_owner','rolreplication','anchor_job_history_update','anchor_job_history_delete','anchor_job_history_truncate','anchor_job_history_trigger','anchor_job_history_references','anchor_jobs_delete','anchor_jobs_truncate','anchor_jobs_trigger','anchor_jobs_references','public_schema_create','database_create','inherited_membership','billing_catalog_versions_delete','billing_catalog_versions_truncate','billing_catalog_versions_trigger','billing_catalog_versions_references','billing_catalog_versions_update','billing_invoices_delete','billing_invoices_truncate','billing_invoices_trigger','billing_invoices_references','billing_journal_delete','billing_journal_truncate','billing_journal_trigger','billing_journal_references','billing_journal_update','billing_settlements_delete','billing_settlements_truncate','billing_settlements_trigger','billing_settlements_references','billing_settlements_update','billing_settlements_insert','billing_subscriptions_delete','billing_subscriptions_truncate','billing_subscriptions_trigger','billing_subscriptions_references','billing_subscriptions_update','invoice_id_update','invoice_organization_id_update','invoice_catalog_version_update','invoice_lines_update','invoice_total_ugx_update','invoice_currency_update','invoice_payment_key_update','invoice_created_at_update','invoice_currency_insert','invoice_state_insert','invoice_revision_insert','invoice_payment_key_insert','invoice_created_at_insert'];
  for(const key of additional){
   if(flags[key]!==false)throw Error('Runtime database privilege check failed: '+key);
  }

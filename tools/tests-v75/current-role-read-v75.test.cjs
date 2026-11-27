@@ -165,7 +165,7 @@ test('v75 scripts, CI wiring, and versions are consistent',()=>{
 });
 test('v75 does not edit migrations or disable RLS',()=>{
  const sql=fs.readdirSync(path.join(root,'apps/api/sql')).filter(x=>x.endsWith('.sql'));
- assert.equal(sql.length,29);
+ assert.equal(sql.length,30);
  const code=fs.readFileSync(path.join(root,'apps/api/src/database.ts'),'utf8');
  assert.match(code,/assertRuntimeIsolation/);assert.match(code,/inspectPolicyInventory/);
 });

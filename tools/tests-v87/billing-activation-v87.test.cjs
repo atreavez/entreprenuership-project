@@ -10,8 +10,10 @@ const manifest=load('contexts/platform/domain/schema-manifest.ts'),rls=load('con
 const pathGate='contexts/billing/infrastructure/billing-activation.ts';
 function gate(m=manifest,p=rls){return load(pathGate,{'@nestjs/common':nest,'../../platform/domain/schema-manifest':m,'../../tenant-isolation/domain/rls-policy-contract':p});}
 const {requireBillingActivation}=gate();
-test('current staged migration cannot be enabled by a manually created table',async()=>{
- let calls=0;await assert.rejects(requireBillingActivation({query:async()=>{calls++;return {rows:[]};}}),ServiceUnavailableException);assert.equal(calls,0);
+test('reviewed commercial migration still requires a real matching ledger entry',async()=>{
+ let calls=0;await assert.rejects(requireBillingActivation({query:async()=>{calls++;return {rows:[]};}}),ServiceUnavailableException);assert.equal(calls,1);
+ const entry=manifest.REQUIRED_SCHEMA_MIGRATIONS.find(m=>m.filename==='030_commercial_billing.sql');assert(entry);
+ await requireBillingActivation({query:async()=>({rows:[{sha256:entry.sha256}]})});
 });
 test('future activation needs reviewed migration, all tenant policies and exact ledger checksum',async()=>{
  const m={REQUIRED_SCHEMA_MIGRATIONS:[{filename:'030_commercial_billing.sql',sha256:'expected'}]},p={PROTECTED_TABLES:['billing_invoices','billing_journal','billing_settlements','billing_subscriptions']};
@@ -28,8 +30,8 @@ const {BillingAdminService}=load('contexts/billing/infrastructure/billing.module
  './pg-billing.repository':{PgBillingRepository:class{constructor(){transactions++;}}},'./billing-activation':{requireBillingActivation},'../domain/commercial-policy':policy
 });
 const actor={id:'12345678-1234-4234-8234-123456789abc',organizationId:'32345678-1234-4234-8234-123456789abc'};
-test('staged API rejects valid invoice operations before opening repository',async()=>{
- const svc=new BillingAdminService({},{});transactions=0;
+test('unmigrated API rejects valid invoice operations before opening repository',async()=>{
+ const svc=new BillingAdminService({query:async()=>({rows:[]})},{});transactions=0;
  for(const call of [()=>svc.catalog(actor,'sid'),()=>svc.list(actor,'sid'),()=>svc.get(actor,'sid','id'),()=>svc.create(actor,'sid',{expectedCatalogVersion:1,items:[{code:'review',quantity:1}]}),()=>svc.transition(actor,'sid','id',{expectedRevision:0,action:'ISSUE'})])await assert.rejects(call(),ServiceUnavailableException);
  assert.equal(transactions,0);
 });

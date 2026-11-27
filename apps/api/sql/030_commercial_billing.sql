@@ -1,6 +1,5 @@
 BEGIN;
--- STAGED: not a deployed migration. Apply only after manifest, RLS inventory,
--- runtime column grants and acceptance tests have been reviewed together.
+-- Commercial billing schema. Runtime settlement remains disabled.
 CREATE TABLE public.billing_catalog_versions (
  version integer PRIMARY KEY CHECK (version>0),
  prices jsonb NOT NULL CHECK (jsonb_typeof(prices)='array' AND jsonb_array_length(prices) BETWEEN 1 AND 100),
@@ -93,6 +92,7 @@ CREATE POLICY billing_invoices_update_v87 ON public.billing_invoices FOR UPDATE 
  WITH CHECK (organization_id = NULLIF(current_setting('assettrust.tenant_id', true), '')::uuid);
 -- No UPDATE or DELETE policies on journal, settlements or subscriptions.
 -- Activation must additionally restrict runtime grants to catalog SELECT/INSERT,
--- invoice SELECT/INSERT and UPDATE(state,revision,payment_key), and append-only tables
--- SELECT/INSERT. No runtime DDL, TRUNCATE, DELETE, TRIGGER or REFERENCES grants.
+-- invoice SELECT, column-restricted INSERT and UPDATE(state,revision), and journal/subscription
+-- SELECT/INSERT. Settlement SELECT only; no payment_key write until a trusted worker exists.
+-- No runtime DDL, TRUNCATE, DELETE, TRIGGER or REFERENCES grants.
 COMMIT;

@@ -64,8 +64,8 @@ test('publication needs applied independently approved proposal and a unique ver
  assert(calls[0].includes('pg_advisory_xact_lock('));assert(calls[1].includes('c.reviewed_by<>c.submitted_by'));assert(calls[1].includes('v.value=c.proposed_value'));
  await assert.rejects(publishApprovedCatalog({query:async()=>({rows:[]})},'change'));
 });
-test('staged migration protects tenant rows and append-only records without enabling runtime deployment',()=>{
- const sql=read('tools/staged-migrations/030_commercial_billing.sql');
+test('reviewed migration protects tenant rows and append-only records',()=>{
+ const sql=read('apps/api/sql/030_commercial_billing.sql');
  for(const table of ['billing_invoices','billing_journal','billing_settlements','billing_subscriptions']){
   assert(sql.includes('ALTER TABLE public.'+table+' FORCE ROW LEVEL SECURITY'));
   assert(sql.includes('CREATE POLICY '+table+'_select_v87'));
@@ -74,5 +74,5 @@ test('staged migration protects tenant rows and append-only records without enab
  assert.equal((sql.match(/FOR UPDATE TO PUBLIC/g)||[]).length,1);
  assert(!/FOR DELETE TO PUBLIC/.test(sql));assert(sql.includes('PRIMARY KEY (provider_id,transaction_id)'));
  assert(sql.includes('PRIMARY KEY (organization_id,funding_invoice_id)'));
- assert(!fs.existsSync(path.join(root,'apps/api/sql/030_commercial_billing.sql')),'Update this staging test when migration is promoted');
+ assert(!fs.existsSync(path.join(root,'tools/staged-migrations/030_commercial_billing.sql')));
 });
