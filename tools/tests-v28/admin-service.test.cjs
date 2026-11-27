@@ -9,7 +9,7 @@ const nest={ForbiddenException,BadRequestException,NotFoundException,ConflictExc
 function load(file,imports={}){const name=path.join(src,file),txt=fs.readFileSync(name,'utf8');const js=ts.transpileModule(txt,{fileName:name,compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,experimentalDecorators:true,emitDecoratorMetadata:false}}).outputText;const m={exports:{}};vm.runInNewContext(js,{module:m,exports:m.exports,require:id=>{if(Object.hasOwn(imports,id))return imports[id];throw Error('Unexpected import '+id)},console,Date,JSON},{filename:name,timeout:5000});return m.exports}
 const anchorPolicy=load('contexts/anchoring/domain/anchor-job-policy.ts');
 const billing=load('contexts/billing/domain/commercial-policy.ts');
-const policy=load('contexts/admin-control/domain/configuration-policy.ts',{'../../anchoring/domain/anchor-job-policy':anchorPolicy,'../../billing/domain/commercial-policy':billing});
+const policy=load('contexts/admin-control/domain/configuration-policy.ts',{'../../anchoring/domain/anchor-job-policy':anchorPolicy,'../../billing/domain/commercial-policy':billing,'../../billing/domain/reconciliation-job':load('contexts/billing/domain/reconciliation-job.ts')});
 const current=load('contexts/identity/infrastructure/current-admin-step-up.ts',{'@nestjs/common':nest});
 const {AdminControlService}=load('contexts/admin-control/infrastructure/admin-control.module.ts',{
  '@nestjs/common':nest,'../../../database':{},'../../../auth':{AuthGuard:class{},AuthModule:class{}},'../../../audit':{AuditModule:class{}},

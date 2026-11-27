@@ -67,7 +67,7 @@ function persistence(options={}){
  }};
  const db={transaction:async fn=>{calls.push({sql:'BEGIN'});try{const result=await fn(tx);calls.push({sql:'COMMIT'});return result;}catch(e){calls.push({sql:'ROLLBACK'});throw e;}}};
  const audit={write:async(connection,u,action,entity,invoiceId,detail)=>{assert.equal(connection,tx);assert.equal(u,actor);calls.push({sql:'AUDIT',args:[action,entity,invoiceId,detail]});}};
- return {calls,repo:new PgSettlementRepository(db,audit,{authorized:()=>true},()=>actor,role)};
+ return {calls,repo:new PgSettlementRepository(db,audit,{authorized:()=>true},()=>actor,role,async()=>!options.lostLease)};
 }
 test('atomic paid transition, clearing posting and eligible subscription use persisted clock',async()=>{
  const f=persistence();assert.equal(await f.repo.settle(request,obs),'SETTLED');
@@ -91,4 +91,9 @@ test('recorded settlement replay is read-only',async()=>{
 test('ordinary API remains disconnected and cannot invoke settlement worker',()=>{
  const api=fs.readFileSync(path.join(root,'infrastructure/billing.module.ts'),'utf8'),repo=fs.readFileSync(path.join(root,'infrastructure/pg-billing.repository.ts'),'utf8');
  assert(!api.includes('PgSettlementRepository'));assert(!api.includes('ReconciliationService'));assert(repo.includes("transition.invoice.state==='PAID'"));assert(api.includes("paymentState:'NOT_CONNECTED'"));
+});
+
+test('lost or revoked queue lease blocks settlement before invoice access',async()=>{
+ const f=persistence({lostLease:true});assert.equal(await f.repo.settle(request,obs),'REVIEW_REQUIRED');
+ assert(!f.calls.some(c=>c.sql.includes('FROM public.billing_invoices')||c.sql.startsWith('INSERT')));
 });

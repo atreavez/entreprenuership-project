@@ -5,7 +5,7 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const ts=require('../test-typescript-loader.cjs');
 const file=path.resolve(__dirname,'../../apps/api/src/contexts/admin-control/domain/configuration-policy.ts');
 function loadDomain(name,imports={}){const code=ts.transpileModule(fs.readFileSync(name,'utf8'),{fileName:name,compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;const m={exports:{}};vm.runInNewContext(code,{module:m,exports:m.exports,require(id){if(Object.hasOwn(imports,id))return imports[id];throw Error('domain may not import infrastructure')}},{filename:name,timeout:5000});return m.exports;}
-function get(){const anchor=loadDomain(path.resolve(path.dirname(file),'../../anchoring/domain/anchor-job-policy.ts'));const billing=loadDomain(path.resolve(path.dirname(file),'../../billing/domain/commercial-policy.ts'));return loadDomain(file,{'../../anchoring/domain/anchor-job-policy':anchor,'../../billing/domain/commercial-policy':billing});}
+function get(){const anchor=loadDomain(path.resolve(path.dirname(file),'../../anchoring/domain/anchor-job-policy.ts'));const billing=loadDomain(path.resolve(path.dirname(file),'../../billing/domain/commercial-policy.ts'));return loadDomain(file,{'../../anchoring/domain/anchor-job-policy':anchor,'../../billing/domain/commercial-policy':billing,'../../billing/domain/reconciliation-job':loadDomain(path.resolve(path.dirname(file),'../../billing/domain/reconciliation-job.ts'))});}
 const allowedValue=(v)=>JSON.parse(JSON.stringify(v));
 test('catalog includes only explicitly approved keys and scopes',()=>{const d=get();assert(d.catalog('organization').some(x=>x.key==='workspace.display_name'));assert(d.catalog('platform').some(x=>x.key==='branding.product_name'));assert(!d.catalog('organization').some(x=>x.key==='branding.product_name'));});
 test('unknown, security, official-registry and audit rewrite keys rejected',()=>{const d=get();for(const k of ['audit_event.delete','auth.disable_mfa','registry.official_title','security.allow_all','__proto__'])assert.throws(()=>d.prepareChange('organization',k,'anything'),/unsupported/i);});
@@ -23,4 +23,11 @@ test('commercial price catalog is platform-only and requires independent approva
  const result=d.prepareChange('platform','billing.price_catalog',value);assert.equal(result.requiresApproval,true);assert.equal(result.value,value);
  assert.throws(()=>d.prepareChange('organization','billing.price_catalog',value));
  for(const input of ['{}','[]','bad',JSON.stringify([{code:'review',unitUgx:'25000',periodDays:null}])])assert.throws(()=>d.prepareChange('platform','billing.price_catalog',input));
+});
+
+test('payment policy requires platform scope, independent approval and no credentials',()=>{
+ const d=get(),policy={enabled:true,providers:['offline'],retryBaseMs:1000,pollMs:5000,maxAttempts:3};
+ const result=d.prepareChange('platform','billing.reconciliation_policy',JSON.stringify(policy));assert(result.requiresApproval);
+ assert.throws(()=>d.prepareChange('organization','billing.reconciliation_policy',JSON.stringify(policy)));
+ assert.throws(()=>d.prepareChange('platform','billing.reconciliation_policy',JSON.stringify({...policy,apiKey:'secret'})));
 });
