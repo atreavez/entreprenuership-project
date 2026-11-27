@@ -13,7 +13,7 @@ export function hydrateAnchorJob(r:any):AnchorJob{
   revision:safeInteger(r.revision),state:r.state,transactionId:r.transaction_id,failures:safeInteger(r.failures),
   nextRunAt:r.next_run_at===null?null:safeInteger(r.next_run_at),confirmations:r.confirmations===null?null:safeInteger(r.confirmations)});
 }
-async function appendHistory(tx:PoolClient,job:AnchorJob){
+export async function appendHistory(tx:PoolClient,job:AnchorJob){
  await tx.query('INSERT INTO public.anchor_job_history(organization_id,job_id,revision,snapshot) VALUES($1,$2,$3,$4::jsonb)',
   [job.organizationId,job.id,job.revision,JSON.stringify(job)]);
 }

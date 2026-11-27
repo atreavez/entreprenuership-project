@@ -7,8 +7,8 @@ import {readLocalAuditProof} from '../../../integrations';
 import {assertCurrentAdminStepUp} from '../../identity/infrastructure/current-admin-step-up';
 import {requireCurrentOrganizationAdmin} from '../../access/infrastructure/transactional-access';
 import {setTenantScope} from '../../tenant-isolation/application/tenant-scope';
-import {ANCHOR_SETTINGS_KEY,parseAnchorSettingsText,createJob} from '../domain/anchor-job-policy';
-import {PgAnchorJobRepository,hydrateAnchorJob} from './pg-anchor-job.repository';
+import {ANCHOR_SETTINGS_KEY,parseAnchorSettingsText,createJob,recoverJob} from '../domain/anchor-job-policy';
+import {PgAnchorJobRepository,hydrateAnchorJob,appendHistory} from './pg-anchor-job.repository';
 const PLATFORM_ID='00000000-0000-0000-0000-000000000000';
 @Injectable()
 export class AnchoringAdminService{
@@ -47,6 +47,38 @@ export class AnchoringAdminService{
    return {...result,dispatchState:'NOT_CONNECTED',notice:'Request stored only. No blockchain transaction submitted.'};
   });
  }
+ async recover(actor:UserAuth,sid:string,id:string,input:unknown){
+  const jobId=isUuid(id);
+  if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).length!==2||
+   typeof (input as any).expectedRevision!=='number'||!Number.isSafeInteger((input as any).expectedRevision)||(input as any).expectedRevision<0||
+   typeof (input as any).reason!=='string'||(input as any).reason.trim().length<12||(input as any).reason.length>500)
+   throw new BadRequestException('Provide expectedRevision and a 12–500 character recovery reason');
+  const {expectedRevision,reason}=input as {expectedRevision:number;reason:string};
+  return this.db.transaction(async tx=>{
+   await setTenantScope(tx,actor.organizationId);
+   await assertCurrentAdminStepUp(tx,actor,sid);
+   const live=await tx.query('SELECT value,version FROM admin_configuration_values WHERE scope=$1 AND scope_id=$2 AND setting_key=$3 FOR SHARE',
+    ['platform',PLATFORM_ID,ANCHOR_SETTINGS_KEY]);
+   if(live.rows.length!==1)throw new ConflictException('Platform anchoring policy has not been approved');
+   await tx.query('SELECT pg_advisory_xact_lock(hashtext($1))',[actor.organizationId]);
+   const found=await tx.query('SELECT *,floor(extract(epoch FROM clock_timestamp())*1000)::bigint AS database_now FROM public.anchor_jobs WHERE organization_id=$1 AND id=$2 FOR UPDATE',[actor.organizationId,jobId]);
+   if(found.rows.length!==1)throw new NotFoundException('Anchoring job not found');
+   const row=found.rows[0],now=Number(row.database_now);
+   if(row.lease_until!==null&&Number(row.lease_until)>now)throw new ConflictException('Job is leased by a worker');
+   let next;
+   try{next=recoverJob(hydrateAnchorJob(row),parseAnchorSettingsText(live.rows[0].value,Number(live.rows[0].version)),expectedRevision,now);}
+   catch{throw new ConflictException('Job cannot be requeued under the current policy or revision; refresh and review');}
+   const result=await tx.query(`UPDATE public.anchor_jobs SET state=$4,revision=$5,failures=0,next_run_at=$6,confirmations=NULL,lease_token=NULL,lease_until=NULL
+    WHERE organization_id=$1 AND id=$2 AND revision=$3 AND state IN ('BLOCKED','MANUAL_REVIEW')
+    AND (lease_until IS NULL OR lease_until<=floor(extract(epoch FROM clock_timestamp())*1000)::bigint) RETURNING *`,
+    [actor.organizationId,jobId,expectedRevision,next.state,next.revision,next.nextRunAt]);
+   if(result.rowCount!==1)throw new ConflictException('Job recovery lost the revision or lease check');
+   const saved=hydrateAnchorJob(result.rows[0]);
+   await appendHistory(tx,saved);
+   await this.audit.write(tx,actor,'ANCHOR_JOB_REQUEUED','anchor_job',jobId,{reason:reason.trim(),fromRevision:expectedRevision,transactionId:saved.transactionId});
+   return {job:saved,dispatchState:'NOT_CONNECTED',notice:'Job requeued only. No blockchain transaction submitted.'};
+  });
+ }
  async list(actor:UserAuth){
   return this.db.transaction(async tx=>{
    await setTenantScope(tx,actor.organizationId);
@@ -71,6 +103,7 @@ export class AnchoringAdminService{
 export class AnchoringController{
  constructor(private readonly svc:AnchoringAdminService){}
  @Post('jobs')request(@Req()r:any,@Body()body:unknown){return this.svc.request(r.user,r.sessionId,body);}
+ @Post('jobs/:id/recover')recover(@Req()r:any,@Param('id')id:string,@Body()body:unknown){return this.svc.recover(r.user,r.sessionId,id,body);}
  @Get('jobs')list(@Req()r:any){return this.svc.list(r.user);}
  @Get('jobs/:id/history')history(@Req()r:any,@Param('id')id:string){return this.svc.history(r.user,id);}
 }

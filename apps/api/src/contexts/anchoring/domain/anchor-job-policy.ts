@@ -80,3 +80,16 @@ export function canonicalAnchorSettingsText(input:unknown):string{
  const {version,...settings}=parseAnchorSettingsText(input,0);
  return JSON.stringify(settings);
 }
+
+/** Manual recovery never changes the historical target or known transaction.
+ * Requires the same currently approved policy, no outstanding lease and a fresh
+ * revision check at the persistence boundary.
+ */
+export function recoverJob(job:AnchorJob,current:AnchorSettings,expectedRevision:number,now:number):AnchorJob{
+ const active=validateSettings(current);
+ if(!integer(expectedRevision,0,Number.MAX_SAFE_INTEGER-2)||expectedRevision!==job.revision)throw Error('Stale job revision');
+ if(!active.enabled||!job.settings.enabled||JSON.stringify(active)!==JSON.stringify(validateSettings(job.settings)))throw Error('Original approved anchoring policy is not currently active');
+ if(job.state!=='BLOCKED'&&job.state!=='MANUAL_REVIEW')throw Error('Only stopped jobs can be requeued');
+ if(!integer(now,0,Number.MAX_SAFE_INTEGER-86400000))throw Error('Invalid recovery clock');
+ return Object.freeze({...job,revision:job.revision+1,state:'RETRY_REQUIRED',failures:0,nextRunAt:now,confirmations:null});
+}
