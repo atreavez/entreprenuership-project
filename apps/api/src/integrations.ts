@@ -5,8 +5,15 @@ import {setTenantScope} from './contexts/tenant-isolation/application/tenant-sco
 import {requireCurrentOrganizationAdmin} from './contexts/access/infrastructure/transactional-access';
 import {createHash} from 'node:crypto';
 import {Database} from './database';
+import type {PoolClient} from 'pg';
 /** Explicitly non-government, non-blockchain proofs: verification of local audit head only. */
 export function localProof(orgId:string,chainHead:string){return createHash('sha256').update(`assettrust:v1:${orgId}:${chainHead}`).digest('hex');}
+/** Caller must set tenant scope and lock current administrator authority first. */
+export async function readLocalAuditProof(tx:PoolClient,organizationId:string){
+ const {rows}=await tx.query('SELECT event_hash,event_sequence,created_at FROM audit_events WHERE organization_id=$1 ORDER BY event_sequence DESC LIMIT 1',[organizationId]);
+ const head=rows[0]?.event_hash||'GENESIS';
+ return {kind:'LOCAL_AUDIT_COMMITMENT_NOT_BLOCKCHAIN',organizationId,head,proof:localProof(organizationId,head),lastAuditEventTime:rows[0]?.created_at||null,notice:'This is a locally computed digest. It is not an independent timestamp or external blockchain receipt.'};
+}
 @Controller('integrations')@UseGuards(AuthGuard)
 export class IntegrationsController {
  constructor(private db:Database){}
@@ -15,9 +22,7 @@ export class IntegrationsController {
   return this.db.transaction(async tx=>{
    await setTenantScope(tx,user.organizationId);
    await requireCurrentOrganizationAdmin(tx,user);
-   const {rows}=await tx.query('SELECT event_hash,event_sequence,created_at FROM audit_events WHERE organization_id=$1 ORDER BY event_sequence DESC LIMIT 1',[user.organizationId]);
-   const head=rows[0]?.event_hash||'GENESIS';
-   return {kind:'LOCAL_AUDIT_COMMITMENT_NOT_BLOCKCHAIN',organizationId:user.organizationId,head,proof:localProof(user.organizationId,head),lastAuditEventTime:rows[0]?.created_at||null,notice:'This is a locally computed digest. It is not an independent timestamp or external blockchain receipt.'};
+   return readLocalAuditProof(tx,user.organizationId);
   });
  }
  @Get('status')async status(@Req()r:any){

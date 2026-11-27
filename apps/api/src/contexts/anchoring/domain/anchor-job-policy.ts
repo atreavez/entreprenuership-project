@@ -63,3 +63,20 @@ export interface AnchorJobRepository {
  claim(organizationId:string,now:number,leaseUntil:number):Promise<{job:AnchorJob;leaseToken:string}|null>;
  save(organizationId:string,expectedRevision:number,leaseToken:string,next:AnchorJob):Promise<boolean>;
 }
+
+/** Persisted platform settings use the existing configuration ledger's version.
+ * The text format works with the existing admin-control editor. No credentials or
+ * endpoints, and no user-supplied version, are accepted in this configuration value.
+ */
+export const ANCHOR_SETTINGS_KEY='anchoring.provider_policy';
+export function parseAnchorSettingsText(input:unknown,version:number):AnchorSettings{
+ if(typeof input!=='string'||input.length>1200)throw Error('Invalid anchoring policy JSON');
+ let parsed:unknown;
+ try{parsed=JSON.parse(input)}catch{throw Error('Invalid anchoring policy JSON')}
+ if(!parsed||typeof parsed!=='object'||Array.isArray(parsed)||Object.hasOwn(parsed,'version'))throw Error('Invalid anchoring policy fields');
+ return validateSettings({...parsed,version});
+}
+export function canonicalAnchorSettingsText(input:unknown):string{
+ const {version,...settings}=parseAnchorSettingsText(input,0);
+ return JSON.stringify(settings);
+}

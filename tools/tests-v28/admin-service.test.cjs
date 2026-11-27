@@ -7,7 +7,8 @@ class ForbiddenException extends Error{}class BadRequestException extends Error{
 const deco=()=>()=>{};
 const nest={ForbiddenException,BadRequestException,NotFoundException,ConflictException,Body:deco,Controller:deco,Get:deco,Post:deco,Param:deco,Query:deco,Req:deco,UseGuards:deco,Injectable:deco,Module:deco};
 function load(file,imports={}){const name=path.join(src,file),txt=fs.readFileSync(name,'utf8');const js=ts.transpileModule(txt,{fileName:name,compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,experimentalDecorators:true,emitDecoratorMetadata:false}}).outputText;const m={exports:{}};vm.runInNewContext(js,{module:m,exports:m.exports,require:id=>{if(Object.hasOwn(imports,id))return imports[id];throw Error('Unexpected import '+id)},console,Date,JSON},{filename:name,timeout:5000});return m.exports}
-const policy=load('contexts/admin-control/domain/configuration-policy.ts');
+const anchorPolicy=load('contexts/anchoring/domain/anchor-job-policy.ts');
+const policy=load('contexts/admin-control/domain/configuration-policy.ts',{'../../anchoring/domain/anchor-job-policy':anchorPolicy});
 const current=load('contexts/identity/infrastructure/current-admin-step-up.ts',{'@nestjs/common':nest});
 const {AdminControlService}=load('contexts/admin-control/infrastructure/admin-control.module.ts',{
  '@nestjs/common':nest,'../../../database':{},'../../../auth':{AuthGuard:class{},AuthModule:class{}},'../../../audit':{AuditModule:class{}},

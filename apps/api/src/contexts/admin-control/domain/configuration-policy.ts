@@ -1,7 +1,9 @@
 /** AssetTrust configuration domain: deterministic allowlist. This must not import controllers or SQL. */
+import {ANCHOR_SETTINGS_KEY,canonicalAnchorSettingsText} from '../../anchoring/domain/anchor-job-policy';
 export type ConfigScope='platform'|'organization';
 export type Definition={key:string;scope:ConfigScope;title:string;category:string;description:string;type:'text'|'email'|'currency'|'integer';max?:number;min?:number;maxNumber?:number;requiresApproval:boolean;effect:'display'|'metadata'};
 const DEFINITIONS:readonly Definition[]=[
+ {scope:'platform',key:ANCHOR_SETTINGS_KEY,title:'Blockchain anchoring policy',category:'Integrations',description:'JSON policy with enabled, target (providerId, networkId, minConfirmations), retryBaseMs, maxAttempts and pollMs. Independent approval required. Does not enable external dispatch.',type:'text',max:1200,requiresApproval:true,effect:'metadata'},
  {scope:'platform',key:'branding.product_name',title:'Product name',category:'Branding',description:'Displayed in the administration workspace; public branding rollout is separate.',type:'text',max:80,requiresApproval:false,effect:'display'},
  {scope:'platform',key:'branding.support_email',title:'Platform support email',category:'Support',description:'The published support contact in administration.',type:'email',requiresApproval:false,effect:'display'},
  {scope:'platform',key:'branding.public_notice',title:'Platform information banner',category:'Content',description:'Operational notice; cannot override legal disclaimers.',type:'text',max:300,requiresApproval:false,effect:'display'},
@@ -23,7 +25,9 @@ export function prepareChange(scopeInput:unknown,key:unknown,input:unknown):{def
  const def=DEFINITIONS.find(x=>x.scope===scope&&x.key===key);
  if(!def)throw Error('Unsupported configuration key');
  let value:string|number;
- if(def.type==='integer'){
+ if(def.key===ANCHOR_SETTINGS_KEY){
+  value=canonicalAnchorSettingsText(input);
+ }else if(def.type==='integer'){
   if(typeof input!=='number'||!Number.isSafeInteger(input)||input<(def.min??1)||input>(def.maxNumber??365))throw Error('Invalid integer configuration value');
   value=input;
  }else{

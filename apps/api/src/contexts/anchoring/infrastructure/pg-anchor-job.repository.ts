@@ -8,7 +8,7 @@ function safeInteger(value:unknown):number{
  if(value===null||value===undefined)throw Error('Missing persisted integer');
  const n=Number(value);if(!Number.isSafeInteger(n)||n<0)throw Error('Invalid persisted integer');return n;
 }
-function hydrate(r:any):AnchorJob{
+export function hydrateAnchorJob(r:any):AnchorJob{
  return Object.freeze({id:r.id,organizationId:r.organization_id,commitment:r.commitment,settings:validateSettings(r.settings),
   revision:safeInteger(r.revision),state:r.state,transactionId:r.transaction_id,failures:safeInteger(r.failures),
   nextRunAt:r.next_run_at===null?null:safeInteger(r.next_run_at),confirmations:r.confirmations===null?null:safeInteger(r.confirmations)});
@@ -23,20 +23,25 @@ async function appendHistory(tx:PoolClient,job:AnchorJob){
 export class PgAnchorJobRepository implements AnchorJobRepository {
  constructor(private readonly db:Database){}
  async createOrGet(job:AnchorJob):Promise<AnchorJob>{
+  return this.db.transaction(async tx=>{
+   await setTenantScope(tx,job.organizationId);
+   return (await this.createOrGetInTransaction(tx,job)).job;
+  });
+ }
+ /** Caller owns transaction and must lock current authority before invoking. */
+ async createOrGetInTransaction(tx:PoolClient,job:AnchorJob):Promise<{job:AnchorJob;created:boolean}>{
   // Never accept an arbitrary initial confirmed state from a caller.
   const initial=createJob(job.id,job.organizationId,job.commitment,job.settings,job.nextRunAt??0);
-  return this.db.transaction(async tx=>{
-   await setTenantScope(tx,initial.organizationId);
+  await setTenantScope(tx,initial.organizationId);
    const p=[initial.id,initial.organizationId,initial.commitment,initial.settings.target.providerId,initial.settings.target.networkId,
     JSON.stringify(initial.settings),initial.state,initial.nextRunAt];
    const inserted=await tx.query(`INSERT INTO public.anchor_jobs(id,organization_id,commitment,provider_id,network_id,settings,state,next_run_at,failures)
     VALUES($1,$2,$3,$4,$5,$6::jsonb,$7,$8,0) ON CONFLICT (organization_id,provider_id,network_id,commitment) DO NOTHING RETURNING *`,p);
-   if(inserted.rowCount===1){const created=hydrate(inserted.rows[0]);await appendHistory(tx,created);return created;}
+   if(inserted.rowCount===1){const created=hydrateAnchorJob(inserted.rows[0]);await appendHistory(tx,created);return {job:created,created:true};}
    const existing=await tx.query(`SELECT * FROM public.anchor_jobs WHERE organization_id=$1 AND provider_id=$2 AND network_id=$3 AND commitment=$4`,
     [initial.organizationId,initial.settings.target.providerId,initial.settings.target.networkId,initial.commitment]);
    if(existing.rowCount!==1)throw Error('Anchor job conflict could not be resolved');
-   return hydrate(existing.rows[0]);
-  });
+   return {job:hydrateAnchorJob(existing.rows[0]),created:false};
  }
  async claim(organizationId:string,now:number,leaseUntil:number):Promise<{job:AnchorJob;leaseToken:string}|null>{
   const duration=leaseUntil-now;
@@ -50,7 +55,7 @@ export class PgAnchorJobRepository implements AnchorJobRepository {
      AND state NOT IN ('BLOCKED','MANUAL_REVIEW') ORDER BY next_run_at,id LIMIT 1 FOR UPDATE SKIP LOCKED
     ) UPDATE public.anchor_jobs j SET lease_token=$2,lease_until=${clock}+$3::bigint
      FROM candidate WHERE j.id=candidate.id AND j.organization_id=$1 RETURNING j.*`,[organizationId,leaseToken,duration]);
-   return claimed.rowCount===1?{job:hydrate(claimed.rows[0]),leaseToken}:null;
+   return claimed.rowCount===1?{job:hydrateAnchorJob(claimed.rows[0]),leaseToken}:null;
   });
  }
  async save(organizationId:string,expectedRevision:number,leaseToken:string,next:AnchorJob):Promise<boolean>{
@@ -64,7 +69,7 @@ export class PgAnchorJobRepository implements AnchorJobRepository {
     [organizationId,next.id,expectedRevision,leaseToken,next.revision,next.state,next.transactionId,next.failures,next.nextRunAt,next.confirmations,
      next.commitment,JSON.stringify(validateSettings(next.settings))]);
    if(result.rowCount!==1)return false;
-   await appendHistory(tx,hydrate(result.rows[0]));
+   await appendHistory(tx,hydrateAnchorJob(result.rows[0]));
    return true;
   });
  }

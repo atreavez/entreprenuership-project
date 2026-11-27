@@ -17,6 +17,7 @@ import {AccessModule} from './access';
 import {TeamModule} from './team';
 import {OperationsModule} from './operations';
 import {IntegrationsModule} from './integrations';
+import {AnchoringModule} from './contexts/anchoring/infrastructure/anchoring.module';
 import {NotificationsModule} from './notifications';
 import {ProfessionalTrustModule} from './professional-trust';
 import { GeospatialModule } from './contexts/geospatial/infrastructure/geospatial.module';
@@ -42,7 +43,7 @@ const API_VERSION=JSON.parse(readFileSync(resolve(__dirname,'../package.json'),'
 }
 @Module({imports:[
   ThrottlerModule.forRoot([{ttl:60000,limit:100}]),
-  DatabaseModule,AuthModule,PasswordResetModule,AuditModule,AssetsModule,CasesModule,DocumentsModule,DashboardModule,AccessModule,TeamModule,OperationsModule,IntegrationsModule,NotificationsModule,ProfessionalTrustModule,GeospatialModule,AdminControlModule,MemberManagementModule,WorkflowAdminModule,ContentAdminModule,PublishedContentModule,ProviderAdminModule,ReportIssuanceModule,ReportLayoutModule,ReportSharingModule
+  DatabaseModule,AuthModule,PasswordResetModule,AuditModule,AssetsModule,CasesModule,DocumentsModule,DashboardModule,AccessModule,TeamModule,OperationsModule,IntegrationsModule,AnchoringModule,NotificationsModule,ProfessionalTrustModule,GeospatialModule,AdminControlModule,MemberManagementModule,WorkflowAdminModule,ContentAdminModule,PublishedContentModule,ProviderAdminModule,ReportIssuanceModule,ReportLayoutModule,ReportSharingModule
 ],controllers:[HealthController],providers:[SchemaProbe,{provide:APP_GUARD,useClass:ThrottlerGuard}]})class AppModule{}
 async function bootstrap(){
  const assessment=validateRuntimeConfig(process.env);
