@@ -18,8 +18,9 @@ export interface WorkflowTransaction{
  completeAsset(assetId:string,orgId:string):Promise<void>;
  audit(actor:ReviewActor,action:string,caseId:string,details:Record<string,unknown>):Promise<void>;
 }
+export type WorkflowAccessContext=Readonly<{actor:ReviewActor;sessionId?:string}>;
 export interface WorkflowRepository{
- transaction<T>(work:(tx:WorkflowTransaction)=>Promise<T>):Promise<T>;
+ transaction<T>(work:(tx:WorkflowTransaction)=>Promise<T>,context:WorkflowAccessContext):Promise<T>;
 }
 export class EvidenceWorkflow{
  constructor(private readonly repo:WorkflowRepository){}
@@ -27,7 +28,7 @@ export class EvidenceWorkflow{
   const c=await tx.getCase(id,actor.organizationId);
   if(!c)throw new WorkflowFailure('CASE_NOT_FOUND','Case not found');return c;
  }
- async review(actor:ReviewActor,caseId:string,evidenceId:string,decision:ReviewDecision,notes:string){
+ async review(actor:ReviewActor,caseId:string,evidenceId:string,decision:ReviewDecision,notes:string,sessionId?:string){
   if(decision!=='ACCEPTED'&&decision!=='REJECTED')throw new WorkflowFailure('INVALID_DECISION','Unknown review decision');
   if(typeof notes!=='string'||notes.trim().length<8||notes.length>2000)throw new WorkflowFailure('INVALID_NOTES','Review rationale must be 8–2000 characters');
   return this.repo.transaction(async tx=>{
@@ -41,9 +42,9 @@ export class EvidenceWorkflow{
    await tx.recordDecision(evidenceId,actor.id,decision,notes.trim());
    await tx.audit(actor,'EVIDENCE_REVIEWED',caseId,{evidenceId,stage:c.stage,decision,reviewerId:actor.id});
    return {id:evidenceId,decision,reviewedBy:actor.id,notice:DISCLAIMER};
-  });
+  },{actor,sessionId});
  }
- async readiness(actor:ReviewActor,caseId:string):Promise<Readiness>{
+ async readiness(actor:ReviewActor,caseId:string,sessionId?:string):Promise<Readiness>{
   return this.repo.transaction(async tx=>{
    const c=await this.findCase(tx,actor,caseId);
    const current=await tx.getCurrentActor(actor,c.stage);
@@ -53,9 +54,9 @@ export class EvidenceWorkflow{
    if(c.stage==='CLOSED')return base;
    const policy=tx.getStagePolicy?await tx.getStagePolicy(actor.organizationId,c.stage):defaultWorkflowPolicy(c.stage);
    return applyWorkflowPolicy(base,e,policy,policy.version);
-  });
+  },{actor,sessionId});
  }
- async advance(actor:ReviewActor,caseId:string){
+ async advance(actor:ReviewActor,caseId:string,sessionId?:string){
   return this.repo.transaction(async tx=>{
    const c=await this.findCase(tx,actor,caseId);
    const current=await tx.getCurrentActor(actor,c.stage);
@@ -71,6 +72,6 @@ export class EvidenceWorkflow{
    if(next==='CLOSED')await tx.completeAsset(c.assetId,actor.organizationId);
    await tx.audit(actor,'CASE_STAGE_ADVANCED',caseId,{from:c.stage,to:next,evidenceAccepted:true,workflowPolicyVersion:readiness.workflowPolicyVersion,additionalEvidenceRequired:readiness.additionalEvidenceRequired});
    return {caseId,stage:next,status:next==='CLOSED'?'CLOSED':'OPEN',notice:DISCLAIMER};
-  });
+  },{actor,sessionId});
  }
 }

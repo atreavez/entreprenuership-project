@@ -30,12 +30,14 @@ const {CasesService}=load('cases.ts',{
  './contexts/tenant-isolation/application/tenant-scope':{setTenantScope:async()=>{}},
  './contexts/verification/infrastructure/current-case-assignment':assignment
 });
+const sid='12345678-1234-4234-8234-123456789abc';
 const user={id:'operator',organizationId:'org',role:'ORG_ADMIN'};
 function fixture({role='ORG_ADMIN',assignee='SURVEYOR',hasCase=true,accredited=true,open=true}={}){
  let updates=0,notifications=0,audits=0;const sql=[];
  const transactionQuery=async(q,params)=>{
   sql.push(q);
-  if(q.includes('SELECT c.id,c.created_by,c.assigned_to,actor.role')){
+  if(q.includes('JOIN auth_sessions s'))return {rows:[{id:user.id}]};
+  if(q.includes('SELECT c.id,c.asset_id,c.created_by,c.assigned_to,actor.role')){
    assert.deepEqual(Array.from(params),['case','org','operator']);
    return {rows:hasCase?[{
     id:'case',created_by:'creator',assigned_to:'surveyor',role
@@ -57,30 +59,30 @@ function fixture({role='ORG_ADMIN',assignee='SURVEYOR',hasCase=true,accredited=t
  return {service,sql,get updates(){return updates},get notifications(){return notifications},get audits(){return audits}};
 }
 test('CaseService cannot write assignment/notification/audit when admin is downgraded',async()=>{
- const f=fixture({role:'REVIEWER'});await assert.rejects(()=>f.service.assign(user,'case','surveyor'),ForbiddenException);
+ const f=fixture({role:'REVIEWER'});await assert.rejects(()=>f.service.assign(user,'case','surveyor',sid),ForbiddenException);
  assert.equal(f.updates,0);assert.equal(f.notifications,0);assert.equal(f.audits,0);
 });
 test('CaseService cannot write when assignee loses accreditation',async()=>{
- const f=fixture({accredited:false});await assert.rejects(()=>f.service.assign(user,'case','surveyor'),ForbiddenException);
+ const f=fixture({accredited:false});await assert.rejects(()=>f.service.assign(user,'case','surveyor',sid),ForbiddenException);
  assert.equal(f.updates,0);assert.equal(f.notifications,0);assert.equal(f.audits,0);
 });
 test('CaseService cannot write to closed case',async()=>{
- const f=fixture({open:false});await assert.rejects(()=>f.service.assign(user,'case','surveyor'),ConflictException);
+ const f=fixture({open:false});await assert.rejects(()=>f.service.assign(user,'case','surveyor',sid),ConflictException);
  assert.equal(f.updates,0);assert.equal(f.notifications,0);assert.equal(f.audits,0);
 });
 test('currently authorized case assignment commits mutation, notice and audit',async()=>{
- const f=fixture();const result=await f.service.assign(user,'case','surveyor');assert.equal(result.id,'case');
+ const f=fixture();const result=await f.service.assign(user,'case','surveyor',sid);assert.equal(result.id,'case');
  assert.equal(f.updates,1);assert.equal(f.notifications,1);assert.equal(f.audits,1);
 });
 
 test('case read rejects a downgraded nonparticipant despite a stale admin claim',async()=>{
  const f=fixture({role:'REVIEWER'});
- await assert.rejects(()=>f.service.get(user,'case'),ForbiddenException);
+ await assert.rejects(()=>f.service.get(user,'case',sid),ForbiddenException);
  assert.equal(f.sql.some(q=>q.includes('SELECT c.*,a.asset_code')),false);
  assert.equal(f.updates,0);assert.equal(f.notifications,0);assert.equal(f.audits,0);
 });
 test('case read rejects an absent case before fetching its details',async()=>{
  const f=fixture({hasCase:false});
- await assert.rejects(()=>f.service.get(user,'case'),ForbiddenException);
+ await assert.rejects(()=>f.service.get(user,'case',sid),ForbiddenException);
  assert.equal(f.sql.some(q=>q.includes('SELECT c.*,a.asset_code')),false);
 });

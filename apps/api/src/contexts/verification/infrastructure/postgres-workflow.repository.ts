@@ -1,18 +1,23 @@
 /** INFRASTRUCTURE: the only layer in this vertical slice that knows PostgreSQL and NestJS. */
-import {Injectable} from '@nestjs/common';
+import {Injectable,ForbiddenException} from '@nestjs/common';
 import {PoolClient} from 'pg';
 import {Database} from '../../../database';
 import {setTenantScope} from '../../tenant-isolation/application/tenant-scope';
 import {AuditService} from '../../../audit';
-import {WorkflowRepository,WorkflowTransaction} from '../application/evidence-workflow';
+import {WorkflowRepository,WorkflowTransaction,WorkflowAccessContext} from '../application/evidence-workflow';
 import {CaseRecord,ReviewDecision,ReviewActor} from '../domain/evidence-policy';
+import {requireCurrentResourceSession} from '../../access/infrastructure/transactional-access';
 import {loadCurrentWorkflowActor} from './current-workflow-authorizer';
 import {defaultWorkflowPolicy,prepareWorkflowPolicy} from '../../workflow-admin/domain/workflow-policy';
 @Injectable()
 export class PostgresWorkflowRepository implements WorkflowRepository{
  constructor(private readonly db:Database,private readonly auditService:AuditService){}
- transaction<T>(work:(tx:WorkflowTransaction)=>Promise<T>):Promise<T>{
+ transaction<T>(work:(tx:WorkflowTransaction)=>Promise<T>,context:WorkflowAccessContext):Promise<T>{
+  if(!context?.sessionId)throw new ForbiddenException('Current workflow session required');
+  const {actor,sessionId}=context;
   return this.db.transaction(async (connection:PoolClient)=>{
+   await setTenantScope(connection,actor.organizationId);
+   await requireCurrentResourceSession(connection,actor,sessionId);
    const tx:WorkflowTransaction={
     getCurrentActor:(actor,stage)=>loadCurrentWorkflowActor(connection,actor,stage),
     getStagePolicy:async(orgId,stage)=>{
@@ -23,9 +28,11 @@ export class PostgresWorkflowRepository implements WorkflowRepository{
      return {...valid,version:Number(r.version)};
     },
     getCase:async(id,orgId)=>{
-     await setTenantScope(connection,orgId);
-     const {rows}=await connection.query(`SELECT id,organization_id,asset_id,stage,status,assigned_to,created_by
-       FROM verification_cases WHERE id=$1 AND organization_id=$2 FOR UPDATE`,[id,orgId]);
+     if(orgId!==actor.organizationId)throw new ForbiddenException('Workflow tenant mismatch');
+     const {rows}=await connection.query(`SELECT c.id,c.organization_id,c.asset_id,c.stage,c.status,c.assigned_to,c.created_by
+       FROM verification_cases c JOIN users member ON member.id=$3 AND member.organization_id=c.organization_id AND member.suspended_at IS NULL
+       WHERE c.id=$1 AND c.organization_id=$2 AND (member.role='ORG_ADMIN' OR c.created_by=member.id OR c.assigned_to=member.id)
+       FOR UPDATE OF c FOR SHARE OF member`,[id,orgId,actor.id]);
      const c=rows[0];return c?{id:c.id,organizationId:c.organization_id,assetId:c.asset_id,
       stage:c.stage,status:c.status,assignedTo:c.assigned_to,createdBy:c.created_by} as CaseRecord:null;
     },

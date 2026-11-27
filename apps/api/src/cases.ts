@@ -10,7 +10,7 @@ import { EvidenceWorkflow, WorkflowFailure } from './contexts/verification/appli
 import { PostgresWorkflowRepository } from './contexts/verification/infrastructure/postgres-workflow.repository';
 import { STAGES as DOMAIN_STAGES } from './contexts/verification/domain/evidence-policy';
 import { ForbiddenException } from '@nestjs/common';
-import {requireCurrentAssetContribution,requireCurrentCaseRead} from './contexts/access/infrastructure/transactional-access';
+import {requireCurrentAssetContribution,requireCurrentCaseRead,requireCurrentResourceSession} from './contexts/access/infrastructure/transactional-access';
 import {requireCurrentEvidenceSubmission} from './contexts/verification/infrastructure/current-evidence-authorizer';
 import {requireCurrentCaseAssignment} from './contexts/verification/infrastructure/current-case-assignment';
 export const STAGES=DOMAIN_STAGES;
@@ -25,15 +25,18 @@ export function authorizeStage(u:UserAuth,stage:string){
 @Injectable()
 export class CasesService{
  constructor(private db:Database,private audit:AuditService,private access:AccessService,private workflow:EvidenceWorkflow,private published:PublishedContentService){}
- async list(u:UserAuth){const {rows}=await this.db.tenantQuery(u.organizationId,`SELECT c.*, a.asset_code,a.district,a.declared_owner,a.asset_type FROM verification_cases c
+ async list(u:UserAuth,sid:string){const {rows}=await this.db.tenantQuery(u.organizationId,`SELECT c.*, a.asset_code,a.district,a.declared_owner,a.asset_type FROM verification_cases c
     JOIN assets a ON a.id=c.asset_id AND a.organization_id=c.organization_id
     JOIN users actor ON actor.id=$2 AND actor.organization_id=c.organization_id AND actor.suspended_at IS NULL
+    JOIN auth_sessions s ON s.id=$3 AND s.user_id=actor.id AND s.organization_id=actor.organization_id
+     AND s.revoked_at IS NULL AND s.expires_at>clock_timestamp() AND s.absolute_expires_at>clock_timestamp()
     WHERE c.organization_id=$1 AND (actor.role='ORG_ADMIN' OR c.created_by=actor.id OR c.assigned_to=actor.id)
-    ORDER BY c.created_at DESC LIMIT 200`,[u.organizationId,u.id]);return rows;}
- async get(u:UserAuth,id:string){
+    ORDER BY c.created_at DESC LIMIT 200`,[u.organizationId,u.id,sid]);return rows;}
+ async get(u:UserAuth,id:string,sid:string){
   const caseId=isUuid(id);
   return this.db.transaction(async tx=>{
    await setTenantScope(tx,u.organizationId);
+   await requireCurrentResourceSession(tx,u,sid);
    await requireCurrentCaseRead(tx,u,caseId);
    const {rows}=await tx.query(`SELECT c.*,a.asset_code,a.district,a.declared_owner,a.asset_type FROM verification_cases c
     JOIN assets a ON a.id=c.asset_id AND a.organization_id=c.organization_id
@@ -41,19 +44,20 @@ export class CasesService{
    if(!rows[0])throw new NotFoundException('Case not found');return rows[0];
   });
  }
- async create(u:UserAuth,body:any){assertRole(u,['ORG_ADMIN','CLIENT','REVIEWER']);const assetId=isUuid(body?.assetId);
+ async create(u:UserAuth,body:any,sid:string){assertRole(u,['ORG_ADMIN','CLIENT','REVIEWER']);const assetId=isUuid(body?.assetId);
   await this.access.asset(u,assetId,true);const id=uid(),code=`AT-VC-${id.slice(0,8).toUpperCase()}`;
   await this.db.transaction(async tx=>{
    await setTenantScope(tx,u.organizationId);
+   await requireCurrentResourceSession(tx,u,sid);
    // The request-time access check is not authoritative: recheck and lock the
    // current contributor permission in this transaction before creating a case.
    await requireCurrentAssetContribution(tx,u,assetId,{allowedActorRoles:['ORG_ADMIN','CLIENT','REVIEWER']});
    await tx.query('INSERT INTO verification_cases(id,organization_id,case_code,asset_id,created_by,notes) VALUES ($1,$2,$3,$4,$5,$6)',[id,u.organizationId,code,assetId,u.id,optionalText(body?.notes,'notes',2000)]);
    await tx.query("UPDATE assets SET status='IN_REVIEW',updated_at=now() WHERE id=$1 AND organization_id=$2",[assetId,u.organizationId]);
    await this.audit.write(tx,u,'CASE_CREATED','case',id,{caseCode:code,assetId});
-  });return this.get(u,id);
+  });return this.get(u,id,sid);
  }
- async evidence(u:UserAuth,id:string,body:any){
+ async evidence(u:UserAuth,id:string,body:any,sid:string){
   // Early access check improves UX; the transactional check below is authoritative.
   assertRole(u,['ORG_ADMIN','REVIEWER','SURVEYOR','LEGAL_REVIEWER']);
   const caseId=isUuid(id);
@@ -64,6 +68,7 @@ export class CasesService{
   if(['REGISTRY_SEARCH','FIELD_INSPECTION','LEGAL_REVIEW','FINAL_REVIEW'].includes(stage) && !reference)throw new BadRequestException('An attributable evidence reference is required at this stage');
   const evId=uid();await this.db.transaction(async tx=>{
    await setTenantScope(tx,u.organizationId);
+   await requireCurrentResourceSession(tx,u,sid);
     // Lock current assignment, role, organization membership and accreditation.
     // Request-time identity claims can be stale after administrative changes.
     await requireCurrentEvidenceSubmission(tx,u,caseId,stage);
@@ -74,8 +79,9 @@ export class CasesService{
     await this.audit.write(tx,u,'EVIDENCE_ADDED','case',caseId,{evidenceId:evId,stage,type,source});
   });return {id:evId,stage,evidenceType:type,sourceName:source,observations:notes,reviewStatus:'SUBMITTED'};
  }
- async listEvidence(u:UserAuth,id:string){const caseId=isUuid(id);return this.db.transaction(async tx=>{
+ async listEvidence(u:UserAuth,id:string,sid:string){const caseId=isUuid(id);return this.db.transaction(async tx=>{
   await setTenantScope(tx,u.organizationId);
+   await requireCurrentResourceSession(tx,u,sid);
   // Case participation is revalidated and locked in this same transaction.
   // A general asset READ grant must not expose confidential case evidence.
   await requireCurrentCaseRead(tx,u,caseId);
@@ -90,30 +96,31 @@ export class CasesService{
   }
   throw error;
  }
- async reviewEvidence(u:UserAuth,id:string,evidenceId:string,body:any){
+ async reviewEvidence(u:UserAuth,id:string,evidenceId:string,body:any,sid:string){
   const caseId=isUuid(id),eid=isUuid(evidenceId);
   await this.access.case(u,caseId,true);
   const decision=enumValue(body?.decision,['ACCEPTED','REJECTED'] as const,'decision');
   const notes=text(body?.reviewNotes,'reviewNotes',2000);
-  try{return await this.workflow.review(u,caseId,eid,decision,notes);}
+  try{return await this.workflow.review(u,caseId,eid,decision,notes,sid);}
   catch(error){return this.translate(error);}
  }
- async readiness(u:UserAuth,id:string){
+ async readiness(u:UserAuth,id:string,sid:string){
   const caseId=isUuid(id);await this.access.case(u,caseId);
-  try{return await this.workflow.readiness(u,caseId);}
+  try{return await this.workflow.readiness(u,caseId,sid);}
   catch(error){return this.translate(error);}
  }
- async advance(u:UserAuth,id:string){
+ async advance(u:UserAuth,id:string,sid:string){
   const caseId=isUuid(id);await this.access.case(u,caseId,true);
-  try{await this.workflow.advance(u,caseId);return this.get(u,caseId);}
+  try{await this.workflow.advance(u,caseId,sid);return this.get(u,caseId,sid);}
   catch(error){return this.translate(error);}
  }
-  async assign(u:UserAuth,id:string,assigneeId:string){
+  async assign(u:UserAuth,id:string,assigneeId:string,sid:string){
    assertRole(u,['ORG_ADMIN']);
    const caseId=isUuid(id),targetId=isUuid(assigneeId);
    // Outside-transaction role checks are UX only, not authorization authority.
    await this.db.transaction(async tx=>{
    await setTenantScope(tx,u.organizationId);
+   await requireCurrentResourceSession(tx,u,sid);
     await requireCurrentCaseAssignment(tx,u,caseId,targetId);
     const result=await tx.query(`UPDATE verification_cases SET assigned_to=$1,updated_at=now()
       WHERE id=$2 AND organization_id=$3 AND status='OPEN' RETURNING id`,[targetId,caseId,u.organizationId]);
@@ -130,21 +137,21 @@ export class CasesService{
       VALUES($1,$2,$3,'CASE','Verification case assigned',$4,'case',$5)`,[uid(),u.organizationId,targetId,copy.text,caseId]);
     await this.audit.write(tx,u,'CASE_ASSIGNED','case',caseId,{assigneeId:targetId});
    });
-   return this.get(u,caseId);
+   return this.get(u,caseId,sid);
   }
 }
 @Controller('cases')@UseGuards(AuthGuard)
 export class CasesController{
  constructor(private svc:CasesService){}
- @Get()list(@Req()r:any){return this.svc.list(r.user);}
- @Get(':id')get(@Req()r:any,@Param('id')id:string){return this.svc.get(r.user,id);}
- @Post()create(@Req()r:any,@Body()b:any){return this.svc.create(r.user,b);}
- @Get(':id/readiness')readiness(@Req()r:any,@Param('id')id:string){return this.svc.readiness(r.user,id);}
- @Get(':id/evidence')evidences(@Req()r:any,@Param('id')id:string){return this.svc.listEvidence(r.user,id);}
- @Post(':id/evidence')evidence(@Req()r:any,@Param('id')id:string,@Body()b:any){return this.svc.evidence(r.user,id,b);}
- @Post(':id/evidence/:evidenceId/review')review(@Req()r:any,@Param('id')id:string,@Param('evidenceId')evidenceId:string,@Body()b:any){return this.svc.reviewEvidence(r.user,id,evidenceId,b);}
- @Post(':id/advance')advance(@Req()r:any,@Param('id')id:string){return this.svc.advance(r.user,id);}
- @Post(':id/assign')assign(@Req()r:any,@Param('id')id:string,@Body()b:any){return this.svc.assign(r.user,id,isUuid(b?.assigneeId));}
+ @Get()list(@Req()r:any){return this.svc.list(r.user,r.sessionId);}
+ @Get(':id')get(@Req()r:any,@Param('id')id:string){return this.svc.get(r.user,id,r.sessionId);}
+ @Post()create(@Req()r:any,@Body()b:any){return this.svc.create(r.user,b,r.sessionId);}
+ @Get(':id/readiness')readiness(@Req()r:any,@Param('id')id:string){return this.svc.readiness(r.user,id,r.sessionId);}
+ @Get(':id/evidence')evidences(@Req()r:any,@Param('id')id:string){return this.svc.listEvidence(r.user,id,r.sessionId);}
+ @Post(':id/evidence')evidence(@Req()r:any,@Param('id')id:string,@Body()b:any){return this.svc.evidence(r.user,id,b,r.sessionId);}
+ @Post(':id/evidence/:evidenceId/review')review(@Req()r:any,@Param('id')id:string,@Param('evidenceId')evidenceId:string,@Body()b:any){return this.svc.reviewEvidence(r.user,id,evidenceId,b,r.sessionId);}
+ @Post(':id/advance')advance(@Req()r:any,@Param('id')id:string){return this.svc.advance(r.user,id,r.sessionId);}
+ @Post(':id/assign')assign(@Req()r:any,@Param('id')id:string,@Body()b:any){return this.svc.assign(r.user,id,isUuid(b?.assigneeId),r.sessionId);}
 }
 @Module({imports:[AuthModule,AuditModule,AccessModule,PublishedContentModule],providers:[
  PostgresWorkflowRepository,

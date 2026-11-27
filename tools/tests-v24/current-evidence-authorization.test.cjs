@@ -20,10 +20,12 @@ function compile(file,imports){
  vm.runInNewContext(js,sandbox,{filename:source,timeout:5000});return sandbox.module.exports;
 }
 const authorizer=compile('contexts/verification/infrastructure/current-evidence-authorizer.ts',{'@nestjs/common':nest});
+const sid='12345678-1234-4234-8234-123456789abc';
 const actor={id:'actor-v24',organizationId:'org-v24',role:'REVIEWER',professionalApproved:true};
 function fixture({role='REVIEWER',assignedTo=actor.id,status='OPEN',stage='INTAKE',accredited=true,hasCase=true}={}){
  const sql=[];let inserts=0,audits=0;const query=async(q,params)=>{
   sql.push(q);
+  if(q.includes('JOIN auth_sessions s'))return {rows:[{id:actor.id}]};
   if(/FROM verification_cases c\s+JOIN users actor/i.test(q))return {rows:hasCase?[{id:'case-v24',asset_id:'asset-v24',stage,status,assigned_to:assignedTo,role}]:[]};
   if(/FROM professional_accreditations p/i.test(q))return {rows:accredited?[{id:'credential-v24'}]:[]};
   if(/FROM disputes/i.test(q))return {rows:[]};
@@ -98,17 +100,17 @@ function evidenceService(opts={}){
 const request={stage:'INTAKE',evidenceType:'IDENTITY',sourceName:'Applicant',observations:'Evidence received'};
 test('actual CasesService.evidence denies revoked assignment before INSERT/audit',async()=>{
  const {svc,f}=evidenceService({assignedTo:'someone-else'});
- await assert.rejects(()=>svc.evidence(actor,'case-v24',request),ForbiddenException);
+ await assert.rejects(()=>svc.evidence(actor,'case-v24',request,sid),ForbiddenException);
  assert.equal(f.inserts,0);assert.equal(f.audits,0);
 });
 test('actual CasesService.evidence allows current assignment and writes audit',async()=>{
  const {svc,f}=evidenceService();
- await svc.evidence(actor,'case-v24',request);
+ await svc.evidence(actor,'case-v24',request,sid);
  assert.equal(f.inserts,1);assert.equal(f.audits,1);
 });
 test('actual CasesService.evidence denies changed stage before INSERT',async()=>{
  const {svc,f}=evidenceService({stage:'DOCUMENT_REVIEW'});
- await assert.rejects(()=>svc.evidence(actor,'case-v24',request),ConflictException);
+ await assert.rejects(()=>svc.evidence(actor,'case-v24',request,sid),ConflictException);
  assert.equal(f.inserts,0);assert.equal(f.audits,0);
 });
 test('case creation uses transactional asset contribution check, not only initial guard',()=>{
@@ -119,6 +121,7 @@ test('case creation uses transactional asset contribution check, not only initia
 test('actual CasesService.create denies a revoked asset grant before INSERT/audit',async()=>{
  let inserts=0,audits=0;
  const tx={query:async sql=>{
+  if(sql.includes('JOIN auth_sessions s'))return {rows:[{id:actor.id}]};
   if(/FROM assets a JOIN users actor/i.test(sql))return {rows:[{id:'asset-v24',asset_type:'LAND',created_by:'another-creator',role:'CLIENT'}]};
   if(/FROM verification_cases c\s+WHERE/i.test(sql))return {rows:[]};
   if(/FROM resource_grants g\s+WHERE/i.test(sql))return {rows:[]};
@@ -126,12 +129,13 @@ test('actual CasesService.create denies a revoked asset grant before INSERT/audi
   throw Error('Unexpected SQL: '+sql);
  }};
  const svc=new CasesService({transaction:fn=>fn(tx)},{write:()=>{audits++}},{asset:async()=>{}},{});
- await assert.rejects(()=>svc.create({...actor,role:'CLIENT'},{assetId:'asset-v24',assetType:'LAND',notes:'New case'}),ForbiddenException);
+ await assert.rejects(()=>svc.create({...actor,role:'CLIENT'},{assetId:'asset-v24',assetType:'LAND',notes:'New case'},sid),ForbiddenException);
  assert.equal(inserts,0);assert.equal(audits,0);
 });
 test('actual CasesService.create allows the current asset creator in the transaction',async()=>{
  let inserts=0,audits=0;
  const tx={query:async sql=>{
+  if(sql.includes('JOIN auth_sessions s'))return {rows:[{id:actor.id}]};
   if(/FROM assets a JOIN users actor/i.test(sql))return {rows:[{id:'asset-v24',asset_type:'LAND',created_by:actor.id,role:'CLIENT'}]};
   if(/INSERT INTO verification_cases/i.test(sql)){inserts++;return {rows:[]};}
   if(/UPDATE assets SET status/i.test(sql))return {rows:[],rowCount:1};
@@ -139,7 +143,7 @@ test('actual CasesService.create allows the current asset creator in the transac
  }};
  const svc=new CasesService({transaction:fn=>fn(tx)},{write:async()=>{audits++}},{asset:async()=>{}},{});
  svc.get=async()=>({id:'case-v24'});
- await svc.create({...actor,role:'CLIENT'},{assetId:'asset-v24',assetType:'LAND',notes:'New case'});
+ await svc.create({...actor,role:'CLIENT'},{assetId:'asset-v24',assetType:'LAND',notes:'New case'},sid);
  assert.equal(inserts,1);assert.equal(audits,1);
 });
 test('professional accreditation query references the user_id primary key from migration 005',()=>{
@@ -152,11 +156,12 @@ test('professional accreditation query references the user_id primary key from m
 test('case creation checks CURRENT role even if request-time actor had an allowed role',async()=>{
  let inserts=0;
  const tx={query:async sql=>{
+  if(sql.includes('JOIN auth_sessions s'))return {rows:[{id:actor.id}]};
   if(/FROM assets a JOIN users actor/i.test(sql))return {rows:[{id:'asset-v24',asset_type:'LAND',created_by:actor.id,role:'SURVEYOR'}]};
   if(/INSERT INTO verification_cases/i.test(sql)){inserts++;return {rows:[]};}
   throw Error('Unexpected SQL: '+sql);
  }};
  const svc=new CasesService({transaction:fn=>fn(tx)},{write:async()=>{}},{asset:async()=>{}},{});
- await assert.rejects(()=>svc.create({...actor,role:'CLIENT'},{assetId:'asset-v24'}),ForbiddenException);
+ await assert.rejects(()=>svc.create({...actor,role:'CLIENT'},{assetId:'asset-v24'},sid),ForbiddenException);
  assert.equal(inserts,0);
 });
