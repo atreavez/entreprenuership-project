@@ -26,6 +26,12 @@ export class BillingAdminService{
  async list(actor:UserAuth,sid:string){
   return this.run(actor,sid,async tx=>({invoices:await tx.listInvoices(actor.organizationId),paymentState:'NOT_CONNECTED'}));
  }
+ async journal(actor:UserAuth,sid:string){
+  return this.run(actor,sid,async tx=>({entries:await tx.journal(actor.organizationId)}));
+ }
+ async subscriptions(actor:UserAuth,sid:string){
+  return this.run(actor,sid,async tx=>({subscriptions:await tx.subscriptions(actor.organizationId),activationState:'NOT_CONNECTED'}));
+ }
  async get(actor:UserAuth,sid:string,id:string){
   const invoiceId=isUuid(id);
   return this.run(actor,sid,async tx=>{const invoice=await tx.invoice(actor.organizationId,invoiceId);if(!invoice)throw new NotFoundException('Invoice not found');return invoice;});
@@ -68,6 +74,8 @@ export class BillingAdminController{
  constructor(private readonly svc:BillingAdminService){}
  @Get('catalog')catalog(@Req()r:any){return this.svc.catalog(r.user,r.sessionId);}
  @Get('invoices')list(@Req()r:any){return this.svc.list(r.user,r.sessionId);}
+ @Get('journal')journal(@Req()r:any){return this.svc.journal(r.user,r.sessionId);}
+ @Get('subscriptions')subscriptions(@Req()r:any){return this.svc.subscriptions(r.user,r.sessionId);}
  @Get('invoices/:id')get(@Req()r:any,@Param('id')id:string){return this.svc.get(r.user,r.sessionId,id);}
  @Post('invoices')create(@Req()r:any,@Body()body:any){return this.svc.create(r.user,r.sessionId,body);}
  @Post('invoices/:id/transition')transition(@Req()r:any,@Param('id')id:string,@Body()body:any){return this.svc.transition(r.user,r.sessionId,id,body);}

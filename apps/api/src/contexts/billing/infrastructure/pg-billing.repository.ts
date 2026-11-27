@@ -60,6 +60,16 @@ export class PgBillingRepository implements BillingRepository{
      scope(org);const {rows}=await connection.query('SELECT * FROM public.billing_invoices WHERE organization_id=$1 ORDER BY created_at DESC,id LIMIT 50',[org]);
      const invoices:Invoice[]=[];for(const row of rows)invoices.push(await hydrateInvoice(connection,row));return invoices;
     },
+    journal:async(org)=>{
+     scope(org);
+     const {rows}=await connection.query('SELECT invoice_id,revision,event,debit_account,credit_account,amount_ugx,recorded_at FROM public.billing_journal WHERE organization_id=$1 ORDER BY recorded_at DESC,invoice_id,revision LIMIT 100',[org]);
+     return rows.map(r=>({invoiceId:r.invoice_id,revision:numeric(r.revision),event:r.event,debitAccount:r.debit_account,creditAccount:r.credit_account,amountUgx:numeric(r.amount_ugx),recordedAt:new Date(r.recorded_at).toISOString()}));
+    },
+    subscriptions:async(org)=>{
+     scope(org);
+     const {rows}=await connection.query('SELECT organization_id,funding_invoice_id,code,catalog_version,starts_at,ends_at FROM public.billing_subscriptions WHERE organization_id=$1 ORDER BY ends_at DESC,funding_invoice_id LIMIT 100',[org]);
+     return rows.map(r=>({organizationId:r.organization_id,fundingInvoiceId:r.funding_invoice_id,code:r.code,catalogVersion:numeric(r.catalog_version),startsAt:numeric(r.starts_at),endsAt:numeric(r.ends_at)}));
+    },
     createDraft:async(id,expectedVersion,items)=>{
      await catalogLock();const catalog=await loadCatalog(connection);
      if(!catalog)throw Error('Approved billing catalog unavailable');
