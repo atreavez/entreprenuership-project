@@ -34,6 +34,8 @@ try{
  // Keep these REVOKEs after blanket application table grants.
  await client.query(`REVOKE INSERT,UPDATE,DELETE ON TABLE public.assettrust_schema_migrations FROM ${RUNTIME_ROLE}`);
  await client.query(`REVOKE UPDATE,DELETE ON TABLE public.audit_events FROM ${RUNTIME_ROLE}`);
+ await client.query(`REVOKE UPDATE,DELETE,TRUNCATE,TRIGGER,REFERENCES ON TABLE public.anchor_job_history FROM ${RUNTIME_ROLE}`);
+ await client.query(`REVOKE DELETE,TRUNCATE,TRIGGER,REFERENCES ON TABLE public.anchor_jobs FROM ${RUNTIME_ROLE}`);
  await client.query(`GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA public TO ${RUNTIME_ROLE}`);
  const url=new URL(process.env.DATABASE_URL);
  url.username=RUNTIME_ROLE;url.password=password;

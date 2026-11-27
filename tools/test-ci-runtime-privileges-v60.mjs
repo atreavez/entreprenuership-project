@@ -35,6 +35,15 @@ try{
   EXISTS(SELECT 1 FROM pg_catalog.pg_class
    WHERE oid IN ('public.assettrust_schema_migrations'::regclass,'public.audit_events'::regclass)
      AND relowner=(SELECT oid FROM pg_catalog.pg_roles WHERE rolname=current_user)) AS protected_table_owner,
+  has_any_column_privilege(current_user,'public.anchor_job_history','UPDATE') AS anchor_job_history_update,
+  has_table_privilege(current_user,'public.anchor_job_history','DELETE') AS anchor_job_history_delete,
+  has_table_privilege(current_user,'public.anchor_job_history','TRUNCATE') AS anchor_job_history_truncate,
+  has_table_privilege(current_user,'public.anchor_job_history','TRIGGER') AS anchor_job_history_trigger,
+  has_any_column_privilege(current_user,'public.anchor_job_history','REFERENCES') AS anchor_job_history_references,
+  has_table_privilege(current_user,'public.anchor_jobs','DELETE') AS anchor_jobs_delete,
+  has_table_privilege(current_user,'public.anchor_jobs','TRUNCATE') AS anchor_jobs_truncate,
+  has_table_privilege(current_user,'public.anchor_jobs','TRIGGER') AS anchor_jobs_trigger,
+  has_any_column_privilege(current_user,'public.anchor_jobs','REFERENCES') AS anchor_jobs_references,
   has_schema_privilege(current_user,'public','CREATE') AS public_schema_create,
   has_database_privilege(current_user,current_database(),'CREATE') AS database_create,
   EXISTS(SELECT 1 FROM pg_catalog.pg_auth_members m
@@ -46,7 +55,7 @@ try{
  if(!result.ok)throw Error(result.issues.join('; '));
  // TRUNCATE is not subject to RLS. Column-level grants can bypass a table-only ACL check.
  const additional=['migration_truncate','audit_truncate','migration_trigger','audit_trigger',
-  'migration_references','audit_references','protected_table_owner','rolreplication'];
+  'migration_references','audit_references','protected_table_owner','rolreplication','anchor_job_history_update','anchor_job_history_delete','anchor_job_history_truncate','anchor_job_history_trigger','anchor_job_history_references','anchor_jobs_delete','anchor_jobs_truncate','anchor_jobs_trigger','anchor_jobs_references'];
  for(const key of additional){
   if(flags[key]!==false)throw Error('Runtime database privilege check failed: '+key);
  }

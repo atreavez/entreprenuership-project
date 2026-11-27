@@ -41,9 +41,11 @@ export class Database implements OnModuleDestroy, OnModuleInit {
     'public.disputes'::regclass,
     'public.monitoring_reminders'::regclass,
     'public.verification_quotes'::regclass,
-    'public.notifications'::regclass
+    'public.notifications'::regclass,
+    'public.anchor_jobs'::regclass,
+    'public.anchor_job_history'::regclass
    ])`);
-  if(tables.length!==13||tables.some((r:any)=>!r.relrowsecurity||!r.relforcerowsecurity))
+  if(tables.length!==15||tables.some((r:any)=>!r.relrowsecurity||!r.relforcerowsecurity))
    throw new Error('Required private table tenant row-level security is missing; do not start production API');
   const currentRole=(await this.pool.query('SELECT current_user AS runtime_role')).rows[0]?.runtime_role;
   if(!currentRole||tables.some((r:any)=>r.table_owner===currentRole))

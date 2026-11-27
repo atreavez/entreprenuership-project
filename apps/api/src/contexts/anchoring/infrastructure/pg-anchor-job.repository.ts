@@ -17,7 +17,7 @@ async function appendHistory(tx:PoolClient,job:AnchorJob){
  await tx.query('INSERT INTO public.anchor_job_history(organization_id,job_id,revision,snapshot) VALUES($1,$2,$3,$4::jsonb)',
   [job.organizationId,job.id,job.revision,JSON.stringify(job)]);
 }
-/** Not registered in Nest until staged migration and policy inventory are promoted.
+/** Not registered in Nest until the admin and deployment dispatch gates are wired.
  * Call only after current tenant/admin authority has been established.
  */
 export class PgAnchorJobRepository implements AnchorJobRepository {

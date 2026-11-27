@@ -22,7 +22,12 @@ export const POLICY_CONTRACT:readonly ExpectedPolicy[]=Object.freeze([
  {table:'verification_quotes',name:'verification_quotes_tenant_v62',cmd:'ALL',read:'tenant',write:'tenant'},
  {table:'notifications',name:'notifications_recipient_select_v62',cmd:'SELECT',read:'recipient',write:null},
  {table:'notifications',name:'notifications_recipient_update_v62',cmd:'UPDATE',read:'recipient',write:'recipient'},
- {table:'notifications',name:'notifications_tenant_insert_v62',cmd:'INSERT',read:null,write:'tenant'}
+ {table:'notifications',name:'notifications_tenant_insert_v62',cmd:'INSERT',read:null,write:'tenant'},
+ {table:'anchor_jobs',name:'anchor_jobs_select_v87',cmd:'SELECT',read:'tenant',write:null},
+ {table:'anchor_jobs',name:'anchor_jobs_insert_v87',cmd:'INSERT',read:null,write:'tenant'},
+ {table:'anchor_jobs',name:'anchor_jobs_update_v87',cmd:'UPDATE',read:'tenant',write:'tenant'},
+ {table:'anchor_job_history',name:'anchor_job_history_select_v87',cmd:'SELECT',read:'tenant',write:null},
+ {table:'anchor_job_history',name:'anchor_job_history_insert_v87',cmd:'INSERT',read:null,write:'tenant'}
 ]);
 export const PROTECTED_TABLES=Object.freeze([...new Set(POLICY_CONTRACT.map(p=>p.table))]);
 export interface CatalogPolicy {

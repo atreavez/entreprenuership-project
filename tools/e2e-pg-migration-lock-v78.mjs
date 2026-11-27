@@ -2,7 +2,7 @@
  * v0.78 read-only PostgreSQL migration lock acceptance.
  * Always runs against an explicitly authorized disposable loopback database.
  * Holds an advisory lock in session A, proves runner B refuses promptly,
- * releases the lock, then proves the full 28-file ledger still checks cleanly.
+ * releases the lock, then proves the full 29-file ledger still checks cleanly.
  * No schema, ledger, tenant, document, audit or payment writes.
  */
 import assert from 'node:assert/strict';
@@ -11,7 +11,7 @@ const require=createRequire(import.meta.url);
 const PLAN={schema:'ASSETTRUST_V78_PG_MIGRATION_LOCK_PLAN',productionApproved:false,status:'NOT_EXECUTED',
  target:'DISPOSABLE_LOOPBACK_ONLY',modifiesBusinessData:false,
  checks:['independent session obtains migration lock','contending runner refuses before catalog queries',
- 'ledger remains unchanged under contention','release of first session permits full 28-migration check'],
+ 'ledger remains unchanged under contention','release of first session permits full 29-migration check'],
  requires:['CI=true','NODE_ENV=test','ASSETTRUST_E2E_ALLOW_MUTATION=YES',
  'ASSETTRUST_V78_PG_CONFIRM=YES','trusted loopback assettrust_ci or assettrust_test database','reviewed installed pg dependency']};
 const action=process.argv[2];
@@ -31,7 +31,7 @@ else{
   const acquired=await owner.query('SELECT pg_try_advisory_lock($1::bigint) AS acquired',[MIGRATION_LOCK_ID]);
   assert.equal(acquired.rows[0]?.acquired,true);locked=true;checks++;
   const before=await owner.query('SELECT filename,sha256 FROM assettrust_schema_migrations ORDER BY filename');
-  assert.equal(before.rows.length,28,'Expected 28 audited migration ledger entries');checks++;
+  assert.equal(before.rows.length,29,'Expected 29 audited migration ledger entries');checks++;
   const started=Date.now();
   await assert.rejects(run({connectionString:process.env.DATABASE_URL,quiet:true}),/Another migration\/check owns the schema lock/);
   assert(Date.now()-started<10000,'Concurrent migration check did not refuse promptly');checks++;
@@ -40,7 +40,7 @@ else{
   const released=await owner.query('SELECT pg_advisory_unlock($1::bigint) AS released',[MIGRATION_LOCK_ID]);
   assert.equal(released.rows[0]?.released,true);locked=false;checks++;
   const checked=await run({connectionString:process.env.DATABASE_URL,check:true,quiet:true});
-  assert.equal(checked.checked,28);checks++;
+  assert.equal(checked.checked,29);checks++;
   console.log(JSON.stringify({schema:'ASSETTRUST_V78_REAL_PG_RESULT',status:'PASSED',checks,
    productionApproved:false,releaseStatus:'NO_GO'}));
  }catch(error){failed=true;console.error(JSON.stringify({schema:'ASSETTRUST_V78_REAL_PG_RESULT',status:'FAILED',checks,

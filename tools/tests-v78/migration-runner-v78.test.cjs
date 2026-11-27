@@ -27,8 +27,8 @@ class Pg {
  }
 }
 function use(pg,opts={}){return run({clientFactory:()=>pg,quiet:true,...opts});}
-test('28 audited SQL migrations remain contiguous, unmodified and nonempty',()=>{
- assert.equal(plan.length,28);assert(plan.every(x=>/^[a-f0-9]{64}$/.test(x.sha256)&&x.sql.length));
+test('29 audited SQL migrations remain contiguous, unmodified and nonempty',()=>{
+ assert.equal(plan.length,29);assert(plan.every(x=>/^[a-f0-9]{64}$/.test(x.sha256)&&x.sql.length));
 });
 test('advisory lock is deterministic and PostgreSQL BIGINT parameterized',async()=>{
  const pg=new Pg();await use(pg,{check:true});const lock=pg.calls.find(x=>x.sql.includes('pg_try_advisory_lock'));
@@ -48,7 +48,7 @@ test('connection failure closes the constructed client',async()=>{
  assert(pg.closed);assert.equal(pg.calls.length,0);
 });
 test('read-only full ledger check works without DDL or writes',async()=>{
- const pg=new Pg();const outcome=await use(pg,{check:true});assert.equal(outcome.checked,28);
+ const pg=new Pg();const outcome=await use(pg,{check:true});assert.equal(outcome.checked,29);
  assert(!pg.calls.some(x=>/^(BEGIN|COMMIT|INSERT|CREATE)/.test(x.sql)));assert(pg.closed);
 });
 test('missing ledger under --check is a failure, no schema creation',async()=>{
@@ -66,9 +66,9 @@ test('missing migration is reported, not silently baselined',async()=>{
 });
 test('a new database applies migrations in per-file transactions and releases lock',async()=>{
  const pg=new Pg({ledger:false,applied:[]});const result=await use(pg);
- assert.equal(result.applied,28);assert.equal(pg.applied.length,28);
- assert.equal(pg.calls.filter(x=>x.sql==='BEGIN').length,28);
- assert.equal(pg.calls.filter(x=>x.sql==='COMMIT').length,28);
+ assert.equal(result.applied,29);assert.equal(pg.applied.length,29);
+ assert.equal(pg.calls.filter(x=>x.sql==='BEGIN').length,29);
+ assert.equal(pg.calls.filter(x=>x.sql==='COMMIT').length,29);
  assert(pg.calls.some(x=>x.sql.includes('pg_advisory_unlock')));assert(pg.closed);
 });
 test('SQL execution failure rolls back and does not mark that migration applied',async()=>{

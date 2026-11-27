@@ -38,8 +38,8 @@ test('cross-tenant claim fails before gate or save',async()=>{
  const worker=new AnchorWorker(f.jobs,{resolve:async()=>{throw Error('must not invoke gate')}},()=>1000);
  await assert.rejects(worker.runOne(org),/tenant mismatch/);assert.equal(f.changes.length,0);
 });
-test('staged SQL and repository include tenant scope, concurrency fence and transactional history',()=>{
- const sql=fs.readFileSync(path.join(root,'tools/staged-migrations/029_anchor_jobs.sql'),'utf8');
+test('active SQL and repository include tenant scope, concurrency fence and transactional history',()=>{
+ const sql=fs.readFileSync(path.join(root,'apps/api/sql/029_anchor_jobs.sql'),'utf8');
  const repo=fs.readFileSync(path.join(root,base,'infrastructure/pg-anchor-job.repository.ts'),'utf8');
  for(const table of ['anchor_jobs','anchor_job_history']){
   assert(sql.includes('ALTER TABLE public.'+table+' FORCE ROW LEVEL SECURITY'));

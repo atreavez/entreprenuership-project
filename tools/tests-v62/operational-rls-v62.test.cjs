@@ -29,7 +29,7 @@ test('inbox read and update both require tenant PLUS recipient actor; insert acc
  assert.doesNotMatch(migration,/CREATE POLICY.*?FOR DELETE/i);
 });
 test('migration manifest appends one SHA-256 without modifying earlier migrations',()=>{
- const entries=require('../migrations/plan.cjs').buildPlan();assert.equal(entries.length,28);
+ const entries=require('../migrations/plan.cjs').buildPlan();assert.equal(entries.length,29);
  assert.equal(entries[26].filename,'027_operational_data_rls.sql');
  assert.equal(entries[26].sha256,crypto.createHash('sha256').update(migration).digest('hex'));
  const source=read('apps/api/src/contexts/platform/domain/schema-manifest.ts');
@@ -48,7 +48,7 @@ test('tenant-recipient scope helper sets tenant THEN validated actor with transa
 });
 test('recipient DB method runs both settings and query inside same transaction',()=>{
  const s=read('apps/api/src/database.ts');assert.match(s,/async tenantRecipientQuery[\s\S]*?return this.transaction\(async tx=>\{\s*await setRecipientScope\(tx,organizationId,actorId\);\s*return tx.query/);
- assert.match(s,/tables.length!==13/);for(const t of [...operations,'notifications'])assert(s.includes(`'public.${t}'::regclass`));
+ assert.match(s,/tables.length!==15/);for(const t of [...operations,'notifications'])assert(s.includes(`'public.${t}'::regclass`));
 });
 test('inbox service uses scoped query and never unscoped pool query',()=>{
  const s=read('apps/api/src/notifications.ts');assert.equal((s.match(/this.db.tenantRecipientQuery\(u.organizationId,u.id,/g)||[]).length,2);
@@ -71,7 +71,7 @@ test('inbox list and markRead send actor identity from validated user in a real 
  assert.deepEqual(calls.map(x=>x.slice(0,2)),[[user.organizationId,user.id],[user.organizationId,user.id]]);
 });
 test('runtime role guard rejects absent RLS on each newly protected table',()=>{
- const {REQUIRED_RLS_TABLES,evaluateDatabaseRole,RUNTIME_ROLE}=require('../runtime-role-policy-v57.cjs');assert.equal(REQUIRED_RLS_TABLES.length,13);
+ const {REQUIRED_RLS_TABLES,evaluateDatabaseRole,RUNTIME_ROLE}=require('../runtime-role-policy-v57.cjs');assert.equal(REQUIRED_RLS_TABLES.length,15);
  const all=REQUIRED_RLS_TABLES.map(relname=>({relname,relrowsecurity:true,relforcerowsecurity:true,table_owner:'assettrust'}));
  assert(evaluateDatabaseRole({role:{rolsuper:false,rolbypassrls:false,rolcreatedb:false,rolcreaterole:false},tables:all},RUNTIME_ROLE).ok);
  for(const table of [...operations,'notifications'])assert(!evaluateDatabaseRole({role:{rolsuper:false,rolbypassrls:false,rolcreatedb:false,rolcreaterole:false},tables:all.filter(x=>x.relname!==table)},RUNTIME_ROLE).ok,table);
@@ -105,7 +105,7 @@ test('all three live RLS entrypoints dynamically query the complete protected ta
 });
 test('new v62 source carries package version and no earlier migration bytes changed',()=>{
  assert(/^0\.(?:6[2-9]|[7-9]\d)\.0$/.test(manifest.version));assert.equal(JSON.parse(read('apps/api/package.json')).version,manifest.version);assert.equal(JSON.parse(read('apps/web/package.json')).version,manifest.version);
- const previous=fs.readdirSync(path.join(root,'apps/api/sql')).filter(x=>/^\d{3}_/.test(x)).sort();assert.equal(previous.length,28);
+ const previous=fs.readdirSync(path.join(root,'apps/api/sql')).filter(x=>/^\d{3}_/.test(x)).sort();assert.equal(previous.length,29);
 });
 test('operator preflight probes every cross-tenant relationship without mutating records',()=>{
  const sql=read('tools/sql/v62-operational-preflight.sql');assert.match(sql,/BEGIN READ ONLY;/);assert.match(sql,/COMMIT;\s*$/);

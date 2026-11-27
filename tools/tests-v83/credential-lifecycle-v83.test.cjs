@@ -113,7 +113,7 @@ test('changePassword still checks old password under FOR UPDATE lock',async()=>{
  assert(row);assert.match(row.sql,/FOR UPDATE/);
 });
 test('no migration or altered tenant isolation is introduced for password lifecycle fixes',()=>{
- const sql=fs.readdirSync(path.join(root,'apps/api/sql')).filter(f=>/^\d+_.*\.sql$/.test(f));assert.equal(sql.length,28);
+ const sql=fs.readdirSync(path.join(root,'apps/api/sql')).filter(f=>/^\d+_.*\.sql$/.test(f));assert.equal(sql.length,29);
  assert.match(source,/AuthGuard implements CanActivate/);assert.match(source,/adminMfaRequired/);
 });
 test('CI must require the v83 suite before live integrations',()=>{

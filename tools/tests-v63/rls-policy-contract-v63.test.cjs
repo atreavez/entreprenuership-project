@@ -15,7 +15,7 @@ function catalog(p){return {tablename:p.table,policyname:p.name,cmd:p.cmd,permis
 function good(){return POLICY_CONTRACT.map(catalog);}
 function replace(row,change){return good().map((x,i)=>i===row?{...x,...change}:x);}
 const exact=(fn)=>{assert.equal(fn.ok,false);assert(fn.issues.length>0);};
-test('reviewed policy inventory contains exactly 16 policies on 13 separate tables',()=>{assert.equal(POLICY_CONTRACT.length,16);assert.equal(PROTECTED_TABLES.length,13);assert.equal(new Set(POLICY_CONTRACT.map(x=>x.table+':'+x.name)).size,16);});
+test('reviewed policy inventory contains exactly 21 policies on 15 separate tables',()=>{assert.equal(POLICY_CONTRACT.length,21);assert.equal(PROTECTED_TABLES.length,15);assert.equal(new Set(POLICY_CONTRACT.map(x=>x.table+':'+x.name)).size,21);});
 test('canonicalizer handles actual PostgreSQL pg_get_expr extra parentheses and casts',()=>{
  assert.equal(canonicalPredicate(tenant),expectedPredicate('tenant'));assert.equal(canonicalPredicate(recipient),expectedPredicate('recipient'));
  assert.equal(canonicalPredicate(null),null);
@@ -40,12 +40,12 @@ test('inbox UPDATE WITH CHECK missing recipient identity rejects startup',()=>ex
 test('inbox UPDATE read authorization missing recipient identity rejects startup',()=>exact(inspectPolicyInventory(replace(14,{qual:tenant}))));
 test('inbox INSERT broadens tenant insert by OR TRUE rejects startup',()=>exact(inspectPolicyInventory(replace(15,{with_check:tenant+' OR true'}))));
 test('altered predicate using COALESCE rejects startup',()=>exact(inspectPolicyInventory(replace(0,{qual:tenant.replace('NULLIF','COALESCE')}))));
-test('all 16 declared policies originate in committed SQL migrations',()=>{const migrations=fs.readdirSync(path.join(root,'apps/api/sql')).filter(x=>/^\d{3}_.*\.sql$/.test(x)).map(x=>read('apps/api/sql/'+x)).join('\n');for(const p of POLICY_CONTRACT)assert(migrations.includes('CREATE POLICY '+p.name+' ON public.'+p.table),p.name);});
+test('all 21 declared policies originate in committed SQL migrations',()=>{const migrations=fs.readdirSync(path.join(root,'apps/api/sql')).filter(x=>/^\d{3}_.*\.sql$/.test(x)).map(x=>read('apps/api/sql/'+x)).join('\n');for(const p of POLICY_CONTRACT)assert(migrations.includes('CREATE POLICY '+p.name+' ON public.'+p.table),p.name);});
 test('the API checks policy catalog at startup when enforcing runtime-role security',()=>{const s=read('apps/api/src/database.ts');assert(s.includes('inspectPolicyInventory(policies)'));assert(s.includes("FROM pg_policies WHERE schemaname='public'"));assert(s.includes('if(!catalog.ok)throw new Error'));});
 test('CI executes TypeScript-dependent policy test after installs and live PG test before tenant fixtures',()=>{const s=read('.github/workflows/ci.yml');assert(s.indexOf('npm run verify:v63')>s.indexOf('run: npm ci'));assert(s.indexOf('test:pg:policy-contract:v63')<s.indexOf('test:pg:operational-rls:v62'));});
 test('supervised runner orders policy inventory before other tenant checks',()=>{const {dbSteps,assertDbTarget}=require('../release-validation-v51.cjs');const names=dbSteps(JSON.parse(read('package.json'))).map(x=>x.name);assert(names.indexOf('test:pg:runtime-role:v57')<names.indexOf('test:pg:policy-contract:v63'));assert(names.indexOf('test:pg:policy-contract:v63')<names.indexOf('test:pg:audit-rls:v61'));assert.throws(()=>assertDbTarget({}),/./);});
 test('read-only live policy runner refuses unsafe execution before importing PostgreSQL driver',()=>{const proc=cp.spawnSync(process.execPath,['tools/test-pg-policy-contract-v63.mjs'],{cwd:root,env:{CI:'false',NODE_ENV:'test'},encoding:'utf8',timeout:4000});assert.notEqual(proc.status,0);assert.match(proc.stderr,/BLOCKED/);assert.doesNotMatch(proc.stderr,/password=|postgres:\/\//);});
-test('new release is consistent across workspaces, forward migration inventory',()=>{for(const p of ['package.json','apps/api/package.json','apps/web/package.json'])assert.match(JSON.parse(read(p)).version,/^0\.(?:6[3-9]|[7-9]\d|\d{3,})\.0$/);assert.equal(fs.readdirSync(path.join(root,'apps/api/sql')).filter(x=>/^\d{3}_/.test(x)).length,28);});
+test('new release is consistent across workspaces, forward migration inventory',()=>{for(const p of ['package.json','apps/api/package.json','apps/web/package.json'])assert.match(JSON.parse(read(p)).version,/^0\.(?:6[3-9]|[7-9]\d|\d{3,})\.0$/);assert.equal(fs.readdirSync(path.join(root,'apps/api/sql')).filter(x=>/^\d{3}_/.test(x)).length,29);});
 
 test('pre-install CI does not execute TypeScript-dependent checks before npm ci',()=>{const ci=read('.github/workflows/ci.yml');const earlier=ci.slice(0,ci.indexOf('run: npm ci'));for(const v of ['v61','v62','v63'])assert(!earlier.includes('npm run verify:'+v));});
 

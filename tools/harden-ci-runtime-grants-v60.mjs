@@ -28,6 +28,8 @@ try{
  try{
   await operator.query(`REVOKE INSERT,UPDATE,DELETE ON TABLE public.assettrust_schema_migrations FROM ${RUNTIME_ROLE}`);
   await operator.query(`REVOKE UPDATE,DELETE ON TABLE public.audit_events FROM ${RUNTIME_ROLE}`);
+  await operator.query(`REVOKE UPDATE,DELETE,TRUNCATE,TRIGGER,REFERENCES ON TABLE public.anchor_job_history FROM ${RUNTIME_ROLE}`);
+  await operator.query(`REVOKE DELETE,TRUNCATE,TRIGGER,REFERENCES ON TABLE public.anchor_jobs FROM ${RUNTIME_ROLE}`);
   await operator.query('COMMIT');
  }catch(e){await operator.query('ROLLBACK').catch(()=>{});throw e;}
  console.log(JSON.stringify({schema:'ASSETTRUST_V60_DISPOSABLE_GRANT_REPAIR',ok:true,

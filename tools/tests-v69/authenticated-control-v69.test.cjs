@@ -21,7 +21,7 @@ function fake({badReady=false,badOwned=false,denyPlatform=false,badLogout=false}
   calls.push({url,route,opts});
   assert.equal(opts.redirect,'error');
   if(route==='/healthz')return respond(200,{service:'assettrust-api',ok:true,version,e2eTargetId:badOwned?'unrecognized-process':MARK});
-  if(route==='/readyz')return respond(200,{ok:true,version,database:'ready',postgis:'ready',schema:'verified-migration-ledger',security:'rls-policy-contract-verified',migrationsVerified:28,rlsPoliciesVerified:badReady?15:16,protectedTablesVerified:13});
+  if(route==='/readyz')return respond(200,{ok:true,version,database:'ready',postgis:'ready',schema:'verified-migration-ledger',security:'rls-policy-contract-verified',migrationsVerified:29,rlsPoliciesVerified:badReady?20:21,protectedTablesVerified:15});
   // Simulated disposable MFA provisioning (never a real credential).
   if(route==='/auth/mfa/enroll')return respond(201,{secret:'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ'});
   if(route==='/auth/mfa/confirm')return respond(201,{enabled:true,recoveryCodes:Array(10).fill('synthetic-test-only')});
@@ -90,7 +90,7 @@ test('blocks non-loopback, redirectable, embedded-credential and malformed API o
  for(const url of ['https://127.0.0.1:4000','http://192.168.1.1:4000','http://localhost:4000','http://127.0.0.1:80','http://user:pass@127.0.0.1:4000','http://127.0.0.1:4000/evil','http://127.0.0.1:4000/?x=1','http://127.0.0.1:4000/#x'])
   assert.throws(()=>m.authorize(env({ASSETTRUST_E2E_URL:url})),/INVALID_LOCAL_API_ORIGIN/);
 });
-test('checks version, ownership marker, 28 migrations, 16 policies, 13 tables before mutation',async()=>{
+test('checks version, ownership marker, 29 migrations, 21 policies, 15 tables before mutation',async()=>{
  const m=await mod;const f=fake();const result=await m.inspectOwnedApi(env(),f.fetcher);
  assert.equal(result.version,JSON.parse(fs.readFileSync(path.join(ROOT,'package.json'))).version);assert.equal(f.calls.length,2);assert.equal(f.calls[0].route,'/healthz');assert.equal(f.calls[1].route,'/readyz');
 });

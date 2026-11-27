@@ -1,5 +1,5 @@
 BEGIN;
--- STAGED ONLY: move into apps/api/sql after updating schema/RLS inventories and CI.
+-- Anchoring persistence. Provider dispatch stays disabled until separately authorized.
 CREATE TABLE public.anchor_jobs (
  id uuid PRIMARY KEY,
  organization_id uuid NOT NULL REFERENCES public.organizations(id),
