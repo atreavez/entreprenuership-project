@@ -19,6 +19,7 @@ const nest={Controller:dec,Get:dec,Post:dec,Patch:dec,Param:dec,Body:dec,Req:dec
  ForbiddenException,NotFoundException,ConflictException,BadRequestException};
 const guards=load('apps/api/src/contexts/access/infrastructure/transactional-access.ts',{'@nestjs/common':nest});
 const ORG='00000000-0000-4000-8000-000000000201',USER='00000000-0000-4000-8000-000000000202',CASE='00000000-0000-4000-8000-000000000203',ASSET='00000000-0000-4000-8000-000000000204',TASK='00000000-0000-4000-8000-000000000205',DISPUTE='00000000-0000-4000-8000-000000000206',QUOTE='00000000-0000-4000-8000-000000000207',ASSIGNEE='00000000-0000-4000-8000-000000000208';
+const sid='12345678-1234-4234-8234-123456789abc';
 const actor={id:USER,organizationId:ORG,role:'ORG_ADMIN'};
 const common={uid:()=> '00000000-0000-4000-8000-000000000209',isUuid:value=>value,text:value=>value,optionalText:value=>value??null,enumValue:(value,values)=>{if(!values.includes(value))throw new BadRequestException();return value},assertRole:(u,roles)=>{if(!roles.includes(u.role))throw new ForbiddenException()}};
 const scope={setTenantScope:async(tx,org)=>tx.query('TENANT_SCOPE',[org])};
@@ -29,6 +30,7 @@ function setup(o={}){
  const role=o.role||'ORG_ADMIN',suspended=!!o.suspended;
  const query=async(sql,params=[])=>{
   events.push({sql,params});
+  if(sql.includes('JOIN auth_sessions s')&&sql.includes('FOR SHARE OF actor,s'))return {rows:suspended||o.sessionActive===false?[]:[{id:USER}]};
   if(sql==='TENANT_SCOPE')return {rows:[]};
   if(sql.includes('SELECT id,role FROM users'))return {rows:suspended?[]:[{id:USER,role}]};
   if(sql.includes('FROM verification_cases c') && sql.includes('JOIN users actor') && (sql.includes('FOR SHARE OF c,actor')||sql.includes('FOR UPDATE OF c FOR SHARE OF actor')))return {rows:suspended||o.noCaseAccess?[]:[{id:CASE,status:o.caseStatus||'OPEN',asset_id:ASSET,role,created_by:o.caseCreator||USER,assigned_to:null}]};
@@ -46,9 +48,9 @@ function setup(o={}){
   if(sql.includes('SELECT * FROM disputes'))return {rows:o.missingDispute?[]:[{id:DISPUTE,status:o.disputeStatus||'OPEN',case_id:CASE}]};
   if(sql.includes('FROM disputes WHERE case_id=') && sql.includes('count(*)'))return {rows:[{n:o.openDisputes??0}]};
   if(sql.includes('SELECT id FROM users WHERE organization_id='))return {rows:[]};
-  if(sql.includes('SELECT * FROM verification_quotes'))return {rows:o.missingQuote?[]:[{id:QUOTE,status:o.quoteStatus||'DRAFT'}]};
-  if(sql.startsWith('INSERT ')||sql.startsWith('UPDATE ')) {writes++;return {rows:[],rowCount:1};}
-  if(sql.includes('FROM case_tasks t')||sql.includes('FROM disputes d')||sql.includes('FROM monitoring_reminders m')||sql.includes('FROM verification_quotes q'))return {rows:suspended?[]:[{id:TASK}]};
+  if(sql.includes('SELECT * FROM verification_quotes'))return {rows:o.missingQuote?[]:[{id:QUOTE,case_id:CASE,status:o.quoteStatus||'DRAFT'}]};
+  if(sql.startsWith('INSERT ')||sql.startsWith('UPDATE ')) {writes++;return {rows:[],rowCount:sql.includes('UPDATE verification_quotes')&&o.staleQuote?0:1};}
+  if(sql.includes('FROM case_tasks t')||sql.includes('FROM disputes d')||sql.includes('FROM monitoring_reminders m')||sql.includes('FROM verification_quotes q'))return {rows:suspended||(sql.includes('FROM verification_quotes q')&&o.sessionActive===false)?[]:[{id:TASK}]};
   throw Error('Unexpected SQL: '+sql);
  };
  const tx={query};
@@ -63,36 +65,36 @@ const noWrite=f=>{assert.equal(f.writes,0);assert.equal(f.audits,0);};
 const r=u=>({...actor,role:u});
 
 test('quote list checks active current role and case membership in one SQL statement',async()=>{
- const f=setup();await f.service.quotes(actor);const q=f.events.find(e=>e.sql.includes('FROM verification_quotes q'));
+ const f=setup();await f.service.quotes(actor,sid);const q=f.events.find(e=>e.sql.includes('FROM verification_quotes q'));
  assert(q);assert.match(q.sql,/actor\.suspended_at IS NULL/);assert.match(q.sql,/actor\.role IN \('ORG_ADMIN','REVIEWER'\)/);assert.match(q.sql,/c\.organization_id=q\.organization_id/);
- assert.match(q.sql,/c\.created_by=actor\.id/);assert.deepEqual(Array.from(q.params),[ORG,USER]);
+ assert.match(q.sql,/c\.created_by=actor\.id/);assert.deepEqual(Array.from(q.params),[ORG,USER,sid]);
 });
-test('quote list refuses suspended user',async()=>{const f=setup({suspended:true});assert.equal((await f.service.quotes(actor)).length,0)});
+test('quote list refuses suspended user',async()=>{const f=setup({suspended:true});assert.equal((await f.service.quotes(actor,sid)).length,0)});
 for(const operation of ['createQuote','updateQuote','resolveDispute'])for(const condition of ['downgraded','suspended']){
  test(`${operation} rejects ${condition} token-privileged administrator before mutations`,async()=>{
   const f=setup(condition==='downgraded'?{role:'REVIEWER'}:{suspended:true});
   const req=operation==='createQuote'?[actor,{caseId:CASE,amountUgx:120000,scope:'Review'}]:operation==='updateQuote'?[actor,QUOTE,{status:'ISSUED'}]:[actor,DISPUTE,{status:'RESOLVED',resolution:'Verified registry match'}];
-  await assert.rejects(f.service[operation](...req),ForbiddenException);noWrite(f);assert.equal(sqls(f).at(-1),'ROLLBACK');
+  await assert.rejects(f.service[operation](...req,...(operation==='resolveDispute'?[]:[sid])),ForbiddenException);noWrite(f);assert.equal(sqls(f).at(-1),'ROLLBACK');
  });
 }
 test('quote create locks current admin then case before insertion and audit',async()=>{
- const f=setup();await f.service.createQuote(actor,{caseId:CASE,amountUgx:25000,scope:'Verification'});
+ const f=setup();await f.service.createQuote(actor,{caseId:CASE,amountUgx:25000,scope:'Verification'},sid);
  assert(finds(f,'SELECT id,role FROM users')>finds(f,'TENANT_SCOPE'));
  assert(finds(f,'FOR SHARE OF c,actor')>finds(f,'SELECT id,role FROM users'));
  assert(finds(f,'INSERT INTO verification_quotes')>finds(f,'FOR SHARE OF c,actor'));
  assert.equal(f.writes,1);assert.equal(f.audits,1);
 });
 test('quote create refuses current case access failure without writes',async()=>{
- const f=setup({noCaseAccess:true});await assert.rejects(f.service.createQuote(actor,{caseId:CASE,amountUgx:25000,scope:'Review'}));noWrite(f);
+ const f=setup({noCaseAccess:true});await assert.rejects(f.service.createQuote(actor,{caseId:CASE,amountUgx:25000,scope:'Review'},sid));noWrite(f);
 });
 test('quote update permits one valid transition only after current-role lock',async()=>{
- const f=setup();await f.service.updateQuote(actor,QUOTE,{status:'ISSUED'});
+ const f=setup();await f.service.updateQuote(actor,QUOTE,{status:'ISSUED'},sid);
  assert(finds(f,'SELECT id,role FROM users')<finds(f,'SELECT * FROM verification_quotes'));
  assert(finds(f,'SELECT * FROM verification_quotes')<finds(f,'UPDATE verification_quotes'));
  assert.equal(f.audits,1);
 });
 test('quote update refuses invalid transition even for live admin',async()=>{
- const f=setup({quoteStatus:'ISSUED'});await assert.rejects(f.service.updateQuote(actor,QUOTE,{status:'ACCEPTED'}),ConflictException);noWrite(f);
+ const f=setup({quoteStatus:'ISSUED'});await assert.rejects(f.service.updateQuote(actor,QUOTE,{status:'ACCEPTED'},sid),ConflictException);noWrite(f);
 });
 test('dispute resolution locks parent case before dispute row, prior to any writes',async()=>{
  const f=setup();await f.service.resolveDispute(actor,DISPUTE,{status:'RESOLVED',resolution:'Verified evidence records'});
@@ -166,4 +168,29 @@ for(const fn of ['disputes','reminders'])test(`${fn} list uses current active ac
  const f=setup();await f.service[fn](actor);
  const q=f.events.find(e=>e.sql.includes(fn==='disputes'?'FROM disputes d':'FROM monitoring_reminders m'));
  assert(q);assert.match(q.sql,/actor\.suspended_at IS NULL/);assert.match(q.sql,/actor\.role='ORG_ADMIN'/);assert(!q.sql.includes('$3::bool'));
+});
+
+test('quotation amount accepts integer numbers only, rejects unknown payment fields',async()=>{
+ for(const amountUgx of [null,undefined,'25000','',true,false,[],{},1.5,-1,1000000001,NaN,Infinity]){
+  const f=setup();await assert.rejects(f.service.createQuote(actor,{caseId:CASE,amountUgx,scope:'Review'},sid),BadRequestException);noWrite(f);
+ }
+ const f=setup();await assert.rejects(f.service.createQuote(actor,{caseId:CASE,amountUgx:25000,scope:'Review',paid:true},sid),BadRequestException);noWrite(f);
+});
+test('revoked session prevents quote listing, creation and status updates',async()=>{
+ const f=setup({sessionActive:false});assert.equal((await f.service.quotes(actor,sid)).length,0);
+ await assert.rejects(f.service.createQuote(actor,{caseId:CASE,amountUgx:25000,scope:'Review'},sid),ForbiddenException);
+ await assert.rejects(f.service.updateQuote(actor,QUOTE,{status:'ISSUED'},sid),ForbiddenException);noWrite(f);
+ assert.equal(finds(f,'SELECT * FROM verification_quotes'),-1);
+});
+test('quote transition cannot alter price or claim payment and must retain case access',async()=>{
+ for(const body of [{status:'ISSUED',amountUgx:1},{status:'ISSUED',paid:true},{status:'PAID'}]){
+  const f=setup();await assert.rejects(f.service.updateQuote(actor,QUOTE,body,sid),BadRequestException);noWrite(f);
+ }
+ const f=setup({noCaseAccess:true});await assert.rejects(f.service.updateQuote(actor,QUOTE,{status:'ISSUED'},sid),ForbiddenException);noWrite(f);
+});
+test('status update is tenant and previous-state scoped and failure does not audit success',async()=>{
+ const f=setup({staleQuote:true});await assert.rejects(f.service.updateQuote(actor,QUOTE,{status:'ISSUED'},sid),ConflictException);
+ const q=f.events.find(e=>e.sql.includes('UPDATE verification_quotes'));
+ assert.match(q.sql,/organization_id=\$3 AND status=\$4 RETURNING id/);
+ assert.deepEqual(Array.from(q.params),['ISSUED',QUOTE,ORG,'DRAFT']);assert.equal(f.audits,0);
 });

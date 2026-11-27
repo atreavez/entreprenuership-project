@@ -5,7 +5,7 @@ import {AuditModule,AuditService} from './audit';
 import {AuthModule,AuthGuard} from './auth';
 import {AccessModule,AccessService} from './access';
 import {uid,isUuid,text,optionalText,enumValue,UserAuth,assertRole} from './common';
-import {requireCurrentOrganizationAdmin,requireCurrentOrganizationRole,requireCurrentCaseRead,requireCurrentCaseMutation,lockCurrentDisputeAsset,requireCurrentAssetRead} from './contexts/access/infrastructure/transactional-access';
+import {requireCurrentOrganizationAdmin,requireCurrentOrganizationRole,requireCurrentCaseRead,requireCurrentCaseMutation,lockCurrentDisputeAsset,requireCurrentAssetRead,requireCurrentResourceSession} from './contexts/access/infrastructure/transactional-access';
 const TASK_STATUS=['TODO','IN_PROGRESS','DONE','CANCELLED'] as const;
 const DISPUTE_TYPES=['IDENTITY','DOCUMENT','BOUNDARY','OWNERSHIP_CLAIM','REGISTRY_CONFLICT','OTHER'] as const;
 const DISPUTE_STATUS=['OPEN','INVESTIGATING','RESOLVED','REJECTED'] as const;
@@ -114,21 +114,52 @@ class OperationsService {
    await setTenantScope(tx,u.organizationId);
    await requireCurrentAssetRead(tx,u,assetId);
    await tx.query('INSERT INTO monitoring_reminders(id,organization_id,asset_id,label,due_at,created_by) VALUES($1,$2,$3,$4,$5,$6)',[id,u.organizationId,assetId,label,due,u.id]);await this.audit.write(tx,u,'REMINDER_CREATED','asset',assetId,{reminderId:id,dueAt:due});});return {id,assetId,label,dueAt:due};}
- async quotes(u:UserAuth){assertRole(u,['ORG_ADMIN','REVIEWER']);const {rows}=await this.db.tenantQuery(u.organizationId,`SELECT q.*,c.case_code FROM verification_quotes q
+ async quotes(u:UserAuth,sid:string){assertRole(u,['ORG_ADMIN','REVIEWER']);const {rows}=await this.db.tenantQuery(u.organizationId,`SELECT q.*,c.case_code FROM verification_quotes q
    JOIN verification_cases c ON c.id=q.case_id AND c.organization_id=q.organization_id
    JOIN users actor ON actor.id=$2 AND actor.organization_id=q.organization_id AND actor.suspended_at IS NULL
+   JOIN auth_sessions s ON s.id=$3 AND s.user_id=actor.id AND s.organization_id=actor.organization_id
+    AND s.revoked_at IS NULL AND s.expires_at>clock_timestamp() AND s.absolute_expires_at>clock_timestamp()
    WHERE q.organization_id=$1 AND actor.role IN ('ORG_ADMIN','REVIEWER')
      AND (actor.role='ORG_ADMIN' OR c.created_by=actor.id OR c.assigned_to=actor.id)
-   ORDER BY q.created_at DESC LIMIT 100`,[u.organizationId,u.id]);return rows;}
- async createQuote(u:UserAuth,b:any){assertRole(u,['ORG_ADMIN']);const caseId=isUuid(b?.caseId);await this.access.case(u,caseId);const amount=Number(b?.amountUgx);if(!Number.isSafeInteger(amount)||amount<0||amount>1_000_000_000)throw new BadRequestException('Invalid UGX amount');const scope=text(b?.scope,'scope',2000),id=uid();await this.db.transaction(async tx=>{
+   ORDER BY q.created_at DESC LIMIT 100`,[u.organizationId,u.id,sid]);return rows;}
+ async createQuote(u:UserAuth,b:any,sid:string){
+  assertRole(u,['ORG_ADMIN']);
+  if(!b||typeof b!=='object'||Array.isArray(b)||Object.keys(b).length!==3||
+   !['caseId','amountUgx','scope'].every(key=>Object.hasOwn(b,key)))throw new BadRequestException('Provide only caseId, amountUgx and scope');
+  const caseId=isUuid(b.caseId),amount=b.amountUgx;
+  // A staff quotation is a negotiated offer, not a catalog price or payment.
+  // Never coerce null, booleans, empty strings, arrays or numeric text to money.
+  if(typeof amount!=='number'||!Number.isSafeInteger(amount)||amount<0||amount>1_000_000_000)throw new BadRequestException('Invalid UGX amount');
+  const scope=text(b.scope,'scope',2000),id=uid();
+  await this.db.transaction(async tx=>{
    await setTenantScope(tx,u.organizationId);
+   await requireCurrentResourceSession(tx,u,sid);
    await requireCurrentOrganizationAdmin(tx,u);
    await requireCurrentCaseRead(tx,u,caseId);
-   await tx.query('INSERT INTO verification_quotes(id,organization_id,case_id,amount_ugx,scope,created_by) VALUES($1,$2,$3,$4,$5,$6)',[id,u.organizationId,caseId,amount,scope,u.id]);await this.audit.write(tx,u,'QUOTE_CREATED','case',caseId,{quoteId:id,amountUgx:amount});});return {id,caseId,amountUgx:amount,status:'DRAFT',notice:'Quote only. No invoice or payment has been collected.'};}
- async updateQuote(u:UserAuth,id:string,b:any){assertRole(u,['ORG_ADMIN']);const status=enumValue(b?.status,QUOTE_STATUS,'status');return this.db.transaction(async tx=>{
+   await tx.query('INSERT INTO verification_quotes(id,organization_id,case_id,amount_ugx,scope,created_by) VALUES($1,$2,$3,$4,$5,$6)',[id,u.organizationId,caseId,amount,scope,u.id]);
+   await this.audit.write(tx,u,'QUOTE_CREATED','case',caseId,{quoteId:id,amountUgx:amount,currency:'UGX'});
+  });
+  return {id,caseId,amountUgx:amount,status:'DRAFT',notice:'Quote only. No invoice or payment has been collected.'};
+ }
+ async updateQuote(u:UserAuth,id:string,b:any,sid:string){
+  assertRole(u,['ORG_ADMIN']);
+  if(!b||typeof b!=='object'||Array.isArray(b)||Object.keys(b).length!==1||!Object.hasOwn(b,'status'))throw new BadRequestException('Provide only status');
+  const status=enumValue(b.status,QUOTE_STATUS,'status'),quoteId=isUuid(id);
+  return this.db.transaction(async tx=>{
    await setTenantScope(tx,u.organizationId);
+   await requireCurrentResourceSession(tx,u,sid);
    await requireCurrentOrganizationAdmin(tx,u);
-   const {rows}=await tx.query('SELECT * FROM verification_quotes WHERE id=$1 AND organization_id=$2 FOR UPDATE',[isUuid(id),u.organizationId]);const q=rows[0];if(!q)throw new NotFoundException('Quote not found');if(!((q.status==='DRAFT' && ['ISSUED','VOID'].includes(status)) || (q.status==='ISSUED' && status==='VOID')))throw new ConflictException('Only DRAFT to ISSUED/VOID or ISSUED to VOID are available; customer acceptance requires a separate authenticated flow');await tx.query('UPDATE verification_quotes SET status=$1 WHERE id=$2',[status,id]);await this.audit.write(tx,u,'QUOTE_STATUS_CHANGED','quote',id,{from:q.status,to:status});return {id,status};});}
+   const {rows}=await tx.query('SELECT * FROM verification_quotes WHERE id=$1 AND organization_id=$2 FOR UPDATE',[quoteId,u.organizationId]);
+   const q=rows[0];if(!q)throw new NotFoundException('Quote not found');
+   await requireCurrentCaseRead(tx,u,q.case_id);
+   if(!((q.status==='DRAFT'&&['ISSUED','VOID'].includes(status))||(q.status==='ISSUED'&&status==='VOID')))throw new ConflictException('Only DRAFT to ISSUED/VOID or ISSUED to VOID are available; customer acceptance requires a separate authenticated flow');
+   // Persist only a permitted state transition; no client-provided amount or paid flag.
+   const updated=await tx.query('UPDATE verification_quotes SET status=$1 WHERE id=$2 AND organization_id=$3 AND status=$4 RETURNING id',[status,quoteId,u.organizationId,q.status]);
+   if(updated.rowCount!==1)throw new ConflictException('Quote changed concurrently');
+   await this.audit.write(tx,u,'QUOTE_STATUS_CHANGED','quote',quoteId,{from:q.status,to:status});
+   return {id:quoteId,status,notice:'Quote status only. No invoice or payment has been collected.'};
+  });
+ }
 }
 @Controller('operations')@UseGuards(AuthGuard)
 class OperationsController{
@@ -142,8 +173,8 @@ class OperationsController{
  @Patch('disputes/:id') resolve(@Req()r:any,@Param('id')id:string,@Body()b:any){return this.svc.resolveDispute(r.user,id,b);}
  @Get('reminders') reminders(@Req()r:any){return this.svc.reminders(r.user);}
  @Post('reminders') reminder(@Req()r:any,@Body()b:any){return this.svc.createReminder(r.user,b);}
- @Get('quotes') quotes(@Req()r:any){return this.svc.quotes(r.user);}
- @Post('quotes') quote(@Req()r:any,@Body()b:any){return this.svc.createQuote(r.user,b);}
- @Patch('quotes/:id') updateQuote(@Req()r:any,@Param('id')id:string,@Body()b:any){return this.svc.updateQuote(r.user,id,b);}
+ @Get('quotes') quotes(@Req()r:any){return this.svc.quotes(r.user,r.sessionId);}
+ @Post('quotes') quote(@Req()r:any,@Body()b:any){return this.svc.createQuote(r.user,b,r.sessionId);}
+ @Patch('quotes/:id') updateQuote(@Req()r:any,@Param('id')id:string,@Body()b:any){return this.svc.updateQuote(r.user,id,b,r.sessionId);}
 }
 @Module({imports:[AuthModule,AuditModule,AccessModule],providers:[OperationsService],controllers:[OperationsController]})export class OperationsModule{}
