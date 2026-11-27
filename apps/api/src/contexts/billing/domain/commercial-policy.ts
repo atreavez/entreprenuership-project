@@ -102,3 +102,50 @@ export function canonicalCatalogText(value:unknown):string{
  let prices:unknown;try{prices=JSON.parse(value);}catch{throw Error('Invalid catalog JSON');}
  return JSON.stringify(validateCatalog({version:1,prices}).prices);
 }
+
+/** Same-service renewals append time, never edit a purchased term. The caller
+ * serializes by tenant/service and supplies only verified historical terms.
+ * Different service codes purchase independent terms; no automatic proration.
+ */
+export function renewPaidSubscription(invoice:Invoice,catalog:Catalog,code:string,now:number,terms:readonly Subscription[]):Subscription{
+ if(!integer(now,0,8_640_000_000_000_000-366*86400000))throw Error('Invalid renewal clock');
+ let start=now;
+ for(const term of terms){
+  if(term.organizationId!==invoice.organizationId||term.code!==code)throw Error('Renewal history scope mismatch');
+  if(term.fundingInvoiceId===invoice.id)throw Error('Invoice already funded a term');
+  if(!integer(term.startsAt,0,8_640_000_000_000_000)||!integer(term.endsAt,1,8_640_000_000_000_000)||term.endsAt<=term.startsAt)throw Error('Invalid renewal term');
+  start=Math.max(start,term.endsAt);
+ }
+ return paidSubscription(invoice,catalog,code,start);
+}
+export const ENTITLEMENT_POLICY_KEY='billing.entitlement_policy';
+// Only optional features explicitly wired to a commercial boundary may appear.
+// Never allow billing to disable evidence retrieval, verification or security.
+export const OPTIONAL_CAPABILITIES=Object.freeze(['BILLING.JOURNAL_EXPORT'] as const);
+export type CommercialEntitlementPolicy=Readonly<{version:number;enabled:boolean;graceDays:number;mappings:readonly Readonly<{capability:string;serviceCodes:readonly string[]}>[]}>;
+export function parseEntitlementPolicyText(value:unknown,version:number):CommercialEntitlementPolicy{
+ if(typeof value!=='string'||value.length>4000||!integer(version,1,2147483647))throw Error('Invalid entitlement policy');
+ const v=JSON.parse(value);
+ if(!exact(v,['enabled','graceDays','mappings'])||typeof v.enabled!=='boolean'||!integer(v.graceDays,0,7)||!Array.isArray(v.mappings)||v.mappings.length>OPTIONAL_CAPABILITIES.length)throw Error('Invalid entitlement policy fields');
+ const seen=new Set<string>();
+ const mappings=v.mappings.map(m=>{
+  if(!exact(m,['capability','serviceCodes'])||typeof m.capability!=='string'||!OPTIONAL_CAPABILITIES.some(c=>c===m.capability)||seen.has(m.capability)||
+    !Array.isArray(m.serviceCodes)||m.serviceCodes.length<1||m.serviceCodes.length>20||m.serviceCodes.some(c=>!id(c))||new Set(m.serviceCodes).size!==m.serviceCodes.length)throw Error('Invalid optional capability mapping');
+  seen.add(m.capability);
+  return Object.freeze({capability:m.capability,serviceCodes:Object.freeze([...m.serviceCodes].sort())});
+ });
+ if(v.enabled&&!mappings.length)throw Error('Enabled policy requires mappings');
+ return Object.freeze({version,enabled:v.enabled,graceDays:v.graceDays,mappings:Object.freeze(mappings)});
+}
+export function canonicalEntitlementPolicyText(value:unknown):string{
+ const {version,...p}=parseEntitlementPolicyText(value,1);return JSON.stringify(p);
+}
+export function commercialAccess(policy:CommercialEntitlementPolicy|null,org:string,capability:string,now:number,terms:readonly Subscription[]):'ACTIVE'|'GRACE'|'DENIED'{
+ if(!policy?.enabled||!uuid(org)||!integer(now,0,8_640_000_000_000_000)||!OPTIONAL_CAPABILITIES.some(c=>c===capability))return 'DENIED';
+ const mappings=policy.mappings.filter(m=>m.capability===capability);
+ if(mappings.length!==1)return 'DENIED';
+ const eligible=terms.filter(t=>t.organizationId===org&&mappings[0].serviceCodes.includes(t.code)&&integer(t.startsAt,0,8_640_000_000_000_000)&&integer(t.endsAt,1,8_640_000_000_000_000)&&t.endsAt>t.startsAt);
+ if(eligible.some(t=>subscriptionActive(t,now)))return 'ACTIVE';
+ if(policy.graceDays>0&&eligible.some(t=>now>=t.endsAt&&now-t.endsAt<policy.graceDays*86400000))return 'GRACE';
+ return 'DENIED';
+}

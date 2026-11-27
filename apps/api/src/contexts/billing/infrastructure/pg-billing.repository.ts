@@ -101,27 +101,7 @@ export class PgBillingRepository implements BillingRepository{
      await this.audit.write(connection,this.actor,'BILLING_INVOICE_'+derived.invoice.state,'invoice',current.id,{revision:derived.invoice.revision,totalUgx:current.totalUgx});
      return true;
     },
-    createSubscription:async(org,requested)=>{
-     scope(org);if(requested.organizationId!==org)throw Error('Billing tenant mismatch');
-     // No customer entitlement API exists. Only a previously settled invoice
-     // and matching settlement record can fund a term.
-     const invoice=await read(org,requested.fundingInvoiceId);
-     if(!invoice||invoice.state!=='PAID')throw Error('Paid funding invoice required');
-     const settlement=await connection.query('SELECT amount_ugx,currency,provider_id,transaction_id FROM public.billing_settlements WHERE organization_id=$1 AND invoice_id=$2',[org,invoice.id]);
-     const row=settlement.rows[0];
-     if(settlement.rows.length!==1||numeric(row.amount_ugx)!==invoice.totalUgx||row.currency!==invoice.currency||
-      JSON.stringify([row.provider_id,row.transaction_id])!==invoice.paymentKey)throw Error('Verified settlement record required');
-     const catalog=await loadCatalog(connection,invoice.catalogVersion);
-     if(!catalog)throw Error('Historical pricing unavailable');
-     const derived=paidSubscription(invoice,catalog,requested.code,requested.startsAt);
-     if(canonical(derived)!==canonical(requested))throw Error('Invalid subscription term');
-     const result=await connection.query(`INSERT INTO public.billing_subscriptions(organization_id,funding_invoice_id,code,catalog_version,starts_at,ends_at)
-      VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT (organization_id,funding_invoice_id) DO NOTHING RETURNING funding_invoice_id`,
-      [org,invoice.id,derived.code,derived.catalogVersion,derived.startsAt,derived.endsAt]);
-     if(result.rowCount!==1)return false;
-     await this.audit.write(connection,this.actor,'BILLING_SUBSCRIPTION_CREATED','invoice',invoice.id,{code:derived.code,startsAt:derived.startsAt,endsAt:derived.endsAt});
-     return true;
-    }
+
    };
    return work(tx);
   });

@@ -1,6 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {api,post,DEMO,fmt} from './api';
 import ReconciliationPanel from './ReconciliationPanel';
+import JournalExportPanel from './JournalExportPanel';
 type Price={code:string;unitUgx:number;periodDays:number|null};
 type Catalog={version:number;prices:Price[]};
 type Invoice={id:string;catalogVersion:number;totalUgx:number;state:'DRAFT'|'ISSUED'|'VOID'|'PAID';revision:number;lines:{code:string;quantity:number;unitUgx:number;totalUgx:number}[]};
@@ -77,6 +78,7 @@ export default function BillingPage({token,role}:{token:string;role:string}){
   {detail&&<div><h3>Invoice lines</h3><p>{detail.id}</p>{detail.lines.map(l=><p key={l.code}>{l.code} · {l.quantity} × {money(l.unitUgx)} = {money(l.totalUgx)}</p>)}</div>}</section>
   <section className="admin-section"><h2>Financial journal</h2><p>Latest 100 recorded balanced posting pairs. This is not a cash balance or a complete accounting statement.</p><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Invoice / event</th><th>Debit</th><th>Credit</th><th>Amount</th><th>Recorded</th></tr></thead><tbody>{journal.map(j=><tr key={j.invoiceId+':'+j.revision}><td>{j.invoiceId}<small>{j.event} · revision {j.revision}</small></td><td>{j.debitAccount}</td><td>{j.creditAccount}</td><td>{money(j.amountUgx)}</td><td>{new Date(j.recordedAt).toLocaleString('en-UG')}</td></tr>)}{!journal.length&&<tr><td colSpan={5}>{loaded?'No journal entries.':'No journal records loaded.'}</td></tr>}</tbody></table></div></section>
   <section className="admin-section"><h2>Subscription register</h2><p>Recorded terms only. Feature entitlement enforcement is not connected.</p><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Service</th><th>Funding invoice</th><th>Starts</th><th>Ends (exclusive)</th></tr></thead><tbody>{subscriptions.map(s=><tr key={s.fundingInvoiceId}><td>{s.code}<small>Catalog v{s.catalogVersion}</small></td><td>{s.fundingInvoiceId}</td><td>{new Date(s.startsAt).toLocaleString('en-UG')}</td><td>{new Date(s.endsAt).toLocaleString('en-UG')}</td></tr>)}{!subscriptions.length&&<tr><td colSpan={4}>{loaded?'No subscription terms recorded.':'No subscription records loaded.'}</td></tr>}</tbody></table></div></section>
+  <JournalExportPanel token={token} role={role}/>
   <ReconciliationPanel token={token} role={role}/>
  </div>;
 }

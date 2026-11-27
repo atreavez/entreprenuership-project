@@ -17,7 +17,6 @@ export interface BillingTransaction{
  journal(organizationId:string):Promise<readonly {invoiceId:string;revision:number;event:string;debitAccount:string;creditAccount:string;amountUgx:number;recordedAt:string}[]>;
  subscriptions(organizationId:string):Promise<readonly Subscription[]>;
  commit(organizationId:string,expectedRevision:number,transition:Transition):Promise<boolean>;
- createSubscription(organizationId:string,subscription:Subscription):Promise<boolean>;
 }
 export interface BillingRepository{
  transaction<T>(organizationId:string,work:(tx:BillingTransaction)=>Promise<T>):Promise<T>;

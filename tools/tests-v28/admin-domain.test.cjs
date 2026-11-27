@@ -31,3 +31,10 @@ test('payment policy requires platform scope, independent approval and no creden
  assert.throws(()=>d.prepareChange('organization','billing.reconciliation_policy',JSON.stringify(policy)));
  assert.throws(()=>d.prepareChange('platform','billing.reconciliation_policy',JSON.stringify({...policy,apiKey:'secret'})));
 });
+
+test('only optional commercial capabilities can be independently configured',()=>{
+ const d=get(),policy={enabled:true,graceDays:0,mappings:[{capability:'BILLING.JOURNAL_EXPORT',serviceCodes:['plan']}]};
+ assert(d.prepareChange('platform','billing.entitlement_policy',JSON.stringify(policy)).requiresApproval);
+ assert.throws(()=>d.prepareChange('organization','billing.entitlement_policy',JSON.stringify(policy)));
+ assert.throws(()=>d.prepareChange('platform','billing.entitlement_policy',JSON.stringify({...policy,mappings:[{capability:'DOCUMENTS.READ',serviceCodes:['plan']}]})));
+});

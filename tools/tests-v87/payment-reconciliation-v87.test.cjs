@@ -59,6 +59,8 @@ function persistence(options={}){
   if(sql.includes('FROM public.billing_settlements'))return {rows:[{provider_id:'offline',transaction_id:'tx1',amount_ugx:25000,currency:'UGX'}]};
   if(sql.includes('FROM public.billing_journal'))return {rows:options.missingJournal?[]:[{amount_ugx:25000}]};
   if(sql.includes('FROM public.billing_catalog_versions'))return {rows:[catalog]};
+  if(sql.includes('pg_advisory_xact_lock(hashtext($1))'))return {rows:[]};
+  if(sql.includes('FROM public.billing_subscriptions t'))return {rows:options.renewalRows??[]};
   if(sql.includes('AS now_ms'))return {rows:[{now_ms:'1000'}]};
   if(sql.startsWith('INSERT INTO public.billing_settlements'))return {rowCount:options.duplicate?0:1,rows:[]};
   if(sql.startsWith('UPDATE public.billing_invoices'))return {rowCount:options.stale?0:1,rows:[]};
@@ -101,4 +103,14 @@ test('lost or revoked queue lease blocks settlement before invoice access',async
 test('dedicated worker with excess financial grants refuses settlement',async()=>{
  const f=persistence({unsafeGrants:true});await assert.rejects(f.repo.settle(request,obs));
  assert.equal(f.calls.at(-1).sql,'ROLLBACK');assert(!f.calls.some(c=>c.sql.startsWith('INSERT')));
+});
+
+test('same-service renewal preserves prepaid time in settlement transaction',async()=>{
+ const oldEnd=1000+30*86400000;
+ const f=persistence({renewalRows:[{organization_id:org,funding_invoice_id:'42345678-1234-4234-8234-123456789abc',code:'plan',catalog_version:1,starts_at:1000,ends_at:oldEnd}]});
+ assert.equal(await f.repo.settle(request,obs),'SETTLED');
+ const lock=f.calls.findIndex(c=>c.sql.includes('pg_advisory_xact_lock(hashtext($1))'));
+ const read=f.calls.findIndex(c=>c.sql.includes('FROM public.billing_subscriptions t'));
+ const write=f.calls.findIndex(c=>c.sql.startsWith('INSERT INTO public.billing_subscriptions'));
+ assert(lock>=0&&lock<read&&read<write);assert.equal(f.calls[write].args[4],oldEnd);assert.equal(f.calls[write].args[5],oldEnd+30*86400000);
 });

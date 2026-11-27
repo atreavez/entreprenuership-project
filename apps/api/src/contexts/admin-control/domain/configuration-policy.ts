@@ -1,10 +1,11 @@
 /** AssetTrust configuration domain: deterministic allowlist. This must not import controllers or SQL. */
 import {ANCHOR_SETTINGS_KEY,canonicalAnchorSettingsText} from '../../anchoring/domain/anchor-job-policy';
-import {BILLING_CATALOG_KEY,canonicalCatalogText} from '../../billing/domain/commercial-policy';
+import {BILLING_CATALOG_KEY,canonicalCatalogText,ENTITLEMENT_POLICY_KEY,canonicalEntitlementPolicyText} from '../../billing/domain/commercial-policy';
 import {PAYMENT_POLICY_KEY,canonicalPaymentPolicyText} from '../../billing/domain/reconciliation-job';
 export type ConfigScope='platform'|'organization';
 export type Definition={key:string;scope:ConfigScope;title:string;category:string;description:string;type:'text'|'email'|'currency'|'integer';max?:number;min?:number;maxNumber?:number;requiresApproval:boolean;effect:'display'|'metadata'};
 const DEFINITIONS:readonly Definition[]=[
+ {scope:'platform',key:ENTITLEMENT_POLICY_KEY,title:'Optional commercial capabilities',category:'Finance',description:'JSON: enabled, graceDays (0–7), mappings of BILLING.JOURNAL_EXPORT to paid recurring service codes. Independent approval required. Core verification and evidence access are never billing-gated.',type:'text',max:4000,requiresApproval:true,effect:'metadata'},
  {scope:'platform',key:PAYMENT_POLICY_KEY,title:'Payment reconciliation policy',category:'Finance',description:'JSON: enabled, providers (registered adapter IDs only), retryBaseMs, pollMs and maxAttempts. Requires independent approval. Cannot enable a worker deployment or store credentials.',type:'text',max:4000,requiresApproval:true,effect:'metadata'},
  {scope:'platform',key:BILLING_CATALOG_KEY,title:'Versioned UGX pricing catalog',category:'Finance',description:'JSON array of code, unitUgx and periodDays (null for one-time services). Independent approval required. Unavailable until reviewed commercial schema activation.',type:'text',max:24000,requiresApproval:true,effect:'metadata'},
  {scope:'platform',key:ANCHOR_SETTINGS_KEY,title:'Blockchain anchoring policy',category:'Integrations',description:'JSON policy with enabled, target (providerId, networkId, minConfirmations), retryBaseMs, maxAttempts and pollMs. Independent approval required. Does not enable external dispatch.',type:'text',max:1200,requiresApproval:true,effect:'metadata'},
@@ -33,6 +34,8 @@ export function prepareChange(scopeInput:unknown,key:unknown,input:unknown):{def
   value=canonicalAnchorSettingsText(input);
  }else if(def.key===PAYMENT_POLICY_KEY){
   value=canonicalPaymentPolicyText(input);
+ }else if(def.key===ENTITLEMENT_POLICY_KEY){
+  value=canonicalEntitlementPolicyText(input);
  }else if(def.key===BILLING_CATALOG_KEY){
   value=canonicalCatalogText(input);
  }else if(def.type==='integer'){

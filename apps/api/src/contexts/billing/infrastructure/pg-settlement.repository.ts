@@ -5,7 +5,7 @@ import type {UserAuth} from '../../../common';
 import {setTenantScope} from '../../tenant-isolation/application/tenant-scope';
 import {requireBillingActivation} from './billing-activation';
 import {hydrateInvoice} from './pg-billing.repository';
-import {reconcilePayment,paidSubscription,validateCatalog,type PaymentObservation} from '../domain/commercial-policy';
+import {reconcilePayment,renewPaidSubscription,validateCatalog,type PaymentObservation} from '../domain/commercial-policy';
 import {matchingObservation,validateReconciliationRequest,type ReconciliationRequest,type ReconciliationGate,type SettlementRepository,type SettlementResult} from '../application/reconciliation.service';
 /** Separate trusted worker database connection and operator-assigned audit
  * identity. Never construct from an HTTP principal. No Nest registration,
@@ -85,7 +85,16 @@ export class PgSettlementRepository implements SettlementRepository{
     subscriptionState='REVIEW_REQUIRED';
     if(invoice.lines.length===1&&recurring.length===1&&recurring[0].quantity===1){
      const time=(await tx.query('SELECT floor(extract(epoch FROM clock_timestamp())*1000)::bigint AS now_ms')).rows[0];
-     const term=paidSubscription(transition.invoice,catalog,recurring[0].code,Number(time?.now_ms));
+     const code=recurring[0].code;
+     // Serialize same-tenant, same-service renewal across different invoices.
+     await tx.query('SELECT pg_advisory_xact_lock(hashtext($1))',[JSON.stringify(['assettrust:billing:renewal',r.organizationId,code])]);
+     const history=await tx.query(`SELECT t.organization_id,t.funding_invoice_id,t.code,t.catalog_version,t.starts_at,t.ends_at
+      FROM public.billing_subscriptions t JOIN public.billing_invoices i ON i.organization_id=t.organization_id AND i.id=t.funding_invoice_id
+      JOIN public.billing_settlements s ON s.organization_id=i.organization_id AND s.invoice_id=i.id
+      WHERE t.organization_id=$1 AND t.code=$2 AND i.state='PAID' AND s.amount_ugx=i.total_ugx AND s.currency=i.currency
+      AND i.payment_key=replace(jsonb_build_array(s.provider_id,s.transaction_id)::text, ', ', ',')`,[r.organizationId,code]);
+     const terms=history.rows.map(t=>({organizationId:t.organization_id,fundingInvoiceId:t.funding_invoice_id,code:t.code,catalogVersion:Number(t.catalog_version),startsAt:Number(t.starts_at),endsAt:Number(t.ends_at)}));
+     const term=renewPaidSubscription(transition.invoice,catalog,code,Number(time?.now_ms),terms);
      const sub=await tx.query(`INSERT INTO public.billing_subscriptions(organization_id,funding_invoice_id,code,catalog_version,starts_at,ends_at)
       VALUES($1,$2,$3,$4,$5,$6) RETURNING funding_invoice_id`,[term.organizationId,term.fundingInvoiceId,term.code,term.catalogVersion,term.startsAt,term.endsAt]);
      if(sub.rowCount!==1)throw Error('Subscription activation failed');
