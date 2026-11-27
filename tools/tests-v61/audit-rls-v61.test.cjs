@@ -18,7 +18,7 @@ function loadAudit(spy){
   './database':{},'./common':{uid:crypto.randomUUID,hash:x=>crypto.createHash('sha256').update(x).digest('hex'),assertRole:()=>{}},
   './auth':{AuthGuard:class{},AuthModule:class{}},
   './contexts/tenant-isolation/application/tenant-scope':{setTenantScope:async (tx,org)=>{spy.push(['setTenantScope',org]);await tx.query("SELECT set_config('assettrust.tenant_id',$1,true)",[org]);}},
-  './contexts/access/infrastructure/transactional-access':{requireCurrentOrganizationAdmin:async (tx,user)=>{spy.push(['currentAdminRoleLocked',user.id]);}},
+  './contexts/identity/infrastructure/current-admin-step-up':{assertCurrentAdminSession:async (tx,user)=>{spy.push(['currentAdminRoleLocked',user.id]);}},
  };
  vm.runInNewContext(compiled,{module:{exports},exports,require:n=>{if(n==='node:crypto')return crypto;if(Object.hasOwn(stubs,n))return stubs[n];throw Error('Undeclared dependency: '+n);},console,Date,JSON,Object,Array,Error,Promise,Buffer}, {timeout:5000,filename:'audit.ts'});
  return exports.AuditService;
@@ -64,7 +64,7 @@ test('audit.verify scopes and authorizes within the same transaction as hash ver
  const events=[{id:'e1',organization_id:user.organizationId,actor_id:user.id,action:'CHECK',entity_type:'asset',entity_id:'a1',detail,created_at:timestamp,previous_hash:'GENESIS',event_hash:chainHash}];
  const db={query:()=>{throw Error('Unscoped pool query forbidden')},tenantQuery:()=>{throw Error('Independent RLS query forbidden')},
   transaction:async(fn)=>fn({query:async(sql,params)=>{spy.push(['query',sql,params]);return {rows:sql.includes('FROM audit_events')?events:[]};}})};
- const result=await new AuditService(db).verify(user);
+ const result=await new AuditService(db).verify(user,crypto.randomUUID());
  assert.equal(result.verified,true);assert.equal(result.checked,1);
  assert.equal(spy[0][0],'setTenantScope');
  assert(spy.findIndex(e=>e[0]==='currentAdminRoleLocked')<spy.findIndex(e=>e[1]?.includes('FROM audit_events')));
@@ -73,7 +73,7 @@ test('audit.list uses same scoped authorized transaction and never unscoped pool
  const spy=[];const AuditService=loadAudit(spy);const user={id:crypto.randomUUID(),organizationId:crypto.randomUUID()};
  const db={query:()=>{throw Error('Unsafe pool query')},tenantQuery:()=>{throw Error('Separate scoped query')},
   transaction:async(fn)=>fn({query:async(sql,params)=>{spy.push(['query',sql,params]);return {rows:sql.includes('FROM audit_events')?[{id:'e1'}]:[]};}})};
- assert.equal((await new AuditService(db).list(user)).length,1);
+ assert.equal((await new AuditService(db).list(user,crypto.randomUUID())).length,1);
  assert.equal(spy[0][0],'setTenantScope');
  assert(spy.findIndex(e=>e[0]==='currentAdminRoleLocked')<spy.findIndex(e=>e[1]?.includes('LIMIT 100')));
 });
@@ -81,7 +81,7 @@ test('integrations local proof checks current admin and tenant scope in the audi
  const s=read('apps/api/src/integrations.ts');
  assert.match(s,/this\.db\.transaction\(async tx=>/);
  assert.match(s,/await setTenantScope\(tx,user\.organizationId\)/);
- assert.match(s,/await requireCurrentOrganizationAdmin\(tx,user\)/);
+ assert.match(s,/await assertCurrentAdminSession\(tx,user,r\.sessionId\)/);
  assert.match(s,/tx\.query\('SELECT event_hash,event_sequence,created_at FROM audit_events/);
  assert(!/this\.db\.query\('SELECT event_hash,event_sequence,created_at FROM audit_events/.test(s));
 });
@@ -170,7 +170,7 @@ test('audit verification rejects wrong-tenant rows, malformed timestamps, missin
   return {id,organization_id:org,actor_id:user.id,action:'CHECK',entity_type:'asset',entity_id:'a1',detail,created_at:stamp,previous_hash:previous,event_hash};
  }
  const a=event('a','GENESIS'),b=event('b',a.event_hash),c=event('c',b.event_hash);
- const verify=rows=>new AuditService({transaction:async fn=>fn({query:async sql=>({rows:sql.includes('FROM audit_events')?rows:[]})})}).verify(user);
+ const verify=rows=>new AuditService({transaction:async fn=>fn({query:async sql=>({rows:sql.includes('FROM audit_events')?rows:[]})})}).verify(user,crypto.randomUUID());
  assert.equal((await verify([a,b,c])).verified,true);
  for(const [rows,bad] of [[[event('foreign','GENESIS',crypto.randomUUID())],'foreign'],[[{...a,created_at:'invalid'}],'a'],[[a,c],'c'],[[a,{...b,detail:{id:'changed'}},c],'b']]){
   const result=await verify(rows);assert.equal(result.verified,false);assert.equal(result.firstInvalidEventId,bad);

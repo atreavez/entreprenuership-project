@@ -9,6 +9,7 @@ const cp=require('node:child_process');
 const ROOT=path.resolve(__dirname,'../..');
 const ts=(()=>{try{return require('typescript')}catch{return require(path.join(cp.execFileSync('npm',['root','-g'],{encoding:'utf8'}).trim(),'typescript'))}})();
 const ids={org:'33333333-3333-4333-8333-333333333333',actor:'44444444-4444-4444-8444-444444444444',case:'55555555-5555-4555-8555-555555555555'};
+const sid='66666666-6666-4666-8666-666666666666';
 const actor=(role='ORG_ADMIN')=>({id:ids.actor,organizationId:ids.org,role});
 class ForbiddenException extends Error {}
 class NotFoundException extends Error {}
@@ -32,13 +33,17 @@ const dashboard=load('apps/api/src/dashboard.ts',{
  './contexts/content-publishing/infrastructure/published-content.module':{PublishedContentModule:class{},PublishedContentService:class{}},
  './contexts/content-publishing/domain/publication-policy':{attachDraftPublication:(r,copy)=>({...r,publication:copy})}
 });
+const adminSession=load('apps/api/src/contexts/identity/infrastructure/current-admin-step-up.ts');
+const sessionStub={'./contexts/identity/infrastructure/current-admin-step-up':adminSession};
 const audit=load('apps/api/src/audit.ts',{
+ ...sessionStub,
  ...accessStub,'./database':{Database:class{}},'./common':{uid:crypto.randomUUID,hash:s=>crypto.createHash('sha256').update(s).digest('hex')},'./auth':{AuthGuard:class{},AuthModule:class{}}
 });
 const integrations=load('apps/api/src/integrations.ts',{
+ ...sessionStub,
  ...accessStub,'./database':{Database:class{}},'./auth':{AuthGuard:class{},AuthModule:class{}},'./common':{}
 });
-function fixture({role='ORG_ADMIN',suspended=false,canCase=true,caseId=ids.case,rows=[]}={}){
+function fixture({role='ORG_ADMIN',suspended=false,canCase=true,caseId=ids.case,rows=[],sessionActive=true}={}){
  const events=[];let active=false,commits=0;
  const db={
   query:()=>{throw Error('unscoped query forbidden')},
@@ -46,6 +51,7 @@ function fixture({role='ORG_ADMIN',suspended=false,canCase=true,caseId=ids.case,
   transaction:async(fn)=>{assert(!active);active=true;events.push(['BEGIN']);try{const result=await fn({query:async(sql,params=[])=>{
    assert(active,'query must be inside transaction');events.push([sql,params]);
    if(sql.includes("set_config('assettrust.tenant_id'"))return {rows:[]};
+   if(sql.includes('JOIN auth_sessions'))return {rows:!suspended&&sessionActive&&role==='ORG_ADMIN'&&params[2]===sid?[{id:ids.actor}]:[]};
    if(sql.includes('FROM users')&&sql.includes('suspended_at IS NULL'))return {rows:suspended?[]:[{id:ids.actor,role}]};
    if(sql.includes('FROM verification_cases c JOIN users actor')||sql.includes('FROM verification_cases c\n')){
     if(sql.includes('FOR SHARE OF c,actor'))return {rows:canCase&&!suspended?[{id:caseId,role,created_by:ids.actor,assigned_to:null}]:[]};
@@ -114,35 +120,35 @@ test('case report holds case permission through evidence and template read',asyn
 });
 for(const method of ['verify','list']){
  test('audit '+method+' denies demoted token administrator before ledger read',async()=>{
-  const f=fixture({role:'REVIEWER'});await assert.rejects(new audit.AuditService(f.db)[method](actor('ORG_ADMIN')),ForbiddenException);
+  const f=fixture({role:'REVIEWER'});await assert.rejects(new audit.AuditService(f.db)[method](actor('ORG_ADMIN'),sid),ForbiddenException);
   assert.equal(find(f,'FROM audit_events'),-1);assert.equal(f.commits,0);
  });
  test('audit '+method+' denies suspended administrator before ledger read',async()=>{
-  const f=fixture({suspended:true});await assert.rejects(new audit.AuditService(f.db)[method](actor('ORG_ADMIN')),ForbiddenException);
+  const f=fixture({suspended:true});await assert.rejects(new audit.AuditService(f.db)[method](actor('ORG_ADMIN'),sid),ForbiddenException);
   assert.equal(find(f,'FROM audit_events'),-1);
  });
  test('audit '+method+' scopes permission and rows in one transaction',async()=>{
-  const f=fixture();const result=await new audit.AuditService(f.db)[method](actor());
+  const f=fixture();const result=await new audit.AuditService(f.db)[method](actor(),sid);
   assert.equal(f.commits,1);assert(find(f,'FROM users')<find(f,'FROM audit_events'));
   if(method==='verify')assert.equal(result.verified,true);else assert.deepEqual(Array.from(result),[]);
  });
 }
 test('tampered audit chain still fails integrity check',async()=>{
  const f=fixture({rows:[{id:'e',organization_id:ids.org,actor_id:ids.actor,action:'WRITE',entity_type:'asset',entity_id:'asset',detail:{},created_at:new Date().toISOString(),previous_hash:'GENESIS',event_hash:'not-a-hash'}]});
- const r=await new audit.AuditService(f.db).verify(actor());assert.equal(r.verified,false);assert.equal(r.firstInvalidEventId,'e');
+ const r=await new audit.AuditService(f.db).verify(actor(),sid);assert.equal(r.verified,false);assert.equal(r.firstInvalidEventId,'e');
 });
 for(const method of ['localProof','status']){
  test('integrations '+method+' denies stale elevated role',async()=>{
   const f=fixture({role:'CLIENT'}),c=new integrations.IntegrationsController(f.db);
-  await assert.rejects(c[method]({user:actor('ORG_ADMIN')}),ForbiddenException);
+  await assert.rejects(c[method]({user:actor('ORG_ADMIN'),sessionId:sid}),ForbiddenException);
   assert.equal(find(f,'FROM audit_events'),-1);assert.equal(f.commits,0);
  });
  test('integrations '+method+' denies suspended administrator',async()=>{
-  const f=fixture({suspended:true});await assert.rejects(new integrations.IntegrationsController(f.db)[method]({user:actor()}),ForbiddenException);
+  const f=fixture({suspended:true});await assert.rejects(new integrations.IntegrationsController(f.db)[method]({user:actor(),sessionId:sid}),ForbiddenException);
  });
  test('integrations '+method+' uses current transaction-scoped DB authority',async()=>{
   const f=fixture(),c=new integrations.IntegrationsController(f.db);
-  const r=await c[method]({user:actor('REVIEWER')});assert.equal(f.commits,1);
+  const r=await c[method]({user:actor('REVIEWER'),sessionId:sid});assert.equal(f.commits,1);
   assert(find(f,'FROM users')>=0);
   if(method==='localProof'){assert.equal(r.kind,'LOCAL_AUDIT_COMMITMENT_NOT_BLOCKCHAIN');assert(find(f,'FROM audit_events')>find(f,'FROM users'));}
   else assert.equal(r.payments.state,'NOT_CONNECTED');
@@ -157,4 +163,15 @@ test('new protected controllers do not use JWT administrator bypass for these re
 });
 test('all three workspace manifests identify current v0.79 milestone',()=>{
  for(const p of ['package.json','apps/api/package.json','apps/web/package.json']){const version=JSON.parse(fs.readFileSync(path.join(ROOT,p),'utf8')).version;assert.match(version,/^0\.\d+\.0$/);assert(Number(version.split('.')[1])>=79);} 
+});
+
+test('revoked session denies audit list, verification, proof and integration status before sensitive read',async()=>{
+ for(const method of ['verify','list']){
+  const f=fixture({sessionActive:false});await assert.rejects(new audit.AuditService(f.db)[method](actor(),sid),ForbiddenException);
+  assert.equal(find(f,'FROM audit_events'),-1);assert.equal(f.commits,0);
+ }
+ for(const method of ['localProof','status']){
+  const f=fixture({sessionActive:false});await assert.rejects(new integrations.IntegrationsController(f.db)[method]({user:actor(),sessionId:sid}),ForbiddenException);
+  assert.equal(find(f,'FROM audit_events'),-1);assert.equal(f.commits,0);
+ }
 });

@@ -4,7 +4,7 @@ import {Database} from '../../../database';
 import {AuthGuard,AuthModule} from '../../../auth';
 import {AuditService,AuditModule} from '../../../audit';
 import {UserAuth,uid,isUuid} from '../../../common';
-import {assertCurrentAdminStepUp} from '../../identity/infrastructure/current-admin-step-up';
+import {assertCurrentAdminStepUp,assertCurrentAdminSession} from '../../identity/infrastructure/current-admin-step-up';
 import {catalog,prepareChange,assertExpectedVersion,assertScope,assertDecision,type ConfigScope} from '../domain/configuration-policy';
 
 const PLATFORM_ID='00000000-0000-0000-0000-000000000000';
@@ -20,12 +20,7 @@ export class AdminControlService{
  private async currentAdmin(tx:PoolClient,u:UserAuth,sid:string,scope:ConfigScope,write:boolean){
   // Never trust role/appointment data from a JWT or previously cached request principal.
   if(write)await assertCurrentAdminStepUp(tx,u,sid);
-  else {
-   const role=await tx.query(`SELECT u.id FROM users u JOIN auth_sessions s ON s.user_id=u.id AND s.organization_id=u.organization_id
-      WHERE u.id=$1 AND u.organization_id=$2 AND u.role='ORG_ADMIN' AND u.suspended_at IS NULL AND s.id=$3 AND s.revoked_at IS NULL
-        AND s.expires_at>now() AND s.absolute_expires_at>now() FOR SHARE OF u,s`,[u.id,u.organizationId,sid]);
-   if(role.rows.length!==1)throw new ForbiddenException('Current organization administrator session required');
-  }
+  else await assertCurrentAdminSession(tx,u,sid);
   if(scope==='platform'){
    const appt=await tx.query(`SELECT user_id FROM platform_admin_appointments WHERE user_id=$1 AND revoked_at IS NULL FOR SHARE`,[u.id]);
    if(appt.rows.length!==1)throw new ForbiddenException('Platform administrator appointment required');
@@ -98,7 +93,12 @@ export class AdminControlService{
  async decide(u:UserAuth,sid:string,id:string,decisionInput:unknown){
   const decision=decisionOf(decisionInput);
   return this.db.transaction(async tx=>{
-   const proposal=await tx.query('SELECT * FROM admin_configuration_changes WHERE id=$1',[isUuid(id)]);
+   // Authorize before any proposal lookup, and scope the locator to permitted proposals.
+   await assertCurrentAdminStepUp(tx,u,sid);
+   const proposal=await tx.query(`SELECT c.* FROM admin_configuration_changes c WHERE id=$1
+     AND ((scope='organization' AND scope_id=$2) OR
+      (scope='platform' AND scope_id=$3 AND EXISTS(SELECT 1 FROM platform_admin_appointments p WHERE p.user_id=$4 AND p.revoked_at IS NULL)))`,
+    [isUuid(id),u.organizationId,PLATFORM_ID,u.id]);
    let change=proposal.rows[0];
    // Do not reveal whether an inaccessible proposal exists.
    if(!change||change.status!=='PENDING')throw new NotFoundException('Pending change not found');
@@ -116,7 +116,7 @@ export class AdminControlService{
    await tx.query('SELECT pg_advisory_xact_lock(hashtext($1))',[`assettrust:admin:${scope}:${change.scope_id}:${change.setting_key}`]);
    // Lock ordering matches propose(): advisory lock -> proposal row -> config value.
    // Locking the proposal first here could deadlock with a concurrent proposal.
-   const locked=await tx.query('SELECT * FROM admin_configuration_changes WHERE id=$1 FOR UPDATE',[id]);
+   const locked=await tx.query('SELECT * FROM admin_configuration_changes WHERE id=$1 AND scope=$2 AND scope_id=$3 AND setting_key=$4 AND submitted_by=$5 FOR UPDATE',[id,scope,change.scope_id,change.setting_key,change.submitted_by]);
    change=locked.rows[0];
    if(!change||change.status!=='PENDING')throw new NotFoundException('Pending change not found');
    const live=await tx.query('SELECT version FROM admin_configuration_values WHERE scope=$1 AND scope_id=$2 AND setting_key=$3 FOR UPDATE',[scope,change.scope_id,change.setting_key]);

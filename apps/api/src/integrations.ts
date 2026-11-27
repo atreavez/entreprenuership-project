@@ -2,7 +2,7 @@ import {Controller,Get,Req,UseGuards,Module,Post,Body,Injectable,ForbiddenExcept
 import {AuthGuard,AuthModule} from './auth';
 import {UserAuth} from './common';
 import {setTenantScope} from './contexts/tenant-isolation/application/tenant-scope';
-import {requireCurrentOrganizationAdmin} from './contexts/access/infrastructure/transactional-access';
+import {assertCurrentAdminSession} from './contexts/identity/infrastructure/current-admin-step-up';
 import {createHash} from 'node:crypto';
 import {Database} from './database';
 import type {PoolClient} from 'pg';
@@ -21,7 +21,7 @@ export class IntegrationsController {
   const user=r.user as UserAuth;
   return this.db.transaction(async tx=>{
    await setTenantScope(tx,user.organizationId);
-   await requireCurrentOrganizationAdmin(tx,user);
+   await assertCurrentAdminSession(tx,user,r.sessionId);
    return readLocalAuditProof(tx,user.organizationId);
   });
  }
@@ -29,7 +29,7 @@ export class IntegrationsController {
   const user=r.user as UserAuth;
   return this.db.transaction(async tx=>{
    await setTenantScope(tx,user.organizationId);
-   await requireCurrentOrganizationAdmin(tx,user);
+   await assertCurrentAdminSession(tx,user,r.sessionId);
    return {
   officialRegistry:{state:'NOT_CONNECTED',description:'No official Uganda land registry API or access agreement is configured. Manual sourced searches only.'},
   blockchain:{state:'NOT_CONNECTED',description:'No public or permissioned chain transaction has been submitted. Local audit hashes are not third-party notarization.'},

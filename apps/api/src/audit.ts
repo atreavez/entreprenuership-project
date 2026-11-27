@@ -1,5 +1,5 @@
 import {setTenantScope} from './contexts/tenant-isolation/application/tenant-scope';
-import {requireCurrentOrganizationAdmin} from './contexts/access/infrastructure/transactional-access';
+import {assertCurrentAdminSession} from './contexts/identity/infrastructure/current-admin-step-up';
 import { Injectable, Controller, Get, Req, UseGuards, Module } from '@nestjs/common';
 import { PoolClient } from 'pg';
 import { Database } from './database';
@@ -27,10 +27,10 @@ export class AuditService{
     VALUES($1,$2,$3,$4,$5,$6,$7::jsonb,$8,$9,$10)`,[eventId,u.organizationId,u.id,action,entityType,entityId,detailJson,prevHash,eventHash,timestamp]);
   return eventHash;
  }
- async verify(u:UserAuth){
+ async verify(u:UserAuth,sid:string){
   return this.db.transaction(async tx=>{
    await setTenantScope(tx,u.organizationId);
-   await requireCurrentOrganizationAdmin(tx,u);
+   await assertCurrentAdminSession(tx,u,sid);
    const {rows}=await tx.query('SELECT * FROM audit_events WHERE organization_id=$1 ORDER BY event_sequence ASC',[u.organizationId]);
   let prev='GENESIS';
   for(const event of rows){
@@ -44,14 +44,14 @@ export class AuditService{
   }return {verified:true,checked:rows.length,head:prev,disclaimer:'Local audit chain integrity only. No external blockchain notarization has been performed. A deleted suffix or fully recomputed chain cannot be detected without an independently trusted commitment.'};
   });
  }
- async list(u:UserAuth){
+ async list(u:UserAuth,sid:string){
   return this.db.transaction(async tx=>{
    await setTenantScope(tx,u.organizationId);
-   await requireCurrentOrganizationAdmin(tx,u);
+   await assertCurrentAdminSession(tx,u,sid);
    const {rows}=await tx.query('SELECT id,actor_id,action,entity_type,entity_id,previous_hash,event_hash,created_at FROM audit_events WHERE organization_id=$1 ORDER BY event_sequence DESC LIMIT 100',[u.organizationId]);return rows;
   });
  }
 }
 @Controller('audit')@UseGuards(AuthGuard)
-export class AuditController{constructor(private svc:AuditService){}@Get('verify')verify(@Req()req:any){return this.svc.verify(req.user);}@Get()list(@Req()req:any){return this.svc.list(req.user);}}
+export class AuditController{constructor(private svc:AuditService){}@Get('verify')verify(@Req()req:any){return this.svc.verify(req.user,req.sessionId);}@Get()list(@Req()req:any){return this.svc.list(req.user,req.sessionId);}}
 @Module({imports:[AuthModule],providers:[AuditService],controllers:[AuditController],exports:[AuditService]})export class AuditModule{}
