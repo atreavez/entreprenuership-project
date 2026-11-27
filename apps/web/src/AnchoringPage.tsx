@@ -5,11 +5,12 @@ type Job={id:string;commitment:string;revision:number;state:string;transactionId
 type History={revision:string|number;snapshot:Job;recorded_at:string};
 export default function AnchoringPage({token,role}:{token:string;role:string}){
  const [jobs,setJobs]=useState<Job[]>([]),[proof,setProof]=useState<Proof|null>(null),[history,setHistory]=useState<History[]>([]),[selected,setSelected]=useState(''),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false);
+ const [reason,setReason]=useState('');
  const generation=useRef(0),historyGen=useRef(0),locked=useRef(false);
  const permitted=role==='ORG_ADMIN'&&!DEMO;
  async function refresh(){
   const n=++generation.current;
-  setError('');setProof(null);setJobs([]);setSelected('');setHistory([]);++historyGen.current;
+  setError('');setProof(null);setJobs([]);setSelected('');setHistory([]);setReason('');++historyGen.current;
   if(!permitted)return;
   try{const [p,j]=await Promise.all([api<Proof>('/integrations/local-proof',token),api<{jobs:Job[];dispatchState:string}>('/anchoring/jobs',token)]);
    if(n!==generation.current)return;
@@ -30,9 +31,21 @@ export default function AnchoringPage({token,role}:{token:string;role:string}){
   finally{locked.current=false;setBusy(false);}
  }
  async function inspect(id:string){
-  const n=++historyGen.current;setSelected(id);setHistory([]);setError('');
+  if(!permitted||locked.current)return;
+  const n=++historyGen.current;setSelected(id);setHistory([]);setReason('');setError('');
   try{const r=await api<{history:History[]}>('/anchoring/jobs/'+encodeURIComponent(id)+'/history',token);if(n===historyGen.current)setHistory(r.history);}
   catch(e){if(n===historyGen.current)setError(e instanceof Error?e.message:'History unavailable');}
+ }
+ const selectedJob=jobs.find(j=>j.id===selected);
+ async function recover(){
+  if(!permitted||!selectedJob||!['BLOCKED','MANUAL_REVIEW'].includes(selectedJob.state)||reason.trim().length<12||locked.current)return;
+  locked.current=true;setBusy(true);setError('');setNotice('');
+  const n=generation.current;
+  try{await post('/anchoring/jobs/'+encodeURIComponent(selectedJob.id)+'/recover',token,{expectedRevision:selectedJob.revision,reason:reason.trim()});
+   if(n!==generation.current)return;
+   setNotice('Job requeued only. No blockchain transaction submitted.');await refresh();
+  }catch(e){if(n===generation.current)setError(e instanceof Error?e.message:'Recovery failed');}
+  finally{locked.current=false;setBusy(false);}
  }
  function downloadProof(){
   if(!proof||!permitted)return;
@@ -56,6 +69,6 @@ export default function AnchoringPage({token,role}:{token:string;role:string}){
    {jobs.map(j=><tr key={j.id}><td><code style={{overflowWrap:'anywhere'}}>{j.commitment}</code><small>Revision {j.revision}</small></td><td>{j.settings.target.providerId} / {j.settings.target.networkId}<small>Policy v{j.settings.version}</small></td><td>{readable(j.state)}<small>Failures: {j.failures}</small></td><td style={{overflowWrap:'anywhere'}}>{j.transactionId??'Not submitted'}</td><td>{j.confirmations??'—'} / {j.settings.target.minConfirmations}</td><td><button className="button secondary" disabled={!permitted||busy} onClick={()=>void inspect(j.id)}>History</button></td></tr>)}
    {!jobs.length&&<tr><td colSpan={6}>No jobs loaded.</td></tr>}
   </tbody></table></div></section>
-  {selected&&<section className="admin-section"><h2>Job history</h2><p style={{overflowWrap:'anywhere'}}>{selected}</p><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Revision</th><th>Recorded state</th><th>Transaction</th><th>Recorded at</th></tr></thead><tbody>{history.map(h=><tr key={h.revision}><td>{h.revision}</td><td>{readable(h.snapshot.state)}</td><td>{h.snapshot.transactionId??'—'}</td><td>{new Date(h.recorded_at).toLocaleString('en-UG')}</td></tr>)}{!history.length&&<tr><td colSpan={4}>No history loaded.</td></tr>}</tbody></table></div><p>Manual recovery and dispatch remain disabled until the operational gate is integrated.</p></section>}
+  {selected&&<section className="admin-section"><h2>Job history</h2><p style={{overflowWrap:'anywhere'}}>{selected}</p><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Revision</th><th>Recorded state</th><th>Transaction</th><th>Recorded at</th></tr></thead><tbody>{history.map(h=><tr key={h.revision}><td>{h.revision}</td><td>{readable(h.snapshot.state)}</td><td>{h.snapshot.transactionId??'—'}</td><td>{new Date(h.recorded_at).toLocaleString('en-UG')}</td></tr>)}{!history.length&&<tr><td colSpan={4}>No history loaded.</td></tr>}</tbody></table></div>{selectedJob&&['BLOCKED','MANUAL_REVIEW'].includes(selectedJob.state)&&<div><label className="field"><span>Recovery reason (12–500 characters)</span><textarea value={reason} maxLength={500} onChange={e=>setReason(e.target.value)}/></label><button className="button secondary" disabled={!permitted||busy||reason.trim().length<12} onClick={()=>void recover()}>Requeue stopped job</button><p>Requires recent MFA and the same approved policy version. External dispatch remains disconnected.</p></div>}</section>}
  </div>;
 }
