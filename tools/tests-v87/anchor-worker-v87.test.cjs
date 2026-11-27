@@ -7,7 +7,7 @@ const root=path.resolve(__dirname,'../..'),base='apps/api/src/contexts/anchoring
 function load(file,imports={}){
  const source=fs.readFileSync(path.join(root,base,file),'utf8'),mod={exports:{}};
  const code=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
- vm.runInNewContext(code,{module:mod,exports:mod.exports,require:n=>{if(Object.hasOwn(imports,n))return imports[n];throw Error('Unexpected import '+n);}},{timeout:3000});
+ vm.runInNewContext(code,{module:mod,exports:mod.exports,AbortController,setTimeout,clearTimeout,require:n=>{if(Object.hasOwn(imports,n))return imports[n];throw Error('Unexpected import '+n);}},{timeout:3000});
  return mod.exports;
 }
 const policy=load('domain/anchor-job-policy.ts');
