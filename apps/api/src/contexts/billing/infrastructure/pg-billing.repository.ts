@@ -1,0 +1,115 @@
+import type {Database} from '../../../database';
+import type {AuditService} from '../../../audit';
+import type {UserAuth} from '../../../common';
+import type {PoolClient} from 'pg';
+import {setTenantScope} from '../../tenant-isolation/application/tenant-scope';
+import {assertCurrentAdminStepUp} from '../../identity/infrastructure/current-admin-step-up';
+import {draftInvoice,issueInvoice,voidInvoice,paidSubscription,validateCatalog,type Catalog,type Invoice,type Transition,type Subscription} from '../domain/commercial-policy';
+import type {BillingRepository,BillingTransaction} from '../application/payment.port';
+function canonical(value:unknown):string{
+ if(Array.isArray(value))return '['+value.map(canonical).join(',')+']';
+ if(value!==null&&typeof value==='object')return '{'+Object.entries(value).sort(([a],[b])=>a<b?-1:a>b?1:0).map(([k,v])=>JSON.stringify(k)+':'+canonical(v)).join(',')+'}';
+ return JSON.stringify(value);
+}
+function numeric(v:unknown):number{
+ if(typeof v!=='number'&&(typeof v!=='string'||!/^\d+$/.test(v)))throw Error('Invalid persisted integer');
+ const n=Number(v);if(!Number.isSafeInteger(n)||n<0)throw Error('Invalid persisted integer');return n;
+}
+async function loadCatalog(tx:PoolClient,version?:number):Promise<Catalog|null>{
+ const result=version===undefined
+  ?await tx.query('SELECT version,prices FROM public.billing_catalog_versions ORDER BY version DESC LIMIT 1 FOR SHARE')
+  :await tx.query('SELECT version,prices FROM public.billing_catalog_versions WHERE version=$1 FOR SHARE',[version]);
+ if(result.rows.length===0)return null;
+ return validateCatalog({version:numeric(result.rows[0].version),prices:result.rows[0].prices});
+}
+export async function hydrateInvoice(tx:PoolClient,r:any):Promise<Invoice>{
+ const catalog=await loadCatalog(tx,numeric(r.catalog_version));
+ if(!catalog||!Array.isArray(r.lines))throw Error('Missing invoice pricing snapshot');
+ const initial=draftInvoice(r.id,r.organization_id,catalog,catalog.version,r.lines.map((l:any)=>({code:l.code,quantity:l.quantity})));
+ if(canonical(initial.lines)!==canonical(r.lines)||initial.totalUgx!==numeric(r.total_ugx)||r.currency!=='UGX')throw Error('Invalid stored invoice snapshot');
+ const revision=numeric(r.revision),state=r.state;
+ if(!((state==='DRAFT'&&revision===0)||(state==='ISSUED'&&revision===1)||(state==='PAID'&&revision===2)||(state==='VOID'&&(revision===1||revision===2))))throw Error('Invalid stored invoice state');
+ if(state==='PAID'?(typeof r.payment_key!=='string'||!r.payment_key):r.payment_key!==null)throw Error('Invalid stored payment reference');
+ return Object.freeze({...initial,state,revision,paymentKey:r.payment_key});
+}
+/** Request-scoped adapter. NOT registered in Nest and migration is staged.
+ * Only current MFA-verified admins can execute these transactions.
+ * Settlement is intentionally refused by this administrative adapter; a
+ * separately trusted reconciliation worker must independently observe payment.
+ */
+export class PgBillingRepository implements BillingRepository{
+ constructor(private readonly db:Database,private readonly audit:AuditService,private readonly actor:UserAuth,private readonly sessionId:string){}
+ async transaction<T>(organizationId:string,work:(tx:BillingTransaction)=>Promise<T>):Promise<T>{
+  if(organizationId!==this.actor.organizationId)throw Error('Billing tenant mismatch');
+  return this.db.transaction(async connection=>{
+   await setTenantScope(connection,organizationId);
+   await assertCurrentAdminStepUp(connection,this.actor,this.sessionId);
+   // Serialize catalog publication with draft creation and issuing; the future
+   // publication adapter MUST acquire the same transaction advisory lock first.
+   const catalogLock=()=>connection.query("SELECT pg_advisory_xact_lock_shared(hashtext('assettrust:billing:catalog'))");
+   const scope=(org:string)=>{if(org!==organizationId)throw Error('Billing tenant mismatch');};
+   const read=async(org:string,id:string)=>{
+    scope(org);
+    const result=await connection.query('SELECT * FROM public.billing_invoices WHERE organization_id=$1 AND id=$2 FOR UPDATE',[org,id]);
+    return result.rows.length===1?hydrateInvoice(connection,result.rows[0]):null;
+   };
+   const tx:BillingTransaction={
+    approvedCatalog:async()=>{await catalogLock();return loadCatalog(connection);},
+    invoice:read,
+    createDraft:async(id,expectedVersion,items)=>{
+     await catalogLock();const catalog=await loadCatalog(connection);
+     if(!catalog)throw Error('Approved billing catalog unavailable');
+     const draft=draftInvoice(id,organizationId,catalog,expectedVersion,items);
+     await connection.query(`INSERT INTO public.billing_invoices(id,organization_id,catalog_version,lines,total_ugx,currency,state,revision)
+      VALUES($1,$2,$3,$4::jsonb,$5,'UGX','DRAFT',0)`,[draft.id,organizationId,draft.catalogVersion,JSON.stringify(draft.lines),draft.totalUgx]);
+     await this.audit.write(connection,this.actor,'BILLING_DRAFT_CREATED','invoice',id,{catalogVersion:draft.catalogVersion,totalUgx:draft.totalUgx});
+     return draft;
+    },
+    commit:async(org,expected,transition)=>{
+     scope(org);if(transition.invoice.organizationId!==org)throw Error('Billing tenant mismatch');
+     if(transition.invoice.state==='PAID')throw Error('Trusted payment reconciliation is not connected');
+     await catalogLock();
+     const current=await read(org,transition.invoice.id);
+     if(!current||current.revision!==expected)return false;
+     const active=transition.invoice.state==='ISSUED'?await loadCatalog(connection):null;
+     const derived=transition.invoice.state==='ISSUED'&&active?issueInvoice(current,expected,active.version):
+      transition.invoice.state==='VOID'?voidInvoice(current,expected):null;
+     if(!derived||canonical(derived)!==canonical(transition))throw Error('Invalid financial transition');
+     const updated=await connection.query(`UPDATE public.billing_invoices SET state=$4,revision=$5
+      WHERE organization_id=$1 AND id=$2 AND revision=$3 AND state=$6 RETURNING id`,[org,current.id,expected,derived.invoice.state,derived.invoice.revision,current.state]);
+     if(updated.rowCount!==1)return false;
+     if(derived.entries.length){
+      const debit=derived.entries.find(e=>e.debit>0),credit=derived.entries.find(e=>e.credit>0);
+      if(derived.entries.length!==2||!debit||!credit||debit.debit!==current.totalUgx||credit.credit!==current.totalUgx)throw Error('Invalid journal pair');
+      await connection.query(`INSERT INTO public.billing_journal(organization_id,invoice_id,revision,event,debit_account,credit_account,amount_ugx)
+       VALUES($1,$2,$3,$4,$5,$6,$7)`,[org,current.id,derived.invoice.revision,derived.invoice.state,debit.account,credit.account,current.totalUgx]);
+     }
+     await this.audit.write(connection,this.actor,'BILLING_INVOICE_'+derived.invoice.state,'invoice',current.id,{revision:derived.invoice.revision,totalUgx:current.totalUgx});
+     return true;
+    },
+    createSubscription:async(org,requested)=>{
+     scope(org);if(requested.organizationId!==org)throw Error('Billing tenant mismatch');
+     // No customer entitlement API exists. Only a previously settled invoice
+     // and matching settlement record can fund a term.
+     const invoice=await read(org,requested.fundingInvoiceId);
+     if(!invoice||invoice.state!=='PAID')throw Error('Paid funding invoice required');
+     const settlement=await connection.query('SELECT amount_ugx,currency,provider_id,transaction_id FROM public.billing_settlements WHERE organization_id=$1 AND invoice_id=$2 FOR SHARE',[org,invoice.id]);
+     const row=settlement.rows[0];
+     if(settlement.rows.length!==1||numeric(row.amount_ugx)!==invoice.totalUgx||row.currency!==invoice.currency||
+      JSON.stringify([row.provider_id,row.transaction_id])!==invoice.paymentKey)throw Error('Verified settlement record required');
+     const catalog=await loadCatalog(connection,invoice.catalogVersion);
+     if(!catalog)throw Error('Historical pricing unavailable');
+     const derived=paidSubscription(invoice,catalog,requested.code,requested.startsAt);
+     if(canonical(derived)!==canonical(requested))throw Error('Invalid subscription term');
+     const result=await connection.query(`INSERT INTO public.billing_subscriptions(organization_id,funding_invoice_id,code,catalog_version,starts_at,ends_at)
+      VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT (organization_id,funding_invoice_id) DO NOTHING RETURNING funding_invoice_id`,
+      [org,invoice.id,derived.code,derived.catalogVersion,derived.startsAt,derived.endsAt]);
+     if(result.rowCount!==1)return false;
+     await this.audit.write(connection,this.actor,'BILLING_SUBSCRIPTION_CREATED','invoice',invoice.id,{code:derived.code,startsAt:derived.startsAt,endsAt:derived.endsAt});
+     return true;
+    }
+   };
+   return work(tx);
+  });
+ }
+}
