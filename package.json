@@ -223,6 +223,7 @@
     "acceptance:provenance:plan:v86": "node tools/acceptance-provenance-v86.cjs --plan",
     "acceptance:provenance:inspect:v86": "node tools/acceptance-provenance-v86.cjs --inspect",
     "verify:v87": "node --test --test-concurrency=1 tools/tests-v87/*.test.cjs",
+    "test:pg:anchoring:v87": "node tools/e2e-pg-anchoring-v87.mjs",
     "kali:acceptance:plan:v87": "node tools/kali-acceptance-v71.cjs --plan",
     "kali:acceptance:inspect:v87": "node tools/kali-acceptance-v71.cjs --inspect",
     "kali:acceptance:run:v87": "node tools/kali-acceptance-v71.cjs --run"

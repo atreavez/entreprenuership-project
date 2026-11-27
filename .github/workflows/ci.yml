@@ -268,6 +268,12 @@ jobs:
           ASSETTRUST_V59_CRUD_CONFIRM: YES
           NODE_ENV: test
         run: npm run test:pg:runtime-tenant-crud:v59
+      - name: Verify real anchoring repository concurrency, tenant isolation and immutable history
+        env:
+          ASSETTRUST_E2E_ALLOW_MUTATION: YES
+          ASSETTRUST_V87_ANCHOR_PG_CONFIRM: YES
+          NODE_ENV: test
+        run: npm run test:pg:anchoring:v87
       - name: Verify surveyor accreditation against live disposable PostgreSQL
         env:
           ASSETTRUST_E2E_ALLOW_MUTATION: YES
