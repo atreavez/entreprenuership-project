@@ -91,3 +91,21 @@ test('twenty-five existing SQL migrations remain immutable with no synthetic SQL
  const files=fs.readdirSync(path.join(ROOT,'apps/api/sql')).filter(f=>f.endsWith('.sql'));
  assert.equal(files.length>=25,true);assert(files.includes('025_documents_rls.sql'));
 });
+
+test('privilege audit detects effective column grants and privileges outside RLS',()=>{
+ for(const [table,privilege,flag] of [
+  ['assettrust_schema_migrations','INSERT','migration_insert'],
+  ['assettrust_schema_migrations','UPDATE','migration_update'],
+  ['audit_events','UPDATE','audit_update'],
+  ['assettrust_schema_migrations','REFERENCES','migration_references'],
+  ['audit_events','REFERENCES','audit_references']
+ ]) assert(live.includes("has_any_column_privilege(current_user,'public."+table+"','"+privilege+"') AS "+flag),flag);
+ for(const [table,prefix] of [['assettrust_schema_migrations','migration'],['audit_events','audit']]){
+  for(const privilege of ['TRUNCATE','TRIGGER'])
+   assert(live.includes("has_table_privilege(current_user,'public."+table+"','"+privilege+"') AS "+prefix+'_'+privilege.toLowerCase()));
+ }
+ for(const flag of ['migration_truncate','audit_truncate','migration_trigger','audit_trigger','migration_references','audit_references','protected_table_owner','rolreplication'])
+  assert(live.includes("'"+flag+"'"),flag);
+ assert(live.includes('if(flags[key]!==false)throw Error'));
+ assert(live.includes('checks:result.checkedPrivileges+additional.length'));
+});
