@@ -44,6 +44,12 @@ export class Database implements OnModuleDestroy, OnModuleInit {
      OR EXISTS(SELECT 1 FROM unnest(ARRAY['billing_catalog_versions','billing_journal','billing_settlements','billing_subscriptions']) AS t(name)
       WHERE has_any_column_privilege(current_user,'public.'||t.name,'UPDATE') OR has_table_privilege(current_user,'public.'||t.name,'DELETE'))
      OR has_table_privilege(current_user,'public.billing_invoices','DELETE')
+     OR has_table_privilege(current_user,'public.billing_reconciliation_jobs','DELETE')
+     OR has_any_column_privilege(current_user,'public.billing_reconciliation_jobs','INSERT')
+     OR has_table_privilege(current_user,'public.billing_reconciliation_history','DELETE')
+     OR has_any_column_privilege(current_user,'public.billing_reconciliation_history','UPDATE')
+     OR EXISTS(SELECT 1 FROM unnest(ARRAY['id','organization_id','invoice_id','provider_id','transaction_id','policy','lease_token','lease_until']) AS c(name)
+       WHERE has_column_privilege(current_user,'public.billing_reconciliation_jobs',c.name,'UPDATE'))
      OR has_any_column_privilege(current_user,'public.billing_settlements','INSERT')
      OR EXISTS(SELECT 1 FROM unnest(ARRAY['id','organization_id','catalog_version','lines','total_ugx','currency','payment_key','created_at']) AS c(name)
       WHERE has_column_privilege(current_user,'public.billing_invoices',c.name,'UPDATE'))
@@ -64,7 +70,12 @@ export class Database implements OnModuleDestroy, OnModuleInit {
      AND NOT EXISTS(SELECT 1 FROM unnest(ARRAY['id','organization_id','catalog_version','lines','total_ugx']) AS c(name)
        WHERE NOT has_column_privilege(current_user,'public.billing_invoices',c.name,'INSERT'))
      AND has_column_privilege(current_user,'public.billing_invoices','state','UPDATE')
-     AND has_column_privilege(current_user,'public.billing_invoices','revision','UPDATE')) AS required_access
+     AND has_column_privilege(current_user,'public.billing_invoices','revision','UPDATE')
+     AND has_table_privilege(current_user,'public.billing_reconciliation_jobs','SELECT')
+     AND has_table_privilege(current_user,'public.billing_reconciliation_history','SELECT')
+     AND has_table_privilege(current_user,'public.billing_reconciliation_history','INSERT')
+     AND NOT EXISTS(SELECT 1 FROM unnest(ARRAY['state','revision','attempts','next_run_at']) AS c(name)
+      WHERE NOT has_column_privilege(current_user,'public.billing_reconciliation_jobs',c.name,'UPDATE'))) AS required_access
    FROM pg_roles WHERE rolname=current_user`,[[...PROTECTED_TABLES,'assettrust_schema_migrations','billing_catalog_versions']]);
   if(roles.length!==1||roles[0].rolsuper||roles[0].rolbypassrls||roles[0].rolcreaterole||roles[0].rolcreatedb)
    throw new Error('Unsafe PostgreSQL application role: elevated privileges are forbidden in production');
@@ -94,9 +105,11 @@ export class Database implements OnModuleDestroy, OnModuleInit {
     'public.billing_invoices'::regclass,
     'public.billing_journal'::regclass,
     'public.billing_settlements'::regclass,
-    'public.billing_subscriptions'::regclass
+    'public.billing_subscriptions'::regclass,
+    'public.billing_reconciliation_jobs'::regclass,
+    'public.billing_reconciliation_history'::regclass
    ])`);
-  if(tables.length!==19||tables.some((r:any)=>!r.relrowsecurity||!r.relforcerowsecurity))
+  if(tables.length!==21||tables.some((r:any)=>!r.relrowsecurity||!r.relforcerowsecurity))
    throw new Error('Required private table tenant row-level security is missing; do not start production API');
   const currentRole=(await this.pool.query('SELECT current_user AS runtime_role')).rows[0]?.runtime_role;
   if(!currentRole||tables.some((r:any)=>r.table_owner===currentRole))

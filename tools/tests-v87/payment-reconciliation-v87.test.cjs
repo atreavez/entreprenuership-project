@@ -53,7 +53,7 @@ function persistence(options={}){
  const tx={query:async(sql,args=[])=>{
   calls.push({sql,args});
   if(sql==='ACTIVATION'||sql==='SCOPE')return {rows:[]};
-  if(sql.includes('FROM pg_roles'))return {rows:[{name:options.wrongRole?'normal_api':role,login:role,rolsuper:false,rolbypassrls:false,rolcreaterole:false,rolcreatedb:false,rolreplication:false,can_settle:true,can_record:true}]};
+  if(sql.includes('FROM pg_roles'))return {rows:[{name:options.wrongRole?'normal_api':role,login:role,rolsuper:false,rolbypassrls:false,rolcreaterole:false,rolcreatedb:false,rolreplication:false,can_settle:true,can_record:true,inherited_membership:false,schema_create:false,database_create:false,unsafe_financial_ddl:false,immutable_update:false,price_update:false,forbidden_insert:!!options.unsafeGrants}]};
   if(sql.includes('FROM users'))return {rows:options.inactive?[]:[{id:actor.id}]};
   if(sql.includes('FROM public.billing_invoices'))return {rows:[invoice]};
   if(sql.includes('FROM public.billing_settlements'))return {rows:[{provider_id:'offline',transaction_id:'tx1',amount_ugx:25000,currency:'UGX'}]};
@@ -96,4 +96,9 @@ test('ordinary API remains disconnected and cannot invoke settlement worker',()=
 test('lost or revoked queue lease blocks settlement before invoice access',async()=>{
  const f=persistence({lostLease:true});assert.equal(await f.repo.settle(request,obs),'REVIEW_REQUIRED');
  assert(!f.calls.some(c=>c.sql.includes('FROM public.billing_invoices')||c.sql.startsWith('INSERT')));
+});
+
+test('dedicated worker with excess financial grants refuses settlement',async()=>{
+ const f=persistence({unsafeGrants:true});await assert.rejects(f.repo.settle(request,obs));
+ assert.equal(f.calls.at(-1).sql,'ROLLBACK');assert(!f.calls.some(c=>c.sql.startsWith('INSERT')));
 });

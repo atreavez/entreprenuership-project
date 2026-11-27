@@ -27,9 +27,24 @@ export class PgSettlementRepository implements SettlementRepository{
    await setTenantScope(tx,r.organizationId);
    const role=(await tx.query(`SELECT current_user AS name,session_user AS login,rolsuper,rolbypassrls,rolcreaterole,rolcreatedb,rolreplication,
     has_column_privilege(current_user,'public.billing_invoices','payment_key','UPDATE') AS can_settle,
-    has_table_privilege(current_user,'public.billing_settlements','INSERT') AS can_record
+    has_table_privilege(current_user,'public.billing_settlements','INSERT') AS can_record,
+    EXISTS(SELECT 1 FROM pg_catalog.pg_auth_members WHERE member=pg_roles.oid) AS inherited_membership,
+    has_schema_privilege(current_user,'public','CREATE') AS schema_create,
+    has_database_privilege(current_user,current_database(),'CREATE') AS database_create,
+    EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+      WHERE n.nspname='public' AND c.relname=ANY(ARRAY['billing_invoices','billing_catalog_versions','billing_settlements','billing_journal','billing_subscriptions','billing_reconciliation_jobs','billing_reconciliation_history','audit_events','assettrust_schema_migrations'])
+        AND (c.relowner=pg_roles.oid OR has_table_privilege(current_user,c.oid,'TRUNCATE')
+         OR has_table_privilege(current_user,c.oid,'TRIGGER') OR has_any_column_privilege(current_user,c.oid,'REFERENCES')
+         OR has_table_privilege(current_user,c.oid,'DELETE'))) AS unsafe_financial_ddl,
+    EXISTS(SELECT 1 FROM unnest(ARRAY['billing_catalog_versions','billing_settlements','billing_journal','billing_subscriptions','billing_reconciliation_history','audit_events','assettrust_schema_migrations']) t(name)
+      WHERE has_any_column_privilege(current_user,'public.'||t.name,'UPDATE')) AS immutable_update,
+    EXISTS(SELECT 1 FROM unnest(ARRAY['id','organization_id','catalog_version','lines','total_ugx','currency','created_at']) c(name)
+      WHERE has_column_privilege(current_user,'public.billing_invoices',c.name,'UPDATE')) AS price_update,
+    (has_any_column_privilege(current_user,'public.billing_catalog_versions','INSERT')
+      OR has_any_column_privilege(current_user,'public.billing_invoices','INSERT')
+      OR has_any_column_privilege(current_user,'public.assettrust_schema_migrations','INSERT')) AS forbidden_insert
     FROM pg_roles WHERE rolname=current_user`)).rows[0];
-   if(role?.name!==this.expectedRole||role.login!==role.name||['rolsuper','rolbypassrls','rolcreaterole','rolcreatedb','rolreplication'].some(k=>role[k]!==false)||role.can_settle!==true||role.can_record!==true)throw Error('Restricted dedicated settlement login required');
+   if(role?.name!==this.expectedRole||role.login!==role.name||['rolsuper','rolbypassrls','rolcreaterole','rolcreatedb','rolreplication','inherited_membership','schema_create','database_create','unsafe_financial_ddl','immutable_update','price_update','forbidden_insert'].some(k=>role[k]!==false)||role.can_settle!==true||role.can_record!==true)throw Error('Restricted dedicated settlement login required');
    const member=await tx.query("SELECT id FROM users WHERE id=$1 AND organization_id=$2 AND role='ORG_ADMIN' AND suspended_at IS NULL FOR SHARE",[actor.id,r.organizationId]);
    if(member.rows.length!==1)throw Error('Settlement audit identity is no longer active');
    if(!this.gate.authorized(r)||!await this.fence(tx,r))return 'REVIEW_REQUIRED';

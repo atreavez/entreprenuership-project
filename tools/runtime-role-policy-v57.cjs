@@ -4,7 +4,7 @@
  * Real HTTP API processes must use an independent NO-BYPASSRLS login role.
  * Never include URL contents in errors or logs.
  */
-const REQUIRED_RLS_TABLES=Object.freeze(['report_pdf_layout_proposals','report_pdf_layout_revisions','report_pdf_layout_active','case_evidence','assets','verification_cases','documents','audit_events','case_tasks','disputes','monitoring_reminders','verification_quotes','notifications','anchor_jobs','anchor_job_history','billing_invoices','billing_journal','billing_settlements','billing_subscriptions']);
+const REQUIRED_RLS_TABLES=Object.freeze(['report_pdf_layout_proposals','report_pdf_layout_revisions','report_pdf_layout_active','case_evidence','assets','verification_cases','documents','audit_events','case_tasks','disputes','monitoring_reminders','verification_quotes','notifications','anchor_jobs','anchor_job_history','billing_invoices','billing_journal','billing_settlements','billing_subscriptions','billing_reconciliation_jobs','billing_reconciliation_history']);
 const RUNTIME_ROLE='assettrust_v57_ci_runtime';
 function parseSafeUrl(value){
  if(typeof value!=='string'||!value)throw Error('A PostgreSQL connection URL is required');

@@ -151,12 +151,12 @@ test('SQL stays parameterized, tenant scoped and row locks cover member and gran
  assert(s.includes('FOR SHARE OF a,actor'));
  assert(s.includes('LIMIT 1 FOR SHARE'));
 });
-test('milestone manifests and CI record tests without changing 30 SQL migrations',()=>{
+test('milestone manifests and CI record tests without changing 31 SQL migrations',()=>{
  const root=JSON.parse(read('package.json')),api=JSON.parse(read('apps/api/package.json')),web=JSON.parse(read('apps/web/package.json'));
  assert.match(root.version,/^0\.(?:7[3-9]|[89][0-9]|[1-9][0-9]{2,})\.0$/);assert.equal(root.version,api.version);assert.equal(root.version,web.version);
  assert.equal(root.scripts['verify:v73'],'node --test tools/tests-v73/*.test.cjs');
  assert.match(read('.github/workflows/ci.yml'),/npm run verify:v73/);
- assert.equal(fs.readdirSync(path.join(ROOT,'apps/api/sql')).filter(x=>/^\d{3}_.*\.sql$/.test(x)).length,30);
+ assert.equal(fs.readdirSync(path.join(ROOT,'apps/api/sql')).filter(x=>/^\d{3}_.*\.sql$/.test(x)).length,31);
 });
 
 test('revoked session blocks metadata and encrypted bytes before resource lookup',async()=>{

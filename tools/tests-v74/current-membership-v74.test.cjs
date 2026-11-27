@@ -165,7 +165,7 @@ test('case evidence is not revealed through an ordinary asset grant in document 
  assert.match(sql,/d\.case_id IS NOT NULL/);assert.match(sql,/d\.case_id IS NULL/);
 });
 test('v74 does not change any SQL migrations or weaken the required RLS contract',()=>{
- assert.equal(fs.readdirSync(path.join(ROOT,'apps/api/sql')).filter(x=>/^\d{3}_.*\.sql$/.test(x)).length,30);
+ assert.equal(fs.readdirSync(path.join(ROOT,'apps/api/sql')).filter(x=>/^\d{3}_.*\.sql$/.test(x)).length,31);
  const policy=source('apps/api/src/contexts/tenant-isolation/domain/rls-policy-contract.ts');
  assert(policy.includes('PROTECTED_TABLES'));assert(policy.includes('inspectPolicyInventory'));
 });

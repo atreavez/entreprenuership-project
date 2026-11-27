@@ -32,7 +32,7 @@ export async function readCurrentPaymentPolicy(tx:PoolClient):Promise<PaymentPol
     AND c.reviewed_by IS NOT NULL AND c.reviewed_by<>c.submitted_by`,[PLATFORM_ID,PAYMENT_POLICY_KEY]);
  return rows.length===1?parsePaymentPolicyText(rows[0].value,num(rows[0].version)):null;
 }
-function hydrate(r:any):ReconciliationJob{
+export function hydrateReconciliationJob(r:any):ReconciliationJob{
  const base=createReconciliationJob(r.id,{organizationId:r.organization_id,invoiceId:r.invoice_id,providerId:r.provider_id,transactionId:r.transaction_id},validatePaymentPolicy(r.policy),0);
  const revision=num(r.revision),attempts=num(r.attempts),nextRunAt=r.next_run_at===null?null:num(r.next_run_at),state=r.state;
  if(!['QUEUED','PENDING','RETRY_REQUIRED','BLOCKED','REVIEW_REQUIRED','SETTLED'].includes(state)||attempts>base.policy.maxAttempts||(['BLOCKED','REVIEW_REQUIRED','SETTLED'].includes(state))!==(nextRunAt===null))throw Error('Invalid persisted reconciliation state');
@@ -56,14 +56,14 @@ export class PgReconciliationJobs implements ReconciliationJobs{
    if(!policy||!currentPolicyMatches(job,policy))throw Error('Current approved reconciliation policy required');
    const initial=createReconciliationJob(job.id,job.request,policy,await dbNow(tx)),r=initial.request;
    const existing=await tx.query('SELECT * FROM public.billing_reconciliation_jobs WHERE organization_id=$1 AND invoice_id=$2 AND provider_id=$3 AND transaction_id=$4',[r.organizationId,r.invoiceId,r.providerId,r.transactionId]);
-   if(existing.rows.length===1)return hydrate(existing.rows[0]);
+   if(existing.rows.length===1)return hydrateReconciliationJob(existing.rows[0]);
    const invoice=await tx.query("SELECT id FROM public.billing_invoices WHERE organization_id=$1 AND id=$2 AND state='ISSUED' FOR SHARE",[r.organizationId,r.invoiceId]);
    if(invoice.rows.length!==1)throw Error('Issued invoice required');
    const inserted=await tx.query(`INSERT INTO public.billing_reconciliation_jobs(id,organization_id,invoice_id,provider_id,transaction_id,policy,state,attempts,next_run_at)
     VALUES($1,$2,$3,$4,$5,$6::jsonb,$7,0,$8) ON CONFLICT(organization_id,invoice_id,provider_id,transaction_id) DO NOTHING RETURNING *`,[initial.id,r.organizationId,r.invoiceId,r.providerId,r.transactionId,JSON.stringify(initial.policy),initial.state,initial.nextRunAt]);
-   if(inserted.rowCount===1){const result=hydrate(inserted.rows[0]);await append(tx,result);return result;}
+   if(inserted.rowCount===1){const result=hydrateReconciliationJob(inserted.rows[0]);await append(tx,result);return result;}
    const found=await tx.query('SELECT * FROM public.billing_reconciliation_jobs WHERE organization_id=$1 AND invoice_id=$2 AND provider_id=$3 AND transaction_id=$4',[r.organizationId,r.invoiceId,r.providerId,r.transactionId]);
-   if(found.rows.length!==1)throw Error('Job conflict could not be resolved');return hydrate(found.rows[0]);
+   if(found.rows.length!==1)throw Error('Job conflict could not be resolved');return hydrateReconciliationJob(found.rows[0]);
   });
  }
  async claim(org:string,leaseMs:number):Promise<JobClaim|null>{
@@ -77,7 +77,7 @@ export class PgReconciliationJobs implements ReconciliationJobs{
      ORDER BY next_run_at,id LIMIT 1 FOR UPDATE SKIP LOCKED
     ) UPDATE public.billing_reconciliation_jobs j SET lease_token=$2,lease_until=${clock}+$3::bigint
      FROM candidate WHERE j.id=candidate.id AND j.organization_id=$1 RETURNING j.*`,[org,token,leaseMs]);
-   return result.rowCount===1?{job:hydrate(result.rows[0]),leaseToken:token}:null;
+   return result.rowCount===1?{job:hydrateReconciliationJob(result.rows[0]),leaseToken:token}:null;
   });
  }
  async save(claim:JobClaim,next:ReconciliationJob):Promise<boolean>{
@@ -86,7 +86,7 @@ export class PgReconciliationJobs implements ReconciliationJobs{
    await requireReconciliationSchema(tx);await setTenantScope(tx,r.organizationId);
    const live=await tx.query(`SELECT * FROM public.billing_reconciliation_jobs WHERE organization_id=$1 AND id=$2 AND revision=$3 AND lease_token=$4 AND lease_until>${clock} FOR UPDATE`,[r.organizationId,previous.id,previous.revision,claim.leaseToken]);
    if(live.rows.length!==1)return false;
-   if(!same(hydrate(live.rows[0]),previous))throw Error('Claim snapshot mismatch');
+   if(!same(hydrateReconciliationJob(live.rows[0]),previous))throw Error('Claim snapshot mismatch');
    // Independently derive the allowed transition. Due time is bounded by
    // the repository clock, rather than accepting arbitrary scheduling input.
    const now=await dbNow(tx);
@@ -104,10 +104,11 @@ export class PgReconciliationJobs implements ReconciliationJobs{
    const derived=candidate.job;
    const updated=await tx.query(`UPDATE public.billing_reconciliation_jobs SET state=$5,revision=$6,attempts=$7,next_run_at=$8,lease_token=NULL,lease_until=NULL
     WHERE organization_id=$1 AND id=$2 AND revision=$3 AND lease_token=$4 AND lease_until>${clock} RETURNING *`,[r.organizationId,previous.id,previous.revision,claim.leaseToken,derived.state,derived.revision,derived.attempts,derived.nextRunAt]);
-   if(updated.rowCount!==1)return false;await append(tx,hydrate(updated.rows[0]));return true;
+   if(updated.rowCount!==1)return false;await append(tx,hydrateReconciliationJob(updated.rows[0]));return true;
   });
  }
  async recover(actor:UserAuth,sid:string,id:string,revision:number,reason:string,audit:AuditService):Promise<ReconciliationJob>{
+  if(typeof id!=='string'||! /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id)||!Number.isSafeInteger(revision)||revision<0)throw Error('Invalid recovery locator');
   if(typeof reason!=='string'||reason.trim().length<12||reason.length>500)throw Error('Recovery reason required');
   return this.db.transaction(async tx=>{
    await requireReconciliationSchema(tx);await setTenantScope(tx,actor.organizationId);
@@ -115,10 +116,10 @@ export class PgReconciliationJobs implements ReconciliationJobs{
    const policy=await readCurrentPaymentPolicy(tx);
    const {rows}=await tx.query('SELECT * FROM public.billing_reconciliation_jobs WHERE organization_id=$1 AND id=$2 AND lease_token IS NULL FOR UPDATE',[actor.organizationId,id]);
    if(rows.length!==1||!policy)throw Error('Stopped job not available');
-   const next=recoverReconciliationJob(hydrate(rows[0]),policy,revision,await dbNow(tx));
+   const next=recoverReconciliationJob(hydrateReconciliationJob(rows[0]),policy,revision,await dbNow(tx));
    const update=await tx.query("UPDATE public.billing_reconciliation_jobs SET state=$4,revision=$5,attempts=0,next_run_at=$6 WHERE organization_id=$1 AND id=$2 AND revision=$3 AND lease_token IS NULL RETURNING *",[actor.organizationId,id,revision,next.state,next.revision,next.nextRunAt]);
    if(update.rowCount!==1)throw Error('Recovery conflict');
-   const saved=hydrate(update.rows[0]);await append(tx,saved,reason.trim());await audit.write(tx,actor,'BILLING_RECONCILIATION_REQUEUED','invoice',saved.request.invoiceId,{jobId:id,revision:saved.revision,reason:reason.trim()});return saved;
+   const saved=hydrateReconciliationJob(update.rows[0]);await append(tx,saved,reason.trim());await audit.write(tx,actor,'BILLING_RECONCILIATION_REQUEUED','invoice',saved.request.invoiceId,{jobId:id,revision:saved.revision,reason:reason.trim()});return saved;
   });
  }
 }
@@ -132,5 +133,5 @@ export async function verifySettlementClaim(tx:PoolClient,claim:JobClaim):Promis
  if(!p||!currentPolicyMatches(claim.job,p))return false;
  const r=claim.job.request;
  const {rows}=await tx.query(`SELECT * FROM public.billing_reconciliation_jobs WHERE organization_id=$1 AND id=$2 AND revision=$3 AND lease_token=$4 AND lease_until>${clock} FOR UPDATE`,[r.organizationId,claim.job.id,claim.job.revision,claim.leaseToken]);
- return rows.length===1&&same(hydrate(rows[0]),claim.job);
+ return rows.length===1&&same(hydrateReconciliationJob(rows[0]),claim.job);
 }

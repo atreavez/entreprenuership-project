@@ -41,11 +41,11 @@ test('worker disabled by deployment, fences acknowledgment and handles interrupt
  const failed=new ReconciliationWorker(jobs,{resolve:async()=>{throw Error('network');}},()=>true,90000,()=>1000);
  assert.equal(await failed.runOne(org),'LEASE_LOST');assert.equal(ack.state,'RETRY_REQUIRED');
 });
-test('staged queue uses composite tenant relationships, fenced lease and append-only history',()=>{
- const sql=read('tools/staged-migrations/031_reconciliation_jobs.sql'),repo=read(base+'infrastructure/pg-reconciliation-jobs.ts'),settlement=read(base+'infrastructure/pg-settlement.repository.ts');
+test('reviewed queue uses composite tenant relationships, fenced lease and append-only history',()=>{
+ const sql=read('apps/api/sql/031_reconciliation_jobs.sql'),repo=read(base+'infrastructure/pg-reconciliation-jobs.ts'),settlement=read(base+'infrastructure/pg-settlement.repository.ts');
  assert(sql.includes('FOREIGN KEY(organization_id,invoice_id)'));assert(sql.includes('UNIQUE(organization_id,invoice_id,provider_id,transaction_id)'));assert(!/FOR DELETE TO PUBLIC/.test(sql));
  assert.equal((sql.match(/FOR UPDATE TO PUBLIC/g)||[]).length,1);assert(repo.includes('FOR UPDATE SKIP LOCKED'));assert(repo.includes('lease_token=$4 AND lease_until>'));
  assert(repo.includes('Settlement acknowledgement lacks persisted payment'));assert(repo.includes('pg_advisory_xact_lock_shared(hashtext($1))'));
  assert(settlement.includes('private readonly fence:'));assert.equal((settlement.match(/await this.fence\(tx,r\)/g)||[]).length,2);
- assert(!read('apps/api/src/contexts/platform/domain/schema-manifest.ts').includes('031_reconciliation_jobs.sql'));
+ assert(read('apps/api/src/contexts/platform/domain/schema-manifest.ts').includes('031_reconciliation_jobs.sql'));
 });

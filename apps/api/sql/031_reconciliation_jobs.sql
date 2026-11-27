@@ -1,5 +1,5 @@
 BEGIN;
--- STAGED: review runtime/worker grants, manifest, and RLS inventory before promotion.
+-- Reconciliation queue schema. Dedicated settlement worker deployment remains disabled.
 CREATE TABLE public.billing_reconciliation_jobs (
  id uuid PRIMARY KEY,
  organization_id uuid NOT NULL,

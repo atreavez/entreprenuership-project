@@ -36,7 +36,12 @@ export const POLICY_CONTRACT:readonly ExpectedPolicy[]=Object.freeze([
  {table:'billing_settlements',name:'billing_settlements_insert_v87',cmd:'INSERT',read:null,write:'tenant'},
  {table:'billing_subscriptions',name:'billing_subscriptions_select_v87',cmd:'SELECT',read:'tenant',write:null},
  {table:'billing_subscriptions',name:'billing_subscriptions_insert_v87',cmd:'INSERT',read:null,write:'tenant'},
- {table:'billing_invoices',name:'billing_invoices_update_v87',cmd:'UPDATE',read:'tenant',write:'tenant'}
+ {table:'billing_invoices',name:'billing_invoices_update_v87',cmd:'UPDATE',read:'tenant',write:'tenant'},
+ {table:'billing_reconciliation_jobs',name:'billing_reconciliation_jobs_select_v87',cmd:'SELECT',read:'tenant',write:null},
+ {table:'billing_reconciliation_jobs',name:'billing_reconciliation_jobs_insert_v87',cmd:'INSERT',read:null,write:'tenant'},
+ {table:'billing_reconciliation_jobs',name:'billing_reconciliation_jobs_update_v87',cmd:'UPDATE',read:'tenant',write:'tenant'},
+ {table:'billing_reconciliation_history',name:'billing_reconciliation_history_select_v87',cmd:'SELECT',read:'tenant',write:null},
+ {table:'billing_reconciliation_history',name:'billing_reconciliation_history_insert_v87',cmd:'INSERT',read:null,write:'tenant'}
 ]);
 export const PROTECTED_TABLES=Object.freeze([...new Set(POLICY_CONTRACT.map(p=>p.table))]);
 export interface CatalogPolicy {

@@ -46,5 +46,5 @@ test('catalog publication is in the same approval transaction after effective va
  assert(part.indexOf('await requireBillingActivation(tx)')<part.indexOf('await this.apply(tx'));
  assert(part.indexOf('UPDATE admin_configuration_changes SET status')<part.indexOf('await publishApprovedCatalog(tx,id)'));
  assert(part.indexOf('await publishApprovedCatalog(tx,id)')<part.indexOf('await this.audit.write(tx,u'));
- assert(read('main.ts').includes('AnchorOperationsModule,BillingModule,NotificationsModule'));
+ assert(read('main.ts').includes('AnchorOperationsModule,BillingModule,ReconciliationAdminModule,NotificationsModule'));
 });

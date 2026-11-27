@@ -34,6 +34,9 @@ try{
   await operator.query(`REVOKE UPDATE,DELETE,TRUNCATE,TRIGGER,REFERENCES ON TABLE public.billing_catalog_versions,public.billing_journal,public.billing_subscriptions FROM ${RUNTIME_ROLE}`);
   await operator.query(`REVOKE INSERT,UPDATE,DELETE,TRUNCATE,TRIGGER,REFERENCES ON TABLE public.billing_settlements,public.billing_invoices FROM ${RUNTIME_ROLE}`);
   await operator.query(`GRANT INSERT(id,organization_id,catalog_version,lines,total_ugx),UPDATE(state,revision) ON TABLE public.billing_invoices TO ${RUNTIME_ROLE}`);
+  await operator.query(`REVOKE INSERT,UPDATE,DELETE,TRUNCATE,TRIGGER,REFERENCES ON TABLE public.billing_reconciliation_jobs FROM ${RUNTIME_ROLE}`);
+  await operator.query(`GRANT UPDATE(state,revision,attempts,next_run_at) ON TABLE public.billing_reconciliation_jobs TO ${RUNTIME_ROLE}`);
+  await operator.query(`REVOKE UPDATE,DELETE,TRUNCATE,TRIGGER,REFERENCES ON TABLE public.billing_reconciliation_history FROM ${RUNTIME_ROLE}`);
   await operator.query('COMMIT');
  }catch(e){await operator.query('ROLLBACK').catch(()=>{});throw e;}
  console.log(JSON.stringify({schema:'ASSETTRUST_V60_DISPOSABLE_GRANT_REPAIR',ok:true,

@@ -49,18 +49,18 @@ function createDb(state){
  }).Database;
  return {db:new Database(),calls};
 }
-test('actual Database validates 30 policies, 19 tables, runtime role on EVERY inspect',async()=>{
+test('actual Database validates 35 policies, 21 tables, runtime role on EVERY inspect',async()=>{
  const f=fixture(),{db,calls}=createDb(f);
  const result=await db.assertRuntimeIsolation();
- assert.equal(result.policiesVerified,30);assert.equal(result.tablesVerified,19);
+ assert.equal(result.policiesVerified,35);assert.equal(result.tablesVerified,21);
  assert.equal(calls.length,4);
- const second=await db.assertRuntimeIsolation();assert.equal(second.policiesVerified,30);assert.equal(calls.length,8);
+ const second=await db.assertRuntimeIsolation();assert.equal(second.policiesVerified,35);assert.equal(calls.length,8);
 });
 test('in insecure dev mode onModuleInit can skip but readiness NEVER skips policy inspection',async()=>{
  const f=fixture(),{db,calls}=createDb(f);
  await db.onModuleInit();assert.equal(calls.length,0);
  const result=await new SchemaProbe(db).check();assert.equal(result.ready,true);assert.equal(calls.length,7);
- assert.equal(result.verifiedMigrations,30);assert.equal(result.policiesVerified,30);assert.equal(result.tablesVerified,19);
+ assert.equal(result.verifiedMigrations,31);assert.equal(result.policiesVerified,35);assert.equal(result.tablesVerified,21);
 });
 test('policy added AFTER first readiness causes next readiness to fail closed',async()=>{
  const f=fixture();const {db}=createDb(f),probe=new SchemaProbe(db);

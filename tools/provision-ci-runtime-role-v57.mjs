@@ -40,6 +40,9 @@ try{
   await client.query(`REVOKE UPDATE,DELETE,TRUNCATE,TRIGGER,REFERENCES ON TABLE public.billing_catalog_versions,public.billing_journal,public.billing_subscriptions FROM ${RUNTIME_ROLE}`);
   await client.query(`REVOKE INSERT,UPDATE,DELETE,TRUNCATE,TRIGGER,REFERENCES ON TABLE public.billing_settlements,public.billing_invoices FROM ${RUNTIME_ROLE}`);
   await client.query(`GRANT INSERT(id,organization_id,catalog_version,lines,total_ugx),UPDATE(state,revision) ON TABLE public.billing_invoices TO ${RUNTIME_ROLE}`);
+  await client.query(`REVOKE INSERT,UPDATE,DELETE,TRUNCATE,TRIGGER,REFERENCES ON TABLE public.billing_reconciliation_jobs FROM ${RUNTIME_ROLE}`);
+  await client.query(`GRANT UPDATE(state,revision,attempts,next_run_at) ON TABLE public.billing_reconciliation_jobs TO ${RUNTIME_ROLE}`);
+  await client.query(`REVOKE UPDATE,DELETE,TRUNCATE,TRIGGER,REFERENCES ON TABLE public.billing_reconciliation_history FROM ${RUNTIME_ROLE}`);
  await client.query(`GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA public TO ${RUNTIME_ROLE}`);
  const url=new URL(process.env.DATABASE_URL);
  url.username=RUNTIME_ROLE;url.password=password;
