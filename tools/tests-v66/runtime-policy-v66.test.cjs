@@ -30,7 +30,7 @@ function createDb(state){
  const calls=[];const decorate=()=>()=>{};
  class Pool {
   async query(sql){calls.push(sql);
-   if(sql.includes('FROM pg_roles'))return {rows:[{rolsuper:state.superuser,rolbypassrls:state.bypass,rolcreaterole:false,rolcreatedb:false}]};
+   if(sql.includes('FROM pg_roles'))return {rows:[{rolsuper:state.superuser,rolbypassrls:state.bypass,rolcreaterole:false,rolcreatedb:false,rolreplication:false,identity_mismatch:false,inherited_membership:false,public_schema_create:false,database_create:false,protected_ddl:false,immutable_write:false,required_access:true,...state.privileges}]};
    if(sql.includes('FROM pg_class'))return {rows:policy.PROTECTED_TABLES.map(relname=>({relname,relrowsecurity:state.rlsEnabled,relforcerowsecurity:state.forceEnabled,table_owner:state.owner}))};
    if(sql.includes('current_user AS runtime_role'))return {rows:[{runtime_role:state.role}]};
    if(sql.includes('FROM pg_policies'))return {rows:state.policies};
@@ -111,4 +111,23 @@ test('admin UI shows policy verification and rejects older ambiguous ready paylo
  assert(read('apps/web/src/readiness-contract.ts').includes("x.security!=='rls-policy-contract-verified'"));
  assert(src.includes('status.rlsPoliciesVerified'));
  assert(src.includes('status.protectedTablesVerified'));
+});
+
+test('effective privilege drift removes readiness after a previously safe catalog check',async()=>{
+ for(const flag of ['rolreplication','identity_mismatch','inherited_membership','public_schema_create','database_create','protected_ddl','immutable_write']){
+  const f=fixture(),probe=new SchemaProbe(createDb(f).db);
+  assert.equal((await probe.check()).ready,true,flag);
+  f.privileges={[flag]:true};assert.equal((await probe.check()).ready,false,flag);
+ }
+});
+test('missing privilege evidence or required permissions fail closed',async()=>{
+ for(const change of [{protected_ddl:undefined},{immutable_write:null},{required_access:false},{required_access:undefined}]){
+  const f=fixture();f.privileges=change;
+  assert.equal((await new SchemaProbe(createDb(f).db).check()).ready,false);
+ }
+});
+test('role SQL checks effective column grants, ownership and non-RLS DDL on all reviewed tables',async()=>{
+ const f=fixture(),{db,calls}=createDb(f);await db.assertRuntimeIsolation();
+ const sql=calls[0];
+ for(const fragment of ['session_user','pg_auth_members','rolreplication','has_schema_privilege','has_database_privilege','c.relowner','TRUNCATE','TRIGGER','REFERENCES','has_any_column_privilege',"public.anchor_job_history','UPDATE'","public.assettrust_schema_migrations','INSERT'","public.anchor_jobs','DELETE'"])assert(sql.includes(fragment),fragment);
 });

@@ -23,10 +23,41 @@ export class Database implements OnModuleDestroy, OnModuleInit {
   * removes the process from service immediately on its next readiness probe.
   */
  async assertRuntimeIsolation():Promise<{policiesVerified:number;tablesVerified:number}>{
-  const {rows:roles}=await this.pool.query(`SELECT rolsuper,rolbypassrls,rolcreaterole,rolcreatedb
-   FROM pg_roles WHERE rolname=current_user`);
+  const {rows:roles}=await this.pool.query(`SELECT rolsuper,rolbypassrls,rolcreaterole,rolcreatedb,rolreplication,
+    current_user<>session_user AS identity_mismatch,
+    EXISTS(SELECT 1 FROM pg_catalog.pg_auth_members WHERE member=pg_roles.oid) AS inherited_membership,
+    has_schema_privilege(current_user,'public','CREATE') AS public_schema_create,
+    has_database_privilege(current_user,current_database(),'CREATE') AS database_create,
+    EXISTS(SELECT 1 FROM pg_catalog.pg_class c JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+     WHERE n.nspname='public' AND c.relname=ANY($1::text[])
+      AND (c.relowner=pg_roles.oid OR has_table_privilege(current_user,c.oid,'TRUNCATE')
+       OR has_table_privilege(current_user,c.oid,'TRIGGER')
+       OR has_any_column_privilege(current_user,c.oid,'REFERENCES'))) AS protected_ddl,
+    (has_any_column_privilege(current_user,'public.assettrust_schema_migrations','INSERT')
+     OR has_any_column_privilege(current_user,'public.assettrust_schema_migrations','UPDATE')
+     OR has_table_privilege(current_user,'public.assettrust_schema_migrations','DELETE')
+     OR has_any_column_privilege(current_user,'public.audit_events','UPDATE')
+     OR has_table_privilege(current_user,'public.audit_events','DELETE')
+     OR has_any_column_privilege(current_user,'public.anchor_job_history','UPDATE')
+     OR has_table_privilege(current_user,'public.anchor_job_history','DELETE')
+     OR has_table_privilege(current_user,'public.anchor_jobs','DELETE')) AS immutable_write,
+    (has_table_privilege(current_user,'public.assettrust_schema_migrations','SELECT')
+     AND has_table_privilege(current_user,'public.audit_events','SELECT')
+     AND has_table_privilege(current_user,'public.audit_events','INSERT')
+     AND has_table_privilege(current_user,'public.anchor_job_history','SELECT')
+     AND has_table_privilege(current_user,'public.anchor_job_history','INSERT')
+     AND has_table_privilege(current_user,'public.anchor_jobs','SELECT')
+     AND has_table_privilege(current_user,'public.anchor_jobs','INSERT')
+     AND has_table_privilege(current_user,'public.anchor_jobs','UPDATE')) AS required_access
+   FROM pg_roles WHERE rolname=current_user`,[[...PROTECTED_TABLES,'assettrust_schema_migrations']]);
   if(roles.length!==1||roles[0].rolsuper||roles[0].rolbypassrls||roles[0].rolcreaterole||roles[0].rolcreatedb)
    throw new Error('Unsafe PostgreSQL application role: elevated privileges are forbidden in production');
+  const flags=roles[0];
+  // Strict booleans: missing evidence must not be treated as a denied privilege.
+  for(const key of ['rolsuper','rolbypassrls','rolcreaterole','rolcreatedb','rolreplication','identity_mismatch','inherited_membership','public_schema_create','database_create','protected_ddl','immutable_write']){
+   if(flags[key]!==false)throw new Error('Unsafe PostgreSQL runtime privilege contract');
+  }
+  if(flags.required_access!==true)throw new Error('Required PostgreSQL runtime access is missing');
   const {rows:tables}=await this.pool.query(`SELECT relname,relrowsecurity,relforcerowsecurity,pg_get_userbyid(relowner) AS table_owner
    FROM pg_class WHERE oid=ANY(ARRAY[
     'public.report_pdf_layout_proposals'::regclass,

@@ -56,7 +56,7 @@ function productionDatabaseFixture(catalogRows){
  const calls=[];const decorator=()=>()=>{};
  class Pool{
   async query(sql){calls.push(sql);
-   if(sql.includes('FROM pg_roles'))return {rows:[{rolsuper:false,rolbypassrls:false,rolcreaterole:false,rolcreatedb:false}]};
+   if(sql.includes('FROM pg_roles'))return {rows:[{rolsuper:false,rolbypassrls:false,rolcreaterole:false,rolcreatedb:false,rolreplication:false,identity_mismatch:false,inherited_membership:false,public_schema_create:false,database_create:false,protected_ddl:false,immutable_write:false,required_access:true}]};
    if(sql.includes('FROM pg_class'))return {rows:PROTECTED_TABLES.map(relname=>({relname,relrowsecurity:true,relforcerowsecurity:true,table_owner:'migration_owner'}))};
    if(sql.includes('current_user AS runtime_role'))return {rows:[{runtime_role:'runtime_app'}]};
    if(sql.includes('FROM pg_policies'))return {rows:catalogRows};

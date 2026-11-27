@@ -100,7 +100,7 @@ test('live RLS contract requires guarded disposable target and executes as a dif
 const dbSource=read('apps/api/src/database.ts');
 const expectedProtectedTables=[...dbSource.matchAll(/'public\.([a-z_]+)'::regclass/g)].map(m=>m[1]);
 assert(expectedProtectedTables.length>=6,'original RLS coverage must not be weakened');
-function databaseFixture({roles=[{rolsuper:false,rolbypassrls:false}],tables=expectedProtectedTables.map(relname=>({relname,relrowsecurity:true,relforcerowsecurity:true,table_owner:'migration_owner'}))}={}){
+function databaseFixture({roles=[{rolsuper:false,rolbypassrls:false,rolcreaterole:false,rolcreatedb:false,rolreplication:false,identity_mismatch:false,inherited_membership:false,public_schema_create:false,database_create:false,protected_ddl:false,immutable_write:false,required_access:true}],tables=expectedProtectedTables.map(relname=>({relname,relrowsecurity:true,relforcerowsecurity:true,table_owner:'migration_owner'}))}={}){
  const calls=[];
  class Pool{
   constructor(){this.calls=calls;}
