@@ -30,11 +30,16 @@ const runtime=new pg.Client({connectionString:process.env.ASSETTRUST_RUNTIME_DAT
 const fixture=Array.from({length:2},()=>({org:randomUUID(),user:randomUUID(),asset:randomUUID(),case:randomUUID(),evidence:randomUUID(),document:randomUUID()}));
 const tableIds={assets:'asset',verification_cases:'case',case_evidence:'evidence',documents:'document'};
 const committed=[];const transient=[];
-let opConnected=false,rtConnected=false,assertions=0;
+let opConnected=false,rtConnected=false,assertions=0,evidence;
 const check=(condition,message)=>{assert.ok(condition,message);assertions++};
-const assertCount=async(table,expected,label)=>{
- const result=await runtime.query(`SELECT count(*)::int AS n FROM public.${table} WHERE id=ANY($1::uuid[])`,[fixture.map(f=>f[tableIds[table]])]);
- assert.equal(result.rows[0].n,expected,`${label}: ${table}`);assertions++;
+const assertCount=async(table,expected,label,owner)=>{
+ const result=await runtime.query(`SELECT id,organization_id FROM public.${table} WHERE id=ANY($1::uuid[])`,[fixture.map(f=>f[tableIds[table]])]);
+ assert.equal(result.rowCount,expected,`${label}: ${table}`);assertions++;
+ if(expected===1){
+  assert.ok(owner,'Expected tenant fixture required for positive visibility checks');
+  assert.equal(result.rows[0].id,owner[tableIds[table]],`${label}: exact record ${table}`);
+  assert.equal(result.rows[0].organization_id,owner.org,`${label}: exact owner ${table}`);assertions+=2;
+ }
 };
 const setTenant=async(org)=>{await runtime.query("SELECT set_config('assettrust.tenant_id',$1,true)",[org]);};
 async function addFixture(f,index){
@@ -62,7 +67,7 @@ async function addFixture(f,index){
  */
 async function assertAuthorizedCrud(f){
  const row={asset:randomUUID(),case:randomUUID(),evidence:randomUUID(),document:randomUUID()};
- transient.push(row);
+ transient.push({...row,org:f.org});
  const asset=await runtime.query(`INSERT INTO public.assets(id,organization_id,asset_code,asset_type,district,declared_owner,created_by)
  VALUES($1,$2,$3,'LAND','disposable','synthetic',$4) RETURNING id`,[row.asset,f.org,`AT59-${row.asset}`,f.user]);
  check(asset.rowCount===1,'Own-tenant asset INSERT must succeed');
@@ -80,8 +85,9 @@ async function assertAuthorizedCrud(f){
  ['case_evidence','evidence','observations'],['documents','document','display_name']]){
   const updated=await runtime.query(`UPDATE public.${table} SET ${field}=$2 WHERE id=$1 RETURNING id`,[row[key],'authorized v59 update']);
   check(updated.rowCount===1,`Own-tenant UPDATE must succeed: ${table}`);
-  const counted=await runtime.query(`SELECT count(*)::int AS n FROM public.${table} WHERE id=$1`,[row[key]]);
-  check(counted.rows[0].n===1,`Own-tenant INSERT must be visible: ${table}`);
+  const counted=await runtime.query(`SELECT ${field} AS value,organization_id FROM public.${table} WHERE id=$1`,[row[key]]);
+  check(counted.rowCount===1,`Own-tenant INSERT must be visible: ${table}`);
+  check(counted.rows[0].value==='authorized v59 update'&&counted.rows[0].organization_id===f.org,`Own-tenant UPDATE must persist expected value and owner: ${table}`);
  }
  // Delete in foreign-key-safe child-to-parent order; prove authorized DELETE
  // can actually remove records, not merely return success for missing rows.
@@ -89,6 +95,7 @@ async function assertAuthorizedCrud(f){
  ['verification_cases','case'],['assets','asset']]){
   const deleted=await runtime.query(`DELETE FROM public.${table} WHERE id=$1 RETURNING id`,[row[key]]);
   check(deleted.rowCount===1,`Own-tenant DELETE must succeed: ${table}`);
+  check((await runtime.query(`SELECT id FROM public.${table} WHERE id=$1`,[row[key]])).rowCount===0,`Own-tenant DELETE must remove row: ${table}`);
  }
 }
 async function cleanupFixture(f){
@@ -106,7 +113,7 @@ async function cleanupFixture(f){
 async function assertRejectedWrite(sql,params,label){
  await runtime.query('SAVEPOINT v58_forbidden');
  try{
-  await assert.rejects(()=>runtime.query(sql,params),err=>err?.code==='42501',`${label}: tenant RLS must reject insert`);assertions++;
+  await assert.rejects(()=>runtime.query(sql,params),err=>err?.code==='42501'&&/row-level security policy/i.test(err.message),`${label}: tenant RLS policy must reject write (not merely missing table permissions)`);assertions++;
  }finally{await runtime.query('ROLLBACK TO SAVEPOINT v58_forbidden');await runtime.query('RELEASE SAVEPOINT v58_forbidden');}
 }
 try{
@@ -126,18 +133,33 @@ try{
  const protectedTables=Object.keys(tableIds);
  // No scope is present in this independent runtime connection.
  for(const table of protectedTables)await assertCount(table,0,'no tenant scope');
+ // An unrelated, valid UUID cannot read either organization's fixtures.
+ await runtime.query('BEGIN');
+ try{
+  await setTenant(randomUUID());
+  for(const table of protectedTables)await assertCount(table,0,'unrelated tenant scope');
+ }finally{await runtime.query('ROLLBACK');}
+ // Without tenant context, even a structurally valid INSERT must be denied by RLS.
+ await runtime.query('BEGIN');
+ try{
+  const f=fixture[0];
+  await assertRejectedWrite(`INSERT INTO public.assets(id,organization_id,asset_code,asset_type,district,declared_owner,created_by)
+   VALUES($1,$2,$3,'LAND','disposable','synthetic',$4)`,[randomUUID(),f.org,`AT59-${randomUUID()}`,f.user],'unscoped assets');
+ }finally{await runtime.query('ROLLBACK');}
  for(let i=0;i<2;i++){
   const own=fixture[i],other=fixture[1-i];
   await runtime.query('BEGIN');
   try{
    await setTenant(own.org);
-   for(const table of protectedTables)await assertCount(table,1,'own-tenant SELECT');
+   for(const table of protectedTables)await assertCount(table,1,'own-tenant SELECT',own);
    await assertAuthorizedCrud(own);
    for(const [table,column] of Object.entries(tableIds)){
     const r=await runtime.query(`UPDATE public.${table} SET organization_id=organization_id WHERE id=$1 RETURNING id`,[other[column]]);
     check(r.rowCount===0,`Cross-tenant UPDATE must be invisible: ${table}`);
     const d=await runtime.query(`DELETE FROM public.${table} WHERE id=$1 RETURNING id`,[other[column]]);
     check(d.rowCount===0,`Cross-tenant DELETE must be invisible: ${table}`);
+    // USING alone is not sufficient: WITH CHECK must prevent tenant reassignment.
+    await assertRejectedWrite(`UPDATE public.${table} SET organization_id=$2 WHERE id=$1 RETURNING id`,[own[column],other.org],`${table} tenant reassignment`);
    }
    await assertRejectedWrite(`INSERT INTO public.assets(id,organization_id,asset_code,asset_type,district,declared_owner,created_by)
     VALUES($1,$2,$3,'LAND','disposable','synthetic',$4)`,[randomUUID(),other.org,`AT58-${randomUUID()}`,other.user],'assets');
@@ -151,26 +173,33 @@ try{
   }finally{await runtime.query('ROLLBACK');}
   for(const table of protectedTables)await assertCount(table,0,'scope must not leak after transaction');
   await runtime.query('BEGIN');
-  try{await setTenant(own.org);for(const table of protectedTables)await assertCount(table,1,'scope active before COMMIT');
+  try{await setTenant(own.org);for(const table of protectedTables)await assertCount(table,1,'scope active before COMMIT',own);
    await runtime.query('COMMIT');
   }catch(e){await runtime.query('ROLLBACK').catch(()=>{});throw e;}
   for(const table of protectedTables)await assertCount(table,0,'scope must not leak after COMMIT');
  }
- console.log(JSON.stringify({schema:'ASSETTRUST_V59_SEEDED_RUNTIME_CRUD_RLS',ok:true,productionApproved:false,
+ evidence={schema:'ASSETTRUST_V59_SEEDED_RUNTIME_CRUD_RLS',ok:true,productionApproved:false,
   restrictedRole:RUNTIME_ROLE,organizations:2,seededTables:protectedTables,assertions,realSeparateConnections:true,authorizedCrudTested:true,
-  coverage:'RLS enforced on assets/cases/evidence/document records; 3 PDF-layout tables audited by existing v0.46 contract; other tables not covered.'}));
-}catch(e){console.error('FAIL v0.58 seeded RLS isolation: '+e.message);process.exitCode=1;
+  coverage:'RLS enforced on assets/cases/evidence/document records; 3 PDF-layout tables audited by existing v0.46 contract; other tables not covered.'};
+}catch(e){console.error('FAIL v0.59 seeded RLS isolation: '+e.message);process.exitCode=1;
 }finally{
  if(rtConnected){await runtime.query('ROLLBACK').catch(()=>{});await runtime.end().catch(()=>{});}
  if(opConnected){
-  for(const [table,key] of [['documents','document'],['case_evidence','evidence'],['verification_cases','case'],['assets','asset']]){
+  // FORCE RLS also applies to a non-BYPASSRLS operator. Audit with the correct tenant
+  // scope rather than mistaking an invisible leaked row for a deleted row.
+  for(const t of transient){
    try{
-    const ids=transient.map(t=>t[key]);
-    if(ids.length){
-     const r=await operator.query(`SELECT count(*)::int AS n FROM public.${table} WHERE id=ANY($1::uuid[])`,[ids]);
-     if(r.rows[0].n!==0)throw Error('Transient test writes were not rolled back: '+table);
+    await operator.query('BEGIN');
+    await operator.query("SELECT set_config('assettrust.tenant_id',$1,true)",[t.org]);
+    for(const [table,key] of Object.entries(tableIds)){
+     const seeded=fixture.find(f=>f.org===t.org);
+     const control=await operator.query(`SELECT id FROM public.${table} WHERE id=$1 AND organization_id=$2`,[seeded[key],t.org]);
+     assert.equal(control.rowCount,1,'Cleanup audit must see positive control: '+table);
+     const r=await operator.query(`SELECT id FROM public.${table} WHERE id=$1`,[t[key]]);
+     assert.equal(r.rowCount,0,'Transient test writes were not rolled back: '+table);
     }
-   }catch(e){console.error('Disposable transient-row audit FAILED: '+e.message);process.exitCode=1;}
+    await operator.query('ROLLBACK');
+   }catch(e){await operator.query('ROLLBACK').catch(()=>{});console.error('Disposable transient-row audit FAILED: '+e.message);process.exitCode=1;}
   }
   for(const f of committed.reverse()){
    try{await cleanupFixture(f)}catch(e){console.error('Disposable fixture cleanup FAILED: '+e.message);process.exitCode=1;}
@@ -178,3 +207,6 @@ try{
   await operator.end().catch(()=>{});
  }
 }
+
+// Never emit a passing evidence record before cleanup has succeeded.
+if(evidence&&!process.exitCode)console.log(JSON.stringify(evidence));
