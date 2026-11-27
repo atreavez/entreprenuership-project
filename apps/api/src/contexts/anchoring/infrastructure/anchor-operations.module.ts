@@ -1,7 +1,8 @@
-import {Controller,Get,Req,UseGuards,Injectable,Module,OnApplicationBootstrap,OnModuleDestroy,ForbiddenException} from '@nestjs/common';
+import {Controller,Get,Req,UseGuards,Injectable,Module,OnApplicationBootstrap,OnModuleDestroy} from '@nestjs/common';
 import {Database} from '../../../database';
 import {AuthGuard,AuthModule} from '../../../auth';
 import type {UserAuth} from '../../../common';
+import {assertCurrentPlatformAdminSession} from '../../identity/infrastructure/current-admin-step-up';
 import {AnchorAdapterRegistry,ApprovedAnchorDispatchGate} from '../application/anchor-dispatch';
 import {AnchorWorker} from '../application/anchor-worker';
 import {AnchorOrchestrator} from '../application/anchor-orchestrator';
@@ -40,12 +41,7 @@ export class AnchorOperations implements OnApplicationBootstrap,OnModuleDestroy{
  onModuleDestroy(){this.stopped=true;if(this.timer)clearInterval(this.timer);}
  async status(actor:UserAuth,sid:string){
   return this.db.transaction(async tx=>{
-   const active=await tx.query(`SELECT u.id FROM users u JOIN auth_sessions s ON s.user_id=u.id AND s.organization_id=u.organization_id
-    JOIN platform_admin_appointments p ON p.user_id=u.id
-    WHERE u.id=$1 AND u.organization_id=$2 AND u.role='ORG_ADMIN' AND u.suspended_at IS NULL
-    AND s.id=$3 AND s.revoked_at IS NULL AND s.expires_at>now() AND s.absolute_expires_at>now()
-    AND p.revoked_at IS NULL FOR SHARE OF u,s,p`,[actor.id,actor.organizationId,sid]);
-   if(active.rows.length!==1)throw new ForbiddenException('Current platform administrator session required');
+   await assertCurrentPlatformAdminSession(tx,actor,sid);
    return {worker:this.orchestrator.status(),registeredAdapters:this.registry.size,
     dispatchState:this.registry.size===0?'NOT_CONNECTED':this.orchestrator.status().enabled?'AUTHORIZED':'SUSPENDED',
     notice:'Worker health is process-local. Dispatch authorization is not evidence of a confirmed transaction.'};

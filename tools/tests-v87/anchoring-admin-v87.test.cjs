@@ -16,15 +16,14 @@ const actor={id:'12345678-1234-4234-8234-123456789abc',organizationId:'22345678-
 const proof='a'.repeat(64);
 const deco=()=>()=>{};
 class BadRequestException extends Error{}class ConflictException extends Error{}class NotFoundException extends Error{}
-function fixture({authorized=true,approved=true,enabled=true,head='b'.repeat(64),actualProof=proof,found=false}={}){
+function fixture({authorized=true,approved=true,enabled=true,head='b'.repeat(64),actualProof=proof,found=false,sessionActive=true}={}){
  const events=[];
  class Repo{async createOrGetInTransaction(tx,job){events.push(['create',tx,job]);return {job,created:true};}}
  const {AnchoringAdminService}=load('contexts/anchoring/infrastructure/anchoring.module.ts',{
  '@nestjs/common':{Body:deco,Controller:deco,Get:deco,Post:deco,Param:deco,Req:deco,UseGuards:deco,Injectable:deco,Module:deco,BadRequestException,ConflictException,NotFoundException},
  '../../../database':{},'../../../auth':{},'../../../audit':{},'../../../common':{isUuid:x=>x,uid:()=>actor.id},
  '../../../integrations':{readLocalAuditProof:async(tx,org)=>{events.push(['proof',tx,org]);return {proof:actualProof,head};}},
- '../../identity/infrastructure/current-admin-step-up':{assertCurrentAdminStepUp:async(tx,u,sid)=>{events.push(['stepup',tx,u,sid]);if(!authorized)throw Error('denied');}},
- '../../access/infrastructure/transactional-access':{requireCurrentOrganizationAdmin:async()=>{if(!authorized)throw Error('denied');}},
+ '../../identity/infrastructure/current-admin-step-up':{assertCurrentAdminStepUp:async(tx,u,sid)=>{events.push(['stepup',tx,u,sid]);if(!authorized||!sessionActive)throw Error('denied');},assertCurrentAdminSession:async(tx,u,sid)=>{events.push(['session',tx,u,sid]);if(!authorized||!sessionActive)throw Error('denied');}},
  '../../tenant-isolation/application/tenant-scope':{setTenantScope:async(tx,org)=>events.push(['scope',tx,org])},
  '../domain/anchor-job-policy':anchor,'./pg-anchor-job.repository':{PgAnchorJobRepository:Repo,hydrateAnchorJob:x=>x}
  });
@@ -63,6 +62,19 @@ test('replay returns existing same-tenant request without a second audit event',
  assert(!f.events.some(e=>e[0]==='create'||e[0]==='audit'));
 });
 test('history of invisible job is rejected and read access requires current administrator',async()=>{
- const f=fixture();await assert.rejects(f.svc.history(actor,actor.id),/not found/i);
- const denied=fixture({authorized:false});await assert.rejects(denied.svc.list(actor),/denied/);
+ const f=fixture();await assert.rejects(f.svc.history(actor,'sid',actor.id),/not found/i);
+ const denied=fixture({authorized:false});await assert.rejects(denied.svc.list(actor,'sid'),/denied/);
+});
+
+test('revoked session blocks job and history reads before any protected data query',async()=>{
+ for(const method of ['list','history']){
+  const f=fixture({sessionActive:false,found:true});
+  await assert.rejects(f.svc[method](actor,'sid',actor.id),/denied/);
+  assert(!f.events.some(e=>e[0]==='query'));
+  assert.equal(f.events[0][0],'scope');assert.equal(f.events[1][0],'session');assert.equal(f.events[1][1],f.tx);
+ }
+});
+test('requests cannot use inherited or alternate body keys',async()=>{
+ const f=fixture(),body=Object.create({expectedProof:proof});body.unrelated=true;
+ await assert.rejects(f.svc.request(actor,'sid',body));assert.equal(f.events.length,0);
 });

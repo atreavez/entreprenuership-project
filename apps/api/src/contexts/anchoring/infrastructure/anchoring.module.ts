@@ -4,8 +4,7 @@ import {AuthGuard,AuthModule} from '../../../auth';
 import {AuditService,AuditModule} from '../../../audit';
 import {UserAuth,isUuid,uid} from '../../../common';
 import {readLocalAuditProof} from '../../../integrations';
-import {assertCurrentAdminStepUp} from '../../identity/infrastructure/current-admin-step-up';
-import {requireCurrentOrganizationAdmin} from '../../access/infrastructure/transactional-access';
+import {assertCurrentAdminStepUp,assertCurrentAdminSession} from '../../identity/infrastructure/current-admin-step-up';
 import {setTenantScope} from '../../tenant-isolation/application/tenant-scope';
 import {ANCHOR_SETTINGS_KEY,parseAnchorSettingsText,createJob,recoverJob} from '../domain/anchor-job-policy';
 import {PgAnchorJobRepository,hydrateAnchorJob,appendHistory} from './pg-anchor-job.repository';
@@ -15,7 +14,7 @@ export class AnchoringAdminService{
  private readonly jobs:PgAnchorJobRepository;
  constructor(private readonly db:Database,private readonly audit:AuditService){this.jobs=new PgAnchorJobRepository(db);}
  async request(actor:UserAuth,sid:string,input:unknown){
-  if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).length!==1||
+  if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).length!==1||!Object.hasOwn(input,'expectedProof')||
    typeof (input as any).expectedProof!=='string'||!/^[0-9a-f]{64}$/.test((input as any).expectedProof))
    throw new BadRequestException('Provide only expectedProof from the local audit commitment');
   const expectedProof=(input as {expectedProof:string}).expectedProof;
@@ -49,7 +48,7 @@ export class AnchoringAdminService{
  }
  async recover(actor:UserAuth,sid:string,id:string,input:unknown){
   const jobId=isUuid(id);
-  if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).length!==2||
+  if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).length!==2||!Object.hasOwn(input,'expectedRevision')||!Object.hasOwn(input,'reason')||
    typeof (input as any).expectedRevision!=='number'||!Number.isSafeInteger((input as any).expectedRevision)||(input as any).expectedRevision<0||
    typeof (input as any).reason!=='string'||(input as any).reason.trim().length<12||(input as any).reason.length>500)
    throw new BadRequestException('Provide expectedRevision and a 12–500 character recovery reason');
@@ -79,19 +78,19 @@ export class AnchoringAdminService{
    return {job:saved,dispatchState:'NOT_CONNECTED',notice:'Job requeued only. No blockchain transaction submitted.'};
   });
  }
- async list(actor:UserAuth){
+ async list(actor:UserAuth,sid:string){
   return this.db.transaction(async tx=>{
    await setTenantScope(tx,actor.organizationId);
-   await requireCurrentOrganizationAdmin(tx,actor);
+   await assertCurrentAdminSession(tx,actor,sid);
    const {rows}=await tx.query('SELECT * FROM public.anchor_jobs WHERE organization_id=$1 ORDER BY id DESC LIMIT 100',[actor.organizationId]);
    return {jobs:rows.map(hydrateAnchorJob),dispatchState:'NOT_CONNECTED'};
   });
  }
- async history(actor:UserAuth,id:string){
+ async history(actor:UserAuth,sid:string,id:string){
   const jobId=isUuid(id);
   return this.db.transaction(async tx=>{
    await setTenantScope(tx,actor.organizationId);
-   await requireCurrentOrganizationAdmin(tx,actor);
+   await assertCurrentAdminSession(tx,actor,sid);
    const found=await tx.query('SELECT id FROM public.anchor_jobs WHERE organization_id=$1 AND id=$2',[actor.organizationId,jobId]);
    if(found.rows.length!==1)throw new NotFoundException('Anchoring job not found');
    const {rows}=await tx.query('SELECT revision,snapshot,recorded_at FROM public.anchor_job_history WHERE organization_id=$1 AND job_id=$2 ORDER BY revision DESC LIMIT 100',[actor.organizationId,jobId]);
@@ -104,8 +103,8 @@ export class AnchoringController{
  constructor(private readonly svc:AnchoringAdminService){}
  @Post('jobs')request(@Req()r:any,@Body()body:unknown){return this.svc.request(r.user,r.sessionId,body);}
  @Post('jobs/:id/recover')recover(@Req()r:any,@Param('id')id:string,@Body()body:unknown){return this.svc.recover(r.user,r.sessionId,id,body);}
- @Get('jobs')list(@Req()r:any){return this.svc.list(r.user);}
- @Get('jobs/:id/history')history(@Req()r:any,@Param('id')id:string){return this.svc.history(r.user,id);}
+ @Get('jobs')list(@Req()r:any){return this.svc.list(r.user,r.sessionId);}
+ @Get('jobs/:id/history')history(@Req()r:any,@Param('id')id:string){return this.svc.history(r.user,r.sessionId,id);}
 }
 @Module({imports:[AuthModule,AuditModule],providers:[AnchoringAdminService],controllers:[AnchoringController]})
 export class AnchoringModule{}
