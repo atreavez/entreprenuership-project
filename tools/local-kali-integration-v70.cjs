@@ -175,6 +175,12 @@ function run(step,{root=ROOT,env=process.env,runner=spawnSync,artifactsReady=run
  const safePath=env.PATH||process.env.PATH||'';
  const base={PATH:safePath,HOME:env.HOME||process.env.HOME||'',LANG:'C',CI:'true',NODE_ENV:'test'};
  const childEnv={...base,...local};
+ const pkg=requireRoot(root);
+ const anchoringRequired=Number(String(pkg.version||'').split('.')[1])>=87;
+ if(step==='--verify'&&anchoringRequired){
+  if(typeof pkg.scripts?.['test:pg:anchoring:v87']!=='string')throw Error('ANCHORING_ACCEPTANCE_SCRIPT_REQUIRED');
+  if(!artifactsReady(root))throw Error('REVIEWED_LOCKFILE_AND_COMPILED_ARTIFACTS_REQUIRED');
+ }
  const recipes={
   '--start':[['docker',['--host','unix:///var/run/docker.sock','compose','-f','compose.integration-v70.yaml','up','-d','--wait','postgres'],base]],
   '--start-scanner':[['docker',['--host','unix:///var/run/docker.sock','compose','-f','compose.integration-v70.yaml','--profile','scanner','up','-d','clamav'],base]],
@@ -185,7 +191,8 @@ function run(step,{root=ROOT,env=process.env,runner=spawnSync,artifactsReady=run
    ['npm',['run','db:check'],childEnv],
    ['npm',['run','test:pg:runtime-role:v57'],childEnv],
    ['npm',['run','test:pg:policy-contract:v63'],{...childEnv,ASSETTRUST_V63_POLICY_CONFIRM:'YES'}],
-   ['npm',['run','test:pg:runtime-privileges:v60'],childEnv]
+   ['npm',['run','test:pg:runtime-privileges:v60'],childEnv],
+   ...(anchoringRequired?[['npm',['run','test:pg:anchoring:v87'],{...childEnv,ASSETTRUST_V87_ANCHOR_PG_CONFIRM:'YES'}]]:[])
   ],
   '--run-http':[[process.execPath,['tools/ci-live-integration.mjs'],{...childEnv,
    ASSETTRUST_E2E_TARGET_ID:'assettrust-v70-supervisor-'+crypto.randomBytes(18).toString('hex'),
@@ -216,8 +223,8 @@ function plan(){return {schema:'ASSETTRUST_V70_KALI_PLAN',productionApproved:fal
   isolatedFromLegacyCompose:true,port:'127.0.0.1:'+PORT,
   sequence:['--prepare (generate private settings, no database connection)','--start (isolated PostGIS service)',
    '--start-scanner (local ClamAV; may require signature downloads)',
-   '--migrate (27 vetted source migrations)','--provision (separate non-bypass runtime login)',
-   '--verify (DB ledger, restricted role and live policy inspection)',
+   '--migrate (current checksummed source migrations)','--provision (separate non-bypass runtime login)',
+   '--verify (DB ledger, restricted role, live policies and v87+ anchoring acceptance)',
    '--run-http (after authentic npm build: six authenticated/functional HTTP suites)'],
   safety:'Only local Unix Docker socket is permitted; never run against production, overwrite existing configuration or reuse test data for customer records.',
   status:'NOT_EXECUTED'};}

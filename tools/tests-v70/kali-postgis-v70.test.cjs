@@ -187,3 +187,22 @@ test('command plan and doctor work without network or PostgreSQL',()=>{
  const result=spawnSync(process.execPath,['tools/local-kali-integration-v70.cjs','--plan'],{cwd:ROOT,encoding:'utf8'});
  assert.equal(result.status,0);assert.match(result.stdout,/NOT_EXECUTED/);
 });
+
+test('v87 local verify requires build provenance and runs anchoring after privilege checks',()=>fixture(root=>{
+ const pkg=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));
+ pkg.version='0.87.0';pkg.scripts['test:pg:anchoring:v87']='mock';
+ fs.writeFileSync(path.join(root,'package.json'),JSON.stringify(pkg));
+ prepare(root);savedRole(root);const calls=[];
+ assert.throws(()=>m.run('--verify',{root,env:auth(),artifactsReady:()=>false,runner:runner(calls)}),/COMPILED_ARTIFACTS_REQUIRED/);
+ assert.equal(calls.length,0);
+ const r=m.run('--verify',{root,env:auth(),artifactsReady:()=>true,runner:runner(calls)});
+ assert.equal(r.status,'COMMANDS_PASSED_RELEASE_BLOCKED');assert.equal(r.productionApproved,false);
+ assert.equal(calls.at(-2).args.join(' '),'run test:pg:runtime-privileges:v60');
+ assert.equal(calls.at(-1).args.join(' '),'run test:pg:anchoring:v87');
+ assert.equal(calls.at(-1).env.ASSETTRUST_V87_ANCHOR_PG_CONFIRM,'YES');
+}));
+test('v87 local verify cannot silently skip missing anchoring script',()=>fixture(root=>{
+ const pkg=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));pkg.version='0.87.0';
+ fs.writeFileSync(path.join(root,'package.json'),JSON.stringify(pkg));prepare(root);savedRole(root);
+ assert.throws(()=>m.run('--verify',{root,env:auth(),artifactsReady:()=>true,runner:()=>{throw Error('MUST_NOT_RUN')}}),/ANCHORING_ACCEPTANCE_SCRIPT_REQUIRED/);
+}));

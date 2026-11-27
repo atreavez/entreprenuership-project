@@ -40,7 +40,7 @@ function dbSteps(manifest){
  const suites=Object.keys(manifest.scripts||{}).filter(s=>s.startsWith('test:pg:')).sort();
  // Explicit dependency order: role identity -> privilege boundaries -> seeded isolation -> authorized CRUD.
  // Lexical sorting would run 'crud' before 'isolation', weakening evidence ordering.
- const ordered=['test:pg:runtime-role:v57','test:pg:policy-contract:v63','test:pg:runtime-privileges:v60','test:pg:audit-rls:v61','test:pg:operational-rls:v62','test:pg:runtime-tenant-isolation:v58','test:pg:runtime-tenant-crud:v59'];
+ const ordered=['test:pg:runtime-role:v57','test:pg:policy-contract:v63','test:pg:runtime-privileges:v60','test:pg:audit-rls:v61','test:pg:operational-rls:v62','test:pg:runtime-tenant-isolation:v58','test:pg:runtime-tenant-crud:v59','test:pg:anchoring:v87'];
  const orderedSets=suites.filter(s=>ordered.includes(s)).sort((a,b)=>ordered.indexOf(a)-ordered.indexOf(b));
  const remaining=suites.filter(s=>!ordered.includes(s));
  const allSuites=[...orderedSets,...remaining];
@@ -56,10 +56,15 @@ function plan(root=ROOT,env=process.env){const manifest=JSON.parse(fs.readFileSy
  return {build:buildSteps(manifest,env),database:dbSteps(manifest)};}
 function summaryFile(root=ROOT){return path.join(root,'test-evidence','v51','local-validation-summary.json');}
 function prepare(root=ROOT,env=process.env,mode='--preflight'){
- const result={mode,sourceVersion:JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8')).version,productionApproved:false,issues:[],supplyChain:null,target:null};
+ const manifest=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));
+ const result={mode,sourceVersion:manifest.version,productionApproved:false,issues:[],supplyChain:null,target:null};
  if(!['--plan','--preflight'].includes(mode)){
   if(['--full','--database'].includes(mode)){
    try{result.target=assertDbTarget(env)}catch(e){result.issues.push(e.message);}
+   if(Number(String(manifest.version).split('.')[1])>=87){
+    if(typeof manifest.scripts?.['test:pg:anchoring:v87']!=='string')result.issues.push('ANCHORING_ACCEPTANCE_SCRIPT_REQUIRED');
+    if(env.ASSETTRUST_V87_ANCHOR_PG_CONFIRM!=='YES')result.issues.push('ANCHORING_DISPOSABLE_ACCEPTANCE_CONFIRMATION_REQUIRED');
+   }
   }
   result.supplyChain=audit(root);
   if(!result.supplyChain.ok)result.issues.push(...result.supplyChain.issues);
