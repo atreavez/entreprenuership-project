@@ -46,11 +46,12 @@ const imports={
 };
 const {DocumentsService}=compile('apps/api/src/documents.ts',imports);
 const user={id:'user-1',organizationId:identity.organization_id,role:'CLIENT'};
-function fixture({doc=identity,current={id:identity.asset_id,created_by:'other-user',role:'CLIENT'},cases=[],grants=[{id:'grant-1'}],caseCurrent=null,content=Buffer.from('validated-encrypted-plaintext'),blobFailure=null}={}){
+function fixture({doc=identity,current={id:identity.asset_id,created_by:'other-user',role:'CLIENT'},cases=[],grants=[{id:'grant-1'}],caseCurrent=null,content=Buffer.from('validated-encrypted-plaintext'),blobFailure=null,sessionActive=true}={}){
  const calls=[];let readCount=0;
  const tx={query:async(sql,params=[])=>{
   calls.push({event:'QUERY',sql,params});
   if(sql==='SET TENANT SCOPE')return {rows:[{ok:true}]};
+  if(sql.includes('JOIN auth_sessions s'))return {rows:sessionActive?[{id:user.id}]:[]};
   if(sql.startsWith('SELECT * FROM documents'))return {rows:doc?[doc]:[]};
   if(sql.includes('FROM assets a JOIN users actor'))return {rows:current?[current]:[]};
   if(sql.includes('FROM verification_cases c JOIN users actor'))return {rows:caseCurrent?[caseCurrent]:[]};
@@ -63,13 +64,15 @@ function fixture({doc=identity,current={id:identity.asset_id,created_by:'other-u
  const svc=new DocumentsService(db,{}, {asset:async()=>{throw Error('stale preflight access check');},case:async()=>{throw Error('stale preflight access check');}},blobs,{});
  return {svc,calls,get readCount(){return readCount;}};
 }
-const run=f=>f.svc.getBytes(user,identity.id);
+const sid='12345678-1234-4234-8234-123456789abc';
+const run=f=>f.svc.getBytes(user,identity.id,sid);
 test('current permission, metadata and encrypted bytes all remain inside one transaction',async()=>{
  const f=fixture();const result=await run(f);
  assert.equal(result.name,'proof.pdf');assert.equal(result.content.toString(),'validated-encrypted-plaintext');
  assert.deepEqual(f.calls.map(x=>x.event).filter(x=>x!=='QUERY'),['BEGIN','BLOB_READ','COMMIT']);
  assert.equal(f.calls[1].sql,'SET TENANT SCOPE');
- assert.match(f.calls[2].sql,/WHERE id=\$1 AND organization_id=\$2 FOR SHARE/);
+ assert.match(f.calls[2].sql,/FOR SHARE OF actor,s/);
+ assert.match(f.calls[3].sql,/WHERE id=\$1 AND organization_id=\$2 FOR SHARE/);
  const asset=f.calls.find(x=>x.sql?.includes('FROM assets a JOIN users actor'));
  assert.match(asset.sql,/FOR SHARE OF a,actor/);
  const grant=f.calls.find(x=>x.sql?.includes('FROM resource_grants g'));
@@ -92,7 +95,7 @@ test('asset creator can read with no grant',async()=>{
 });
 test('a stale administrator role claim cannot override a demoted database role',async()=>{
  const f=fixture({current:{id:identity.asset_id,created_by:'different',role:'CLIENT'},grants:[]});
- await assert.rejects(f.svc.getBytes({...user,role:'ORG_ADMIN'},identity.id),ForbiddenException);
+ await assert.rejects(f.svc.getBytes({...user,role:'ORG_ADMIN'},identity.id,sid),ForbiddenException);
  assert.equal(f.readCount,0);
 });
 test('asset-only read grant does not grant confidential case access',async()=>{
@@ -103,11 +106,11 @@ test('case participation on asset permits download with no explicit grant',async
  const f=fixture({cases:[{id:'case-1'}],grants:[]});await run(f);assert.equal(f.readCount,1);
 });
 test('case evidence requires current case assignment, not only asset grant',async()=>{
- const f=fixture({doc:{...identity,case_id:'case-1'},caseCurrent:{id:'case-1',created_by:'other',assigned_to:'other',role:'CLIENT'}});
+ const f=fixture({doc:{...identity,case_id:'case-1'},caseCurrent:{id:'case-1',asset_id:identity.asset_id,created_by:'other',assigned_to:'other',role:'CLIENT'}});
  await assert.rejects(run(f),ForbiddenException);assert.equal(f.readCount,0);
 });
 test('case evidence allows current assigned reviewer with asset visibility',async()=>{
- const f=fixture({doc:{...identity,case_id:'case-1'},caseCurrent:{id:'case-1',created_by:'other',assigned_to:user.id,role:'REVIEWER'},cases:[{id:'case-1'}]});
+ const f=fixture({doc:{...identity,case_id:'case-1'},caseCurrent:{id:'case-1',asset_id:identity.asset_id,created_by:'other',assigned_to:user.id,role:'REVIEWER'},cases:[{id:'case-1'}]});
  await run(f);assert.equal(f.readCount,1);assert(f.calls.some(x=>x.sql?.includes('FOR SHARE OF c,actor')));
 });
 test('case-only document denies user without case participation',async()=>{
@@ -115,7 +118,7 @@ test('case-only document denies user without case participation',async()=>{
  await assert.rejects(run(f),ForbiddenException);assert.equal(f.readCount,0);
 });
 test('case-only document allows current case creator',async()=>{
- const f=fixture({doc:{...identity,asset_id:null,case_id:'case-1'},caseCurrent:{id:'case-1',created_by:user.id,assigned_to:'other',role:'CLIENT'}});
+ const f=fixture({doc:{...identity,asset_id:null,case_id:'case-1'},caseCurrent:{id:'case-1',asset_id:identity.asset_id,created_by:user.id,assigned_to:'other',role:'CLIENT'}});
  await run(f);assert.equal(f.readCount,1);
 });
 test('document without asset or case fails closed',async()=>{
@@ -154,4 +157,14 @@ test('milestone manifests and CI record tests without changing 29 SQL migrations
  assert.equal(root.scripts['verify:v73'],'node --test tools/tests-v73/*.test.cjs');
  assert.match(read('.github/workflows/ci.yml'),/npm run verify:v73/);
  assert.equal(fs.readdirSync(path.join(ROOT,'apps/api/sql')).filter(x=>/^\d{3}_.*\.sql$/.test(x)).length,29);
+});
+
+test('revoked session blocks metadata and encrypted bytes before resource lookup',async()=>{
+ const f=fixture({sessionActive:false});await assert.rejects(run(f),ForbiddenException);
+ assert.equal(f.readCount,0);assert(!f.calls.some(x=>x.sql?.startsWith('SELECT * FROM documents')));
+ assert.equal(f.calls.at(-1).event,'ROLLBACK');
+});
+test('inconsistent case-to-asset document is rejected even for authorized participant',async()=>{
+ const f=fixture({doc:{...identity,case_id:'case-1'},caseCurrent:{id:'case-1',asset_id:'different-asset',created_by:user.id,role:'CLIENT'},cases:[{id:'case-1'}]});
+ await assert.rejects(run(f),NotFoundException);assert.equal(f.readCount,0);
 });

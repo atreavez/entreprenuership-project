@@ -13,7 +13,7 @@ import {EncryptedLocalBlobStore} from './contexts/document-vault/infrastructure/
 import type { Response } from 'express';
 import {DOCUMENT_MALWARE_SCANNER,DocumentMalwareScanner,DocumentScanError} from './contexts/document-vault/application/malware-scanner.port';
 import {ClamAvInstreamScanner} from './contexts/document-vault/infrastructure/clamav-instream-scanner';
-import {requireCurrentAssetContribution,requireCurrentCaseContribution,requireCurrentAssetRead,requireCurrentCaseRead} from './contexts/access/infrastructure/transactional-access';
+import {requireCurrentAssetContribution,requireCurrentCaseContribution,requireCurrentAssetRead,requireCurrentCaseRead,requireCurrentResourceSession} from './contexts/access/infrastructure/transactional-access';
 @Injectable()
 export class DocumentsService{
  constructor(private db:Database,private audit:AuditService,private access:AccessService,@Inject(ENCRYPTED_BLOB_STORE) private blobs:EncryptedBlobStore,@Inject(DOCUMENT_MALWARE_SCANNER) private malware:DocumentMalwareScanner){}
@@ -21,10 +21,14 @@ export class DocumentsService{
   * One tenant-scoped SQL statement joins the active actor and uses the role in
   * PostgreSQL, not a stale JWT claim. No access to suspended/deleted users.
   */
- async list(u:UserAuth){
+ async list(u:UserAuth,sid:string){
   const {rows}=await this.db.tenantQuery(u.organizationId,`SELECT d.id,d.asset_id,d.case_id,d.display_name,d.mime_type,d.file_size,d.sha256,d.review_status,d.storage_format,d.encryption_key_id,d.created_at
    FROM documents d JOIN users actor ON actor.id=$2 AND actor.organization_id=d.organization_id AND actor.suspended_at IS NULL
-   WHERE d.organization_id=$1 AND (actor.role='ORG_ADMIN' OR (
+   JOIN auth_sessions s ON s.id=$3 AND s.user_id=actor.id AND s.organization_id=actor.organization_id
+    AND s.revoked_at IS NULL AND s.expires_at>clock_timestamp() AND s.absolute_expires_at>clock_timestamp()
+   WHERE d.organization_id=$1 AND (d.asset_id IS NOT NULL OR d.case_id IS NOT NULL)
+   AND (d.case_id IS NULL OR EXISTS(SELECT 1 FROM verification_cases linked WHERE linked.id=d.case_id AND linked.organization_id=d.organization_id AND (d.asset_id IS NULL OR linked.asset_id=d.asset_id)))
+   AND (actor.role='ORG_ADMIN' OR (
     (d.case_id IS NOT NULL AND EXISTS (
       SELECT 1 FROM verification_cases c WHERE c.id=d.case_id AND c.organization_id=d.organization_id
       AND (c.created_by=actor.id OR c.assigned_to=actor.id)))
@@ -35,10 +39,10 @@ export class DocumentsService{
         AND (c2.created_by=actor.id OR c2.assigned_to=actor.id)) OR EXISTS (
        SELECT 1 FROM resource_grants g WHERE g.asset_id=a.id AND g.organization_id=a.organization_id
         AND g.grantee_id=actor.id AND g.expires_at>now()))))
-    )) ORDER BY d.created_at DESC LIMIT 200`,[u.organizationId,u.id]);return rows;
+    )) ORDER BY d.created_at DESC LIMIT 200`,[u.organizationId,u.id,sid]);return rows;
  }
 
- async upload(u:UserAuth,body:any,file:Express.Multer.File){
+ async upload(u:UserAuth,body:any,file:Express.Multer.File,sid:string){
   if(!file)throw new BadRequestException('File required');
   assertRole(u,['ORG_ADMIN','CLIENT','REVIEWER','SURVEYOR','LEGAL_REVIEWER']);
   const name=text(file.originalname,'filename',160);
@@ -62,6 +66,7 @@ export class DocumentsService{
   const receipt=await this.blobs.put(identity,b);
   try {await this.db.transaction(async tx=>{
    await setTenantScope(tx,u.organizationId);
+   await requireCurrentResourceSession(tx,u,sid);
    // Revocation after the initial HTTP access check must win before metadata is committed.
    // Permission rows are locked for the lifetime of this DB transaction.
    if(assetId)await requireCurrentAssetContribution(tx,u,assetId);
@@ -80,15 +85,19 @@ export class DocumentsService{
   * before the locks are released. This makes no claim about bytes delivered
   * to clients after the HTTP response has begun.
   */
- async getBytes(u:UserAuth,id:string){
+ async getBytes(u:UserAuth,id:string,sid:string){
   return this.db.transaction(async tx=>{
    await setTenantScope(tx,u.organizationId);
+   await requireCurrentResourceSession(tx,u,sid);
    const {rows}=await tx.query('SELECT * FROM documents WHERE id=$1 AND organization_id=$2 FOR SHARE',[isUuid(id),u.organizationId]);
    if(!rows[0])throw new NotFoundException('Document not found');
    const r=rows[0];
    if(!r.asset_id&&!r.case_id)throw new NotFoundException('Document has no authorized resource');
    if(r.asset_id)await requireCurrentAssetRead(tx,u,r.asset_id);
-   if(r.case_id)await requireCurrentCaseRead(tx,u,r.case_id);
+   if(r.case_id){
+    const linked=await requireCurrentCaseRead(tx,u,r.case_id);
+    if(r.asset_id&&linked.assetId!==r.asset_id)throw new NotFoundException('Document not found');
+   }
    try{requireEncryptedFormat(r.storage_format);}catch{throw new BadRequestException('Document requires secure-storage migration');}
    try{
     const content=await this.blobs.get({id:r.id,organizationId:r.organization_id,sha256:r.sha256},r.stored_name);
@@ -103,10 +112,10 @@ export class DocumentsService{
 @Controller('documents')@UseGuards(AuthGuard)
 export class DocumentsController{
  constructor(private svc:DocumentsService){}
- @Get()list(@Req()r:any){return this.svc.list(r.user);}
+ @Get()list(@Req()r:any){return this.svc.list(r.user,r.sessionId);}
  @Post('upload')@UseInterceptors(FileInterceptor('file',{storage:memoryStorage(),limits:{fileSize:5*1024*1024,files:1}}))
- upload(@Req()r:any,@Body()body:any,@UploadedFile()file:Express.Multer.File){return this.svc.upload(r.user,body,file);}
- @Get(':id/file')async file(@Req()r:any,@Param('id')id:string,@Res()res:Response){const {content,mime,name}=await this.svc.getBytes(r.user,id);
+ upload(@Req()r:any,@Body()body:any,@UploadedFile()file:Express.Multer.File){return this.svc.upload(r.user,body,file,r.sessionId);}
+ @Get(':id/file')async file(@Req()r:any,@Param('id')id:string,@Res()res:Response){const {content,mime,name}=await this.svc.getBytes(r.user,id,r.sessionId);
   res.setHeader('Content-Type',mime);res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Cache-Control','no-store');
   res.setHeader('Content-Disposition',`attachment; filename="${name.replace(/[^\w .-]/g,'_')}"`);res.send(content);
  }

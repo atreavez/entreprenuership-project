@@ -139,26 +139,28 @@ const docImports={
  './contexts/tenant-isolation/application/tenant-scope':{setTenantScope}
 };
 const {DocumentsService}=compile('apps/api/src/documents.ts',docImports);
+const documentSid='12345678-1234-4234-8234-123456789abc';
 const docs=f=>new DocumentsService(f.db,{}, {},{},{});
 const D=[{id:'owner-document',case_id:null,asset_creator:me},{id:'other-document',case_id:null,asset_creator:'other',grantee:'other'},{id:'case-private',case_id:'case',case_creator:'other',assignee:'other'}];
 test('document listing checks current SQL membership and role, not token role',async()=>{
- const f=setup({dbRole:'CLIENT',documents:D});const rows=await docs(f).list(actor);
+ const f=setup({dbRole:'CLIENT',documents:D});const rows=await docs(f).list(actor,documentSid);
  assert.deepEqual(rows.map(x=>x.id),['owner-document']);
  const sql=f.calls.find(x=>x.sql.includes('FROM documents d JOIN users actor'));
  assert(sql);assert.match(sql.sql,/actor\.suspended_at IS NULL/);
  assert.match(sql.sql,/actor\.role='ORG_ADMIN'/);
+ assert.match(sql.sql,/JOIN auth_sessions s/);assert.match(sql.sql,/s\.revoked_at IS NULL/);assert.match(sql.sql,/linked\.asset_id=d\.asset_id/);
  assert(!sql.sql.includes('$2::bool'));assert(!sql.sql.includes('u.role'));
- assert.deepEqual(Array.from(sql.params),[orgId,me]);
+ assert.deepEqual(Array.from(sql.params),[orgId,me,documentSid]);
 });
 test('suspended actor gets no documents even if token claims ORG_ADMIN',async()=>{
- const f=setup({suspended:true,documents:D});assert.deepEqual(await docs(f).list(actor),[]);
+ const f=setup({suspended:true,documents:D});assert.deepEqual(await docs(f).list(actor,documentSid),[]);
 });
 test('a current administrator may list organization documents',async()=>{
- const f=setup({dbRole:'ORG_ADMIN',documents:D});const rows=await docs(f).list(actor);assert.equal(rows.length,3);
+ const f=setup({dbRole:'ORG_ADMIN',documents:D});const rows=await docs(f).list(actor,documentSid);assert.equal(rows.length,3);
 });
 test('case evidence is not revealed through an ordinary asset grant in document listing',async()=>{
  const f=setup({dbRole:'CLIENT',documents:[{id:'sensitive-case-doc',case_id:'case',grantee:me,case_creator:'someone-else',assignee:'someone-else'}]});
- assert.equal((await docs(f).list(actor)).length,0);
+ assert.equal((await docs(f).list(actor,documentSid)).length,0);
  const sql=f.calls.find(x=>x.sql.includes('FROM documents d JOIN users actor')).sql;
  assert.match(sql,/d\.case_id IS NOT NULL/);assert.match(sql,/d\.case_id IS NULL/);
 });

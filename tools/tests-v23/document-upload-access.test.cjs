@@ -35,11 +35,12 @@ const {DocumentsService}=compile(path.join(root,'documents.ts'),{
  './contexts/access/infrastructure/transactional-access':accessAdapter
 });
 const actor={id:randomUUID(),organizationId:randomUUID(),role:'CLIENT'};
-const assetId=randomUUID(),caseId=randomUUID(),blob={originalname:'report.pdf',mimetype:'application/pdf',size:12,buffer:Buffer.from('%PDF-1.7test')};
-function fixture({grantAllowed=false,caseAuthorized=false}={}){
+const sid=randomUUID(),assetId=randomUUID(),caseId=randomUUID(),blob={originalname:'report.pdf',mimetype:'application/pdf',size:12,buffer:Buffer.from('%PDF-1.7test')};
+function fixture({grantAllowed=false,caseAuthorized=false,sessionActive=true}={}){
  let puts=0,deletes=0,inserts=0,audits=0;const sql=[];
  const query=async(query,params)=>{
   sql.push(query);
+  if(query.includes('JOIN auth_sessions s'))return {rows:sessionActive?[{id:actor.id}]:[]};
   if(query.startsWith('SELECT id FROM assets'))return {rows:[{id:assetId}]};
   if(query.startsWith('SELECT id,asset_id FROM verification_cases'))return {rows:[{id:caseId,asset_id:assetId}]};
   if(/FROM assets a\s+JOIN users actor/i.test(query))return {rows:[{id:assetId,asset_type:'LAND',created_by:'someone-else',role:'CLIENT'}]};
@@ -53,18 +54,24 @@ function fixture({grantAllowed=false,caseAuthorized=false}={}){
  return {svc,sql,get puts(){return puts},get deletes(){return deletes},get inserts(){return inserts},get audits(){return audits}};
 }
 test('revoked asset contributor cannot commit uploaded metadata and encrypted orphan is removed',async()=>{
- const f=fixture();await assert.rejects(()=>f.svc.upload(actor,{assetId},blob),ForbiddenException);
+ const f=fixture();await assert.rejects(()=>f.svc.upload(actor,{assetId},blob,sid),ForbiddenException);
  assert.equal(f.puts,1);assert.equal(f.deletes,1);assert.equal(f.inserts,0);assert.equal(f.audits,0);
 });
 test('currently authorized asset contributor can upload an encrypted document',async()=>{
- const f=fixture({grantAllowed:true});const r=await f.svc.upload(actor,{assetId},blob);
+ const f=fixture({grantAllowed:true});const r=await f.svc.upload(actor,{assetId},blob,sid);
  assert.equal(r.storageFormat,'AES_256_GCM_V1');assert.equal(f.puts,1);assert.equal(f.deletes,0);assert.equal(f.inserts,1);assert.equal(f.audits,1);
 });
 test('loss of case participation blocks case-only upload and cleans up staged blob',async()=>{
- const f=fixture({caseAuthorized:false});await assert.rejects(()=>f.svc.upload(actor,{caseId},blob),ForbiddenException);
+ const f=fixture({caseAuthorized:false});await assert.rejects(()=>f.svc.upload(actor,{caseId},blob,sid),ForbiddenException);
  assert.equal(f.puts,1);assert.equal(f.deletes,1);assert.equal(f.inserts,0);
 });
 test('active case creator can still attach a document to a confidential case',async()=>{
- const f=fixture({caseAuthorized:true});await f.svc.upload(actor,{caseId},blob);
+ const f=fixture({caseAuthorized:true});await f.svc.upload(actor,{caseId},blob,sid);
  assert.equal(f.deletes,0);assert.equal(f.inserts,1);
+});
+
+test('revoked upload session cannot commit metadata after encrypted staging',async()=>{
+ const f=fixture({grantAllowed:true,sessionActive:false});
+ await assert.rejects(f.svc.upload(actor,{assetId},blob,sid),ForbiddenException);
+ assert.equal(f.puts,1);assert.equal(f.deletes,1);assert.equal(f.inserts,0);assert.equal(f.audits,0);
 });

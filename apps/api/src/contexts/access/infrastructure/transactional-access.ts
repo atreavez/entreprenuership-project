@@ -73,13 +73,14 @@ export async function requireCurrentAssetRead(tx:Queryable,actor:Actor,assetId:s
 }
 
 /** A general asset READ grant never exposes confidential case documents. */
-export async function requireCurrentCaseRead(tx:Queryable,actor:Actor,caseId:string):Promise<void>{
- const {rows}=await tx.query(`SELECT c.id,c.created_by,c.assigned_to,actor.role
+export async function requireCurrentCaseRead(tx:Queryable,actor:Actor,caseId:string):Promise<{assetId:string}>{
+ const {rows}=await tx.query(`SELECT c.id,c.asset_id,c.created_by,c.assigned_to,actor.role
    FROM verification_cases c JOIN users actor ON actor.id=$3 AND actor.organization_id=c.organization_id AND actor.suspended_at IS NULL
    WHERE c.id=$1 AND c.organization_id=$2 FOR SHARE OF c,actor`,[caseId,actor.organizationId,actor.id]);
  const c=rows[0];
  if(!c||!(c.role==='ORG_ADMIN'||c.created_by===actor.id||c.assigned_to===actor.id))
   throw new ForbiddenException('Current case participation required');
+ return {assetId:c.asset_id};
 }
 
 
@@ -148,4 +149,19 @@ export async function lockCurrentDisputeAsset(tx:Queryable,actor:Actor,caseId:st
    WHERE id=$1 AND organization_id=$2 FOR UPDATE`,[assetId,actor.organizationId]);
  if(locked.rows.length!==1)throw new NotFoundException('Disputed asset is unavailable');
  return assetId;
+}
+
+/** A guard check before a slow upload or download is insufficient. Lock the
+ * actual session and active member in the resource transaction, before the
+ * metadata write or decryption. A revoked session cannot authorize new work.
+ */
+export async function requireCurrentResourceSession(tx:Queryable,actor:Actor,sessionId:string):Promise<void>{
+ if(typeof sessionId!=='string'||! /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(sessionId))
+  throw new ForbiddenException('Current resource session required');
+ const {rows}=await tx.query(`SELECT actor.id FROM users actor JOIN auth_sessions s
+  ON s.user_id=actor.id AND s.organization_id=actor.organization_id
+  WHERE actor.id=$1 AND actor.organization_id=$2 AND actor.suspended_at IS NULL
+   AND s.id=$3 AND s.revoked_at IS NULL AND s.expires_at>clock_timestamp()
+   AND s.absolute_expires_at>clock_timestamp() FOR SHARE OF actor,s`,[actor.id,actor.organizationId,sessionId]);
+ if(rows.length!==1)throw new ForbiddenException('Current resource session required');
 }
