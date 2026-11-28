@@ -6,6 +6,7 @@ import {uid,isUuid,type UserAuth} from '../../../common';
 import {PgBillingRepository} from './pg-billing.repository';
 import {requireBillingActivation} from './billing-activation';
 import {issueInvoice,voidInvoice,type Invoice} from '../domain/commercial-policy';
+import {supportedPurchase} from '../domain/financial-consistency';
 import type {BillingTransaction} from '../application/payment.port';
 function exact(value:any,keys:string[]):boolean{return !!value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).length===keys.length&&keys.every(k=>Object.hasOwn(value,k));}
 function integer(value:unknown,min:number,max:number):value is number{return typeof value==='number'&&Number.isSafeInteger(value)&&value>=min&&value<=max;}
@@ -50,6 +51,7 @@ export class BillingAdminService{
     seen.add(item.code);total+=price.unitUgx*item.quantity;
     if(!integer(total,1,1000000000))throw new BadRequestException('Invoice total exceeds limit');
    }
+   if(!supportedPurchase(body.items,catalog.prices))throw new BadRequestException('Purchase recurring services separately, quantity one');
    return tx.createDraft(uid(),catalog.version,body.items);
   });
  }
@@ -63,6 +65,7 @@ export class BillingAdminService{
    const catalog=body.action==='ISSUE'?await tx.approvedCatalog():null;
    if(body.action==='ISSUE'&&(current.state!=='DRAFT'||!catalog||catalog.version!==current.catalogVersion)||
       body.action==='VOID'&&!['DRAFT','ISSUED'].includes(current.state))throw new ConflictException('Invoice cannot perform requested transition');
+   if(body.action==='ISSUE'&&catalog&&!supportedPurchase(current.lines,catalog.prices))throw new ConflictException('Void and replace this unsupported recurring invoice');
    const change=body.action==='ISSUE'?issueInvoice(current,current.revision,catalog!.version):voidInvoice(current,current.revision);
    if(!await tx.commit(actor.organizationId,current.revision,change))throw new ConflictException('Invoice revision changed');
    return {invoice:change.invoice,paymentState:'NOT_CONNECTED'};

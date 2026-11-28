@@ -27,7 +27,7 @@ let transactions=0;
 const {BillingAdminService}=load('contexts/billing/infrastructure/billing.module.ts',{
  '@nestjs/common':nest,'../../../database':{},'../../../audit':{AuditModule:class{}},'../../../auth':{AuthGuard:class{},AuthModule:class{}},
  '../../../common':{uid:()=> '22345678-1234-4234-8234-123456789abc',isUuid:x=>x},
- './pg-billing.repository':{PgBillingRepository:class{constructor(){transactions++;}}},'./billing-activation':{requireBillingActivation},'../domain/commercial-policy':policy
+ './pg-billing.repository':{PgBillingRepository:class{constructor(){transactions++;}}},'./billing-activation':{requireBillingActivation},'../domain/commercial-policy':policy,'../domain/financial-consistency':load('contexts/billing/domain/financial-consistency.ts')
 });
 const actor={id:'12345678-1234-4234-8234-123456789abc',organizationId:'32345678-1234-4234-8234-123456789abc'};
 test('unmigrated API rejects valid invoice operations before opening repository',async()=>{

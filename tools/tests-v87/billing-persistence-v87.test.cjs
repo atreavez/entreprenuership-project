@@ -9,7 +9,7 @@ function load(file,imports={}){
 }
 const policy=load('domain/commercial-policy.ts');
 const {PgBillingRepository}=load('infrastructure/pg-billing.repository.ts',{
- '../domain/commercial-policy':policy,
+ '../domain/commercial-policy':policy,'../domain/financial-consistency':load('domain/financial-consistency.ts'),
  '../../tenant-isolation/application/tenant-scope':{setTenantScope:async(tx,org)=>tx.query('SCOPE',[org])},
  '../../identity/infrastructure/current-admin-step-up':{assertCurrentAdminStepUp:async(tx,actor,sid)=>tx.query('MFA',[actor.id,sid])}
 });

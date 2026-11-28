@@ -5,6 +5,7 @@ import type {PoolClient} from 'pg';
 import {setTenantScope} from '../../tenant-isolation/application/tenant-scope';
 import {assertCurrentAdminStepUp} from '../../identity/infrastructure/current-admin-step-up';
 import {draftInvoice,issueInvoice,voidInvoice,paidSubscription,validateCatalog,type Catalog,type Invoice,type Transition,type Subscription} from '../domain/commercial-policy';
+import {supportedPurchase} from '../domain/financial-consistency';
 import type {BillingRepository,BillingTransaction} from '../application/payment.port';
 function canonical(value:unknown):string{
  if(Array.isArray(value))return '['+value.map(canonical).join(',')+']';
@@ -74,6 +75,7 @@ export class PgBillingRepository implements BillingRepository{
      await catalogLock();const catalog=await loadCatalog(connection);
      if(!catalog)throw Error('Approved billing catalog unavailable');
      const draft=draftInvoice(id,organizationId,catalog,expectedVersion,items);
+     if(!supportedPurchase(draft.lines,catalog.prices))throw Error('Purchase a recurring service separately, quantity one');
      await connection.query(`INSERT INTO public.billing_invoices(id,organization_id,catalog_version,lines,total_ugx)
       VALUES($1,$2,$3,$4::jsonb,$5)`,[draft.id,organizationId,draft.catalogVersion,JSON.stringify(draft.lines),draft.totalUgx]);
      await this.audit.write(connection,this.actor,'BILLING_DRAFT_CREATED','invoice',id,{catalogVersion:draft.catalogVersion,totalUgx:draft.totalUgx});
@@ -86,6 +88,7 @@ export class PgBillingRepository implements BillingRepository{
      const current=await read(org,transition.invoice.id);
      if(!current||current.revision!==expected)return false;
      const active=transition.invoice.state==='ISSUED'?await loadCatalog(connection):null;
+     if(transition.invoice.state==='ISSUED'&&active&&!supportedPurchase(current.lines,active.prices))throw Error('Unsupported recurring allocation');
      const derived=transition.invoice.state==='ISSUED'&&active?issueInvoice(current,expected,active.version):
       transition.invoice.state==='VOID'?voidInvoice(current,expected):null;
      if(!derived||canonical(derived)!==canonical(transition))throw Error('Invalid financial transition');
