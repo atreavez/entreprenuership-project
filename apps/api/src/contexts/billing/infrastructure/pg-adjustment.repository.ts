@@ -2,8 +2,7 @@ import type {Database} from '../../../database';
 import type {AuditService} from '../../../audit';
 import type {UserAuth} from '../../../common';
 import {setTenantScope} from '../../tenant-isolation/application/tenant-scope';
-import {REQUIRED_SCHEMA_MIGRATIONS} from '../../platform/domain/schema-manifest';
-import {PROTECTED_TABLES} from '../../tenant-isolation/domain/rls-policy-contract';
+import {requireAdjustmentSchema,adjustmentOrganizationLock,adjustmentInvoiceLock} from './adjustment-activation';
 import {decideAdjustment,validateLocator,type Adjustment,type AdjustmentLocator,type AdjustmentObservation,type RefundApproval} from '../domain/financial-adjustment';
 import type {AdjustmentRepository} from '../application/adjustment.service';
 /** Deliberately disconnected. No ordinary API principal may construct this
@@ -22,20 +21,17 @@ export class PgAdjustmentRepository implements AdjustmentRepository{
   return this.db.transaction(async tx=>{
    // Both reviewed inventory and actual ledger must match. Manually creating
    // a table cannot enable this adapter.
-   const migration=REQUIRED_SCHEMA_MIGRATIONS.find(m=>String(m.filename)==='032_financial_adjustments.sql');
-   if(!migration||!['billing_refund_approvals','billing_adjustments'].every(t=>PROTECTED_TABLES.includes(t)))throw Error('Adjustment migration is staged');
-   const ledger=await tx.query('SELECT sha256 FROM public.assettrust_schema_migrations WHERE filename=$1',[migration.filename]);
-   if(ledger.rows.length!==1||ledger.rows[0].sha256!==migration.sha256)throw Error('Adjustment migration unverified');
+   await requireAdjustmentSchema(tx);
    await setTenantScope(tx,r.organizationId);
    const flags=(await tx.query(`SELECT current_user AS name,session_user AS login,rolsuper,rolbypassrls,rolcreaterole,rolcreatedb,rolreplication,
     EXISTS(SELECT 1 FROM pg_catalog.pg_auth_members WHERE member=pg_roles.oid) AS membership,
     has_schema_privilege(current_user,'public','CREATE') AS schema_create,
     has_database_privilege(current_user,current_database(),'CREATE') AS database_create,
     EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
-     WHERE n.nspname='public' AND c.relname=ANY(ARRAY['billing_invoices','billing_settlements','billing_journal','billing_subscriptions','billing_catalog_versions','billing_refund_approvals','billing_adjustments','audit_events','assettrust_schema_migrations'])
+     WHERE n.nspname='public' AND c.relname=ANY(ARRAY['billing_invoices','billing_settlements','billing_journal','billing_subscriptions','billing_catalog_versions','billing_refund_requests','billing_refund_decisions','billing_refund_approvals','billing_adjustments','audit_events','assettrust_schema_migrations'])
      AND (c.relowner=pg_roles.oid OR has_table_privilege(current_user,c.oid,'DELETE') OR has_any_column_privilege(current_user,c.oid,'UPDATE')
       OR has_table_privilege(current_user,c.oid,'TRUNCATE') OR has_table_privilege(current_user,c.oid,'TRIGGER') OR has_any_column_privilege(current_user,c.oid,'REFERENCES'))) AS unsafe_write,
-    EXISTS(SELECT 1 FROM unnest(ARRAY['billing_invoices','billing_settlements','billing_journal','billing_subscriptions','billing_catalog_versions','billing_refund_approvals','assettrust_schema_migrations']) t(name)
+    EXISTS(SELECT 1 FROM unnest(ARRAY['billing_invoices','billing_settlements','billing_journal','billing_subscriptions','billing_catalog_versions','billing_refund_requests','billing_refund_decisions','billing_refund_approvals','assettrust_schema_migrations']) t(name)
      WHERE has_any_column_privilege(current_user,'public.'||t.name,'INSERT')) AS forbidden_insert,
     has_table_privilege(current_user,'public.billing_adjustments','INSERT') AS can_record
     FROM pg_roles WHERE rolname=current_user`)).rows[0];
@@ -43,7 +39,8 @@ export class PgAdjustmentRepository implements AdjustmentRepository{
     ['rolsuper','rolbypassrls','rolcreaterole','rolcreatedb','rolreplication','membership','schema_create','database_create','unsafe_write','forbidden_insert'].some(k=>flags[k]!==false))throw Error('Unsafe adjustment worker grants');
    // Serialize every adjustment on the same paid invoice. The original paid
    // invoice remains immutable; no UPDATE privilege on it is required.
-   await tx.query('SELECT pg_advisory_xact_lock(hashtext($1))',[JSON.stringify(['assettrust:billing:adjustment',r.organizationId,r.invoiceId])]);
+   await tx.query('SELECT pg_advisory_xact_lock(hashtext($1))',[adjustmentOrganizationLock(r.organizationId)]);
+   await tx.query('SELECT pg_advisory_xact_lock(hashtext($1))',[adjustmentInvoiceLock(r.organizationId,r.invoiceId)]);
    const member=await tx.query("SELECT id FROM users WHERE id=$1 AND organization_id=$2 AND role='ORG_ADMIN' AND suspended_at IS NULL",[actor.id,r.organizationId]);
    if(member.rows.length!==1||!this.authorized(r))throw Error('Adjustment authority unavailable');
    const result=await tx.query(`SELECT s.organization_id,s.invoice_id,s.provider_id,s.transaction_id,s.amount_ugx,s.currency

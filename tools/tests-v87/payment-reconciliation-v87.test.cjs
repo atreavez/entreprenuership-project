@@ -44,6 +44,7 @@ const catalog={version:1,prices:[{code:'plan',unitUgx:25000,periodDays:30}]},ini
 const {PgSettlementRepository}=load('infrastructure/pg-settlement.repository.ts',{
  '../../tenant-isolation/application/tenant-scope':{setTenantScope:async(tx,o)=>tx.query('SCOPE',[o])},
  './billing-activation':{requireBillingActivation:async tx=>tx.query('ACTIVATION')},
+ './adjustment-activation':{adjustmentSchemaReleased:async()=>false,adjustmentOrganizationLock:org=>org},
  './pg-billing.repository':{hydrateInvoice:async(_tx,row)=>row},
  '../domain/commercial-policy':policy,'../application/reconciliation.service':reconciliation
 });

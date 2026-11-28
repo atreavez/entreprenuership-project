@@ -42,6 +42,7 @@ function fixture({authorized=true,approved=true,term=true}={}){
  '@nestjs/common':{Controller:deco,Get:deco,Req:deco,UseGuards:deco,Injectable:deco,Module:deco,ForbiddenException},'../../../database':{},'../../../auth':{AuthModule:class{},AuthGuard:class{}},
  '../../tenant-isolation/application/tenant-scope':{setTenantScope:async()=>calls.push({sql:'SCOPE'})},
  '../../identity/infrastructure/current-admin-step-up':{assertCurrentAdminStepUp:async()=>{calls.push({sql:'MFA'});if(!authorized)throw new ForbiddenException();}},
+ './adjustment-activation':{adjustmentSchemaReleased:async()=>false,adjustmentOrganizationLock:org=>org},
  './billing-activation':{requireBillingActivation:async()=>calls.push({sql:'SCHEMA'})},'../domain/commercial-policy':d});
  return {calls,svc:new CommercialEntitlementsService({transaction:async fn=>fn(tx)})};
 }

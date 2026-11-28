@@ -22,6 +22,7 @@ import {AnchorOperationsModule} from './contexts/anchoring/infrastructure/anchor
 import {BillingModule} from './contexts/billing/infrastructure/billing.module';
 import {ReconciliationAdminModule} from './contexts/billing/infrastructure/reconciliation-admin.module';
 import {CommercialEntitlementsModule} from './contexts/billing/infrastructure/commercial-entitlements.module';
+import {RefundAdminModule} from './contexts/billing/infrastructure/refund-admin.module';
 import {NotificationsModule} from './notifications';
 import {ProfessionalTrustModule} from './professional-trust';
 import { GeospatialModule } from './contexts/geospatial/infrastructure/geospatial.module';
@@ -47,7 +48,7 @@ const API_VERSION=JSON.parse(readFileSync(resolve(__dirname,'../package.json'),'
 }
 @Module({imports:[
   ThrottlerModule.forRoot([{ttl:60000,limit:100}]),
-  DatabaseModule,AuthModule,PasswordResetModule,AuditModule,AssetsModule,CasesModule,DocumentsModule,DashboardModule,AccessModule,TeamModule,OperationsModule,IntegrationsModule,AnchoringModule,AnchorOperationsModule,BillingModule,ReconciliationAdminModule,CommercialEntitlementsModule,NotificationsModule,ProfessionalTrustModule,GeospatialModule,AdminControlModule,MemberManagementModule,WorkflowAdminModule,ContentAdminModule,PublishedContentModule,ProviderAdminModule,ReportIssuanceModule,ReportLayoutModule,ReportSharingModule
+  DatabaseModule,AuthModule,PasswordResetModule,AuditModule,AssetsModule,CasesModule,DocumentsModule,DashboardModule,AccessModule,TeamModule,OperationsModule,IntegrationsModule,AnchoringModule,AnchorOperationsModule,BillingModule,ReconciliationAdminModule,CommercialEntitlementsModule,RefundAdminModule,NotificationsModule,ProfessionalTrustModule,GeospatialModule,AdminControlModule,MemberManagementModule,WorkflowAdminModule,ContentAdminModule,PublishedContentModule,ProviderAdminModule,ReportIssuanceModule,ReportLayoutModule,ReportSharingModule
 ],controllers:[HealthController],providers:[SchemaProbe,{provide:APP_GUARD,useClass:ThrottlerGuard}]})class AppModule{}
 async function bootstrap(){
  const assessment=validateRuntimeConfig(process.env);

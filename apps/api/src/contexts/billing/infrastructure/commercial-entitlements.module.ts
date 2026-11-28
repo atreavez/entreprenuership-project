@@ -6,6 +6,7 @@ import type {PoolClient} from 'pg';
 import {setTenantScope} from '../../tenant-isolation/application/tenant-scope';
 import {assertCurrentAdminStepUp} from '../../identity/infrastructure/current-admin-step-up';
 import {requireBillingActivation} from './billing-activation';
+import {adjustmentSchemaReleased,adjustmentOrganizationLock} from './adjustment-activation';
 import {ENTITLEMENT_POLICY_KEY,commercialAccess,parseEntitlementPolicyText,type Subscription} from '../domain/commercial-policy';
 const PLATFORM_ID='00000000-0000-0000-0000-000000000000';
 const CAPABILITY='BILLING.JOURNAL_EXPORT';
@@ -22,6 +23,8 @@ async function access(tx:PoolClient,org:string){
  if(!policy.enabled)return 'DENIED' as const;
  const codes=policy.mappings.find(m=>m.capability===CAPABILITY)?.serviceCodes??[];
  if(!codes.length)return 'DENIED' as const;
+ const adjustments=await adjustmentSchemaReleased(tx);
+ if(adjustments)await tx.query('SELECT pg_advisory_xact_lock_shared(hashtext($1))',[adjustmentOrganizationLock(org)]);
  const time=await tx.query('SELECT floor(extract(epoch FROM clock_timestamp())*1000)::bigint AS now_ms');
  const now=Number(time.rows[0]?.now_ms);
  if(!Number.isSafeInteger(now)||now<0)return 'DENIED' as const;
@@ -36,6 +39,7 @@ async function access(tx:PoolClient,org:string){
  AND i.lines->0->>'code'=t.code AND i.lines->0->>'quantity'='1'
  AND p->>'periodDays' IS NOT NULL AND t.ends_at-t.starts_at=(p->>'periodDays')::bigint*86400000
  AND t.starts_at<=$3 AND t.ends_at>$3-$4::bigint*86400000
+ ${adjustments?'AND NOT EXISTS(SELECT 1 FROM public.billing_adjustments a WHERE a.organization_id=t.organization_id AND a.invoice_id=t.funding_invoice_id)':''}
  AND EXISTS(SELECT 1 FROM public.billing_journal j WHERE j.organization_id=i.organization_id AND j.invoice_id=i.id
  AND j.revision=2 AND j.event='PAID' AND j.debit_account='PAYMENT_CLEARING' AND j.credit_account='RECEIVABLE' AND j.amount_ugx=i.total_ugx)`,
  [org,codes,now,policy.graceDays]);

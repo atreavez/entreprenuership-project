@@ -54,5 +54,5 @@ test('staged persistence keeps exact settlement/approval references, unique even
  const sql=fs.readFileSync(path.join(root,'tools/staged-migrations/032_financial_adjustments.sql'),'utf8');
  const repo=fs.readFileSync(path.join(root,base,'infrastructure/pg-adjustment.repository.ts'),'utf8');
  assert(sql.includes('PRIMARY KEY(provider_id,adjustment_id)'));assert(sql.includes('CHECK(submitted_by<>approved_by)'));assert(sql.includes('FOREIGN KEY(organization_id,approval_id,invoice_id,provider_id,transaction_id,adjustment_id,amount_ugx)'));
- assert(!/FOR (UPDATE|DELETE) TO PUBLIC/.test(sql));assert(repo.includes('pg_advisory_xact_lock(hashtext($1))'));assert(repo.includes('Adjustment migration is staged'));assert(!repo.includes('UPDATE public.billing_invoices'));
+ assert(!/FOR (UPDATE|DELETE) TO PUBLIC/.test(sql));assert(repo.includes('pg_advisory_xact_lock(hashtext($1))'));assert(repo.includes('await requireAdjustmentSchema(tx)'));assert(!repo.includes('UPDATE public.billing_invoices'));
 });
