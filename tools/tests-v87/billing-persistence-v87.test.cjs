@@ -23,6 +23,7 @@ function fixture({authorized=true,stale=false,corrupt=false}={}){
   if(sql==='MFA'&&!authorized)throw Error('MFA denied');
   if(sql==='SCOPE'||sql==='MFA'||sql.includes('pg_advisory_xact_lock_shared'))return {rows:[]};
   if(sql.includes('FROM public.billing_catalog_versions'))return {rows:[catalog]};
+  if(sql.includes('AS snapshot FROM public.billing_invoices'))return {rows:[{snapshot:{invoice:{...initial},prices:catalog.prices,journal:[],settlements:[],terms:[]}}]};
   if(sql.includes('FROM public.billing_invoices'))return {rows:[{id:invoiceId,organization_id:organizationId,catalog_version:1,lines:initial.lines,total_ugx:corrupt?1:50000,currency:'UGX',state:'DRAFT',revision:0,payment_key:null}]};
   if(sql.startsWith('INSERT')||sql.startsWith('UPDATE'))return {rows:[],rowCount:stale&&sql.startsWith('UPDATE')?0:1};
   throw Error('Unexpected SQL '+sql);
@@ -75,4 +76,14 @@ test('reviewed migration protects tenant rows and append-only records',()=>{
  assert(!/FOR DELETE TO PUBLIC/.test(sql));assert(sql.includes('PRIMARY KEY (provider_id,transaction_id)'));
  assert(sql.includes('PRIMARY KEY (organization_id,funding_invoice_id)'));
  assert(!fs.existsSync(path.join(root,'tools/staged-migrations/030_commercial_billing.sql')));
+});
+
+test('financial integrity read is one tenant-scoped snapshot and has no side effects',async()=>{
+ const f=fixture();
+ const r=await f.repo.transaction(organizationId,t=>t.inspectInvoice(organizationId,invoiceId));
+ assert.equal(r.consistent,true);assert.equal(r.issues.length,0);
+ const q=f.calls.find(c=>c.sql.includes('AS snapshot FROM public.billing_invoices'));
+ assert.deepEqual(Array.from(q.params),[organizationId,invoiceId]);
+ assert(q.sql.includes('j.organization_id=i.organization_id'));assert(q.sql.includes('s.organization_id=i.organization_id'));assert(q.sql.includes('t.organization_id=i.organization_id'));
+ assert(!f.calls.some(c=>/^(INSERT|UPDATE|AUDIT)/.test(c.sql)));
 });

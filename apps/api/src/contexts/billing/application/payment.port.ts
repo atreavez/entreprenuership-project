@@ -14,6 +14,7 @@ export interface BillingTransaction{
  createDraft(invoiceId:string,expectedCatalogVersion:number,items:unknown):Promise<Invoice>;
  invoice(organizationId:string,id:string):Promise<Invoice|null>;
  listInvoices(organizationId:string):Promise<readonly Invoice[]>;
+ inspectInvoice(organizationId:string,id:string):Promise<{invoiceId:string;consistent:boolean;issues:readonly string[]}|null>;
  journal(organizationId:string):Promise<readonly {invoiceId:string;revision:number;event:string;debitAccount:string;creditAccount:string;amountUgx:number;recordedAt:string}[]>;
  subscriptions(organizationId:string):Promise<readonly Subscription[]>;
  commit(organizationId:string,expectedRevision:number,transition:Transition):Promise<boolean>;

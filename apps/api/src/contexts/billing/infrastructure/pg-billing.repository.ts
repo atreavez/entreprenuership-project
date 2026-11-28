@@ -5,7 +5,7 @@ import type {PoolClient} from 'pg';
 import {setTenantScope} from '../../tenant-isolation/application/tenant-scope';
 import {assertCurrentAdminStepUp} from '../../identity/infrastructure/current-admin-step-up';
 import {draftInvoice,issueInvoice,voidInvoice,paidSubscription,validateCatalog,type Catalog,type Invoice,type Transition,type Subscription} from '../domain/commercial-policy';
-import {supportedPurchase} from '../domain/financial-consistency';
+import {supportedPurchase,inspectFinancialSnapshot} from '../domain/financial-consistency';
 import type {BillingRepository,BillingTransaction} from '../application/payment.port';
 function canonical(value:unknown):string{
  if(Array.isArray(value))return '['+value.map(canonical).join(',')+']';
@@ -60,6 +60,28 @@ export class PgBillingRepository implements BillingRepository{
     listInvoices:async(org)=>{
      scope(org);const {rows}=await connection.query('SELECT * FROM public.billing_invoices WHERE organization_id=$1 ORDER BY created_at DESC,id LIMIT 50',[org]);
      const invoices:Invoice[]=[];for(const row of rows)invoices.push(await hydrateInvoice(connection,row));return invoices;
+    },
+    inspectInvoice:async(org,id)=>{
+     scope(org);
+     // One statement snapshot prevents false inconsistencies from concurrent
+     // settlement commits between invoice and related record reads.
+     const {rows}=await connection.query(`SELECT jsonb_build_object(
+       'invoice',jsonb_build_object('id',i.id,'organizationId',i.organization_id,'catalogVersion',i.catalog_version,
+         'state',i.state,'revision',i.revision,'totalUgx',i.total_ugx,'currency',i.currency,'paymentKey',i.payment_key,'lines',i.lines),
+       'prices',coalesce(c.prices,'[]'::jsonb),
+       'journal',coalesce((SELECT jsonb_agg(jsonb_build_object('revision',j.revision,'event',j.event,'debitAccount',j.debit_account,
+        'creditAccount',j.credit_account,'amountUgx',j.amount_ugx)) FROM public.billing_journal j WHERE j.organization_id=i.organization_id AND j.invoice_id=i.id),'[]'::jsonb),
+       'settlements',coalesce((SELECT jsonb_agg(jsonb_build_object('providerId',s.provider_id,'transactionId',s.transaction_id,
+        'amountUgx',s.amount_ugx,'currency',s.currency)) FROM public.billing_settlements s WHERE s.organization_id=i.organization_id AND s.invoice_id=i.id),'[]'::jsonb),
+       'terms',coalesce((SELECT jsonb_agg(jsonb_build_object('organizationId',t.organization_id,'fundingInvoiceId',t.funding_invoice_id,
+        'code',t.code,'catalogVersion',t.catalog_version,'startsAt',t.starts_at,'endsAt',t.ends_at)) FROM public.billing_subscriptions t WHERE t.organization_id=i.organization_id AND t.funding_invoice_id=i.id),'[]'::jsonb)
+       ) AS snapshot FROM public.billing_invoices i LEFT JOIN public.billing_catalog_versions c ON c.version=i.catalog_version
+       WHERE i.organization_id=$1 AND i.id=$2`,[org,id]);
+     if(rows.length!==1)return null;
+     const snapshot=rows[0].snapshot;
+     if(snapshot?.invoice?.organizationId!==org||snapshot.invoice.id!==id)throw Error('Invalid financial snapshot scope');
+     const issues=inspectFinancialSnapshot(snapshot);
+     return {invoiceId:id,consistent:issues.length===0,issues};
     },
     journal:async(org)=>{
      scope(org);

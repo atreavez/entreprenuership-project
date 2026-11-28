@@ -32,7 +32,7 @@ const {BillingAdminService}=load('contexts/billing/infrastructure/billing.module
 const actor={id:'12345678-1234-4234-8234-123456789abc',organizationId:'32345678-1234-4234-8234-123456789abc'};
 test('unmigrated API rejects valid invoice operations before opening repository',async()=>{
  const svc=new BillingAdminService({query:async()=>({rows:[]})},{});transactions=0;
- for(const call of [()=>svc.catalog(actor,'sid'),()=>svc.list(actor,'sid'),()=>svc.get(actor,'sid','id'),()=>svc.create(actor,'sid',{expectedCatalogVersion:1,items:[{code:'review',quantity:1}]}),()=>svc.transition(actor,'sid','id',{expectedRevision:0,action:'ISSUE'})])await assert.rejects(call(),ServiceUnavailableException);
+ for(const call of [()=>svc.catalog(actor,'sid'),()=>svc.list(actor,'sid'),()=>svc.get(actor,'sid','id'),()=>svc.integrity(actor,'sid','id'),()=>svc.create(actor,'sid',{expectedCatalogVersion:1,items:[{code:'review',quantity:1}]}),()=>svc.transition(actor,'sid','id',{expectedRevision:0,action:'ISSUE'})])await assert.rejects(call(),ServiceUnavailableException);
  assert.equal(transactions,0);
 });
 test('financial API rejects client price, tenant and payment claims',async()=>{

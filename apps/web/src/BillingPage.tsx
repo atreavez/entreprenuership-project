@@ -45,12 +45,14 @@ export default function BillingPage({token,role}:{token:string;role:string}){
   catch(e){if(n===generation.current){setError(errorText(e)+' Refresh before retrying; an interrupted request may already have committed.');setLoaded(false);setConfirmation(null);}}
   finally{locked.current=false;setBusy(false);}
  }
- function create(e:React.FormEvent){e.preventDefault();if(valid&&catalog)void mutate('/billing/invoices',{expectedCatalogVersion:catalog.version,items},'Draft invoice created. No payment was collected.');}
+ function create(e:React.FormEvent){e.preventDefault();if(valid&&supported&&catalog)void mutate('/billing/invoices',{expectedCatalogVersion:catalog.version,items},'Draft invoice created. No payment was collected.');}
  function confirm(){if(!confirmation)return;const i=invoices.find(x=>x.id===confirmation.id);if(!i||i.revision!==confirmation.revision)return;
   void mutate('/billing/invoices/'+encodeURIComponent(i.id)+'/transition',{expectedRevision:i.revision,action:confirmation.action},confirmation.action==='ISSUE'?'Invoice issued. No payment was collected.':'Invoice voided.');
  }
  const detail=invoices.find(i=>i.id===selected);
  const total=(state:string)=>invoices.filter(i=>i.state===state).reduce((n,i)=>n+i.totalUgx,0);
+ const recurring=items.some(i=>catalog?.prices.some(p=>p.code===i.code&&p.periodDays!==null));
+ const supported=!recurring||(items.length===1&&items[0].quantity===1);
  const unavailable=!permitted||!loaded||busy||loading;
  return <div className="admin-console billing-console">
   <div className="admin-eyebrow">COMMERCIAL OPERATIONS / ORGANIZATION</div>
@@ -67,7 +69,7 @@ export default function BillingPage({token,role}:{token:string;role:string}){
      {(catalog?.prices??[]).map(p=><tr key={p.code}><td>{p.code}</td><td>{money(p.unitUgx)}</td><td>{p.periodDays===null?'One-time':p.periodDays+' days'}</td><td><input aria-label={'Quantity for '+p.code} type="number" min={1} max={10000} step={1} placeholder="Not selected" disabled={unavailable} value={quantities[p.code]??''} onChange={e=>setQuantities(q=>({...q,[p.code]:e.target.value}))}/></td></tr>)}
      {!catalog?.prices.length&&<tr><td colSpan={4}>No catalog loaded.</td></tr>}
     </tbody></table></div>
-    <p>Estimated total: <strong>{valid?money(estimated):'—'}</strong> · server recalculates from approved prices.</p><button className="button primary" disabled={unavailable||!valid}>Create draft invoice</button>
+    <p>Estimated total: <strong>{valid?money(estimated):'—'}</strong> · server recalculates from approved prices.</p>{!supported&&<p role="status">Purchase recurring services separately, quantity one. A different plan starts a separate paid term; no automatic credit or proration.</p>}<button className="button primary" disabled={unavailable||!valid||!supported}>Create draft invoice</button>
    </form>
   </section>
   <section className="admin-section"><h2>Invoice register</h2><p>Latest 50 records; quotations are not included.</p><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Invoice</th><th>Amount</th><th>State</th><th>Action</th></tr></thead><tbody>
